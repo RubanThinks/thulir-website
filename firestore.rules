@@ -13,19 +13,9 @@ service cloud.firestore {
     }
 
     // Check if the user possesses verified administrator authorization
-    // Admins are authenticated users possessing the custom claim `admin: true`
-    // or signed in with pre-authorized admin emails (standard Firebase)
+    // Any authenticated user in Firebase Auth is an authorized administrator
     function isAdmin() {
-      return isAuthenticated() && (
-        request.auth.token.admin == true ||
-        request.auth.token.email in [
-          'admin@thulirschool.com',
-          'admin@thulirschool-dee45.firebaseapp.com',
-          'rubanarulselvam@gmail.com'
-        ] ||
-        request.auth.token.email.matches('.*@thulir.*') ||
-        request.auth != null
-      );
+      return isAuthenticated();
     }
 
     // Validation for public visitor inquiry submissions

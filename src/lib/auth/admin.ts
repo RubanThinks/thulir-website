@@ -27,51 +27,28 @@ export type AdminSessionResult =
     };
 
 /**
- * Returns the list of authorized administrator emails from environment configuration.
- */
 export function getAuthorizedAdminEmails(): string[] {
   const envEmails = process.env.ADMIN_EMAILS || "";
-  const list = envEmails
+  return envEmails
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
-
-  // Default recognized admin accounts
-  const defaults = [
-    "admin@thulirschool.com",
-    "admin@thulirschool-dee45.firebaseapp.com",
-    "rubanarulselvam@gmail.com",
-  ];
-
-  for (const d of defaults) {
-    if (!list.includes(d)) {
-      list.push(d);
-    }
-  }
-
-  return list;
 }
 
 /**
  * Determines whether a given email or custom claim is an authorized administrator.
+ * In this application, accounts created in Firebase Auth are administrators.
  */
 export function isAuthorizedAdmin(email?: string | null, customAdminClaim?: boolean): boolean {
   if (customAdminClaim) return true;
-  if (!email) return false;
 
-  const normalized = email.trim().toLowerCase();
   const authorizedList = getAuthorizedAdminEmails();
-
-  if (authorizedList.includes(normalized)) {
-    return true;
+  if (authorizedList.length > 0 && email) {
+    return authorizedList.includes(email.trim().toLowerCase());
   }
 
-  // Allow any school organization domain accounts
-  if (normalized.endsWith("@thulirschool.com") || normalized.endsWith("@thulirspecialschool.org")) {
-    return true;
-  }
-
-  return false;
+  // Any authenticated Firebase Auth account is authorized
+  return true;
 }
 
 /**
