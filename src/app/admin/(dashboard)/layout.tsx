@@ -4,8 +4,7 @@ import { AdminLayoutClient } from "@/components/admin/AdminLayoutClient";
 import { AdminSignOutButton } from "@/components/admin/AdminSignOutButton";
 import { ShieldAlert } from "lucide-react";
 import Link from "next/link";
-
-
+export const instant = false;
 
 export default async function AdminDashboardLayout({
   children,
