@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth/admin";
 import { generateUploadSignature } from "@/lib/cloudinary/server";
 
-export const instant = false;
+
 
 export async function POST(request: NextRequest) {
   const session = await verifyAdminSession();

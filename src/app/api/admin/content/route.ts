@@ -4,7 +4,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { siteConfig } from "@/config/site";
 import { FieldValue } from "firebase-admin/firestore";
 
-export const instant = false;
+
 
 export async function GET() {
   const session = await verifyAdminSession();

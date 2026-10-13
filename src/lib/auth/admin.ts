@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { getAdminAuth, isAdminConfigured } from "../firebase/admin";
 
 export const ADMIN_SESSION_COOKIE_NAME = "__session";
@@ -56,6 +57,12 @@ export function isAuthorizedAdmin(email?: string | null, customAdminClaim?: bool
  * Supports both standard Firebase client session tokens and Admin SDK cookies.
  */
 export async function verifyAdminSession(): Promise<AdminSessionResult> {
+  try {
+    await connection();
+  } catch {
+    // Graceful fallback if called outside Next.js request context
+  }
+
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(ADMIN_SESSION_COOKIE_NAME)?.value;
 
@@ -117,10 +124,7 @@ export async function verifyAdminSession(): Promise<AdminSessionResult> {
       return { authenticated: false, user: null, reason: "NO_SESSION" };
     }
 
-    // Check expiration if present
-    if (sessionData.expiresAt && Date.now() > sessionData.expiresAt) {
-      return { authenticated: false, user: null, reason: "EXPIRED" };
-    }
+
 
     const email = sessionData.email || null;
     const authorized = isAuthorizedAdmin(email, true);

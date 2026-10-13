@@ -5,7 +5,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { sendInquiryEmails } from "@/lib/email/resend";
 import { FieldValue } from "firebase-admin/firestore";
 
-export const instant = false;
+
 
 /**
  * Generates a human-friendly unique Inquiry ID.

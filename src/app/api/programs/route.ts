@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { BASELINE_PROGRAMS, seedProgramsIfEmpty } from "@/lib/seed/programs";
 
-export const instant = false;
+
 
 export async function GET() {
   const adminDb = getAdminDb();

@@ -20,7 +20,7 @@ import { isFirebaseClientConfigured } from "@/lib/firebase/client";
 import { isCloudinaryConfigured } from "@/lib/cloudinary/server";
 import { verifyAdminSession } from "@/lib/auth/admin";
 
-export const instant = false;
+
 
 export default async function AdminDashboardOverviewPage() {
   const sessionResult = await verifyAdminSession();

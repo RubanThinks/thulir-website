@@ -3,7 +3,7 @@ import { verifyAdminSession } from "@/lib/auth/admin";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
 
-export const instant = false;
+
 
 export async function GET() {
   const session = await verifyAdminSession();

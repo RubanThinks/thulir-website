@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth/admin";
 import { getAdminDb } from "@/lib/firebase/admin";
 
-export const instant = false;
+
 
 interface AdminInquiryRecord {
   id: string;

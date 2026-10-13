@@ -4,7 +4,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { deleteCloudinaryAsset } from "@/lib/cloudinary/server";
 import { FieldValue } from "firebase-admin/firestore";
 
-export const instant = false;
+
 
 interface RouteContext {
   params: Promise<{ id: string }>;

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase/admin";
 
-export const instant = false;
+
 
 export async function GET(request: NextRequest) {
   const adminDb = getAdminDb();
