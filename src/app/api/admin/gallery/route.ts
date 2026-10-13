@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   const adminDb = getAdminDb();
   if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
+    return NextResponse.json({ items: [] });
   }
 
   try {

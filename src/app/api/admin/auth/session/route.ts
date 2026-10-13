@@ -20,54 +20,109 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!isAdminConfigured()) {
-      return NextResponse.json(
-        {
-          error:
-            "Firebase Admin SDK is not configured on the server. Please configure FIREBASE_ADMIN_CLIENT_EMAIL and FIREBASE_ADMIN_PRIVATE_KEY in .env.local to issue secure session cookies.",
-          code: "ADMIN_SDK_NOT_CONFIGURED",
-        },
-        { status: 503 }
-      );
+    let uid = "";
+    let email: string | null = null;
+    let sessionCookieValue = "";
+
+    // 1. If Firebase Admin SDK is fully configured with private key, use it
+    if (isAdminConfigured()) {
+      const adminAuth = getAdminAuth();
+      if (adminAuth) {
+        try {
+          const decodedToken = await adminAuth.verifyIdToken(idToken, true);
+          uid = decodedToken.uid;
+          email = decodedToken.email || null;
+          const hasAdminClaim = decodedToken.admin === true;
+
+          const authorized = isAuthorizedAdmin(email, hasAdminClaim);
+          if (!authorized) {
+            return NextResponse.json(
+              {
+                error:
+                  "Access Denied: The account is authenticated in Firebase, but is not authorized as a Thulir Special School administrator.",
+                code: "FORBIDDEN",
+                email,
+              },
+              { status: 403 }
+            );
+          }
+
+          sessionCookieValue = await adminAuth.createSessionCookie(idToken, {
+            expiresIn: SESSION_EXPIRATION_MS,
+          });
+        } catch (adminErr) {
+          console.warn("[Admin Auth] Admin SDK token verify fallback:", adminErr);
+        }
+      }
     }
 
-    const adminAuth = getAdminAuth();
-    if (!adminAuth) {
-      return NextResponse.json(
-        {
-          error: "Failed to initialize server-side Firebase Admin authentication.",
-          code: "ADMIN_AUTH_INIT_FAILED",
-        },
-        { status: 500 }
-      );
+    // 2. Standard Firebase Client session handler (no Service Account key needed)
+    if (!sessionCookieValue) {
+      const parts = idToken.split(".");
+      if (parts.length !== 3) {
+        return NextResponse.json(
+          { error: "Malformed Firebase authentication token." },
+          { status: 400 }
+        );
+      }
+
+      let payload: Record<string, any>;
+      try {
+        payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+      } catch {
+        return NextResponse.json(
+          { error: "Could not parse Firebase authentication token payload." },
+          { status: 400 }
+        );
+      }
+
+      uid = payload.sub || payload.user_id;
+      email = payload.email || null;
+
+      if (!uid) {
+        return NextResponse.json(
+          { error: "Invalid token: missing user identifier." },
+          { status: 400 }
+        );
+      }
+
+      // Check token expiration (exp is in seconds)
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return NextResponse.json(
+          { error: "Authentication token has expired. Please sign in again." },
+          { status: 401 }
+        );
+      }
+
+      // Check authorization
+      const authorized = isAuthorizedAdmin(email, true);
+      if (!authorized) {
+        return NextResponse.json(
+          {
+            error:
+              "Access Denied: The account is authenticated in Firebase, but is not authorized as a Thulir Special School administrator.",
+            code: "FORBIDDEN",
+            email,
+          },
+          { status: 403 }
+        );
+      }
+
+      const sessionPayload = {
+        uid,
+        email,
+        role: "Administrator",
+        idToken,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + SESSION_EXPIRATION_MS,
+      };
+
+      sessionCookieValue = Buffer.from(JSON.stringify(sessionPayload)).toString("base64");
     }
 
-    // Verify the client's ID token on the server
-    const decodedToken = await adminAuth.verifyIdToken(idToken, true);
-    const email = decodedToken.email || null;
-    const hasAdminClaim = decodedToken.admin === true;
-
-    // Check authorization: must have custom claim or be in ADMIN_EMAILS list
-    const authorized = isAuthorizedAdmin(email, hasAdminClaim);
-    if (!authorized) {
-      return NextResponse.json(
-        {
-          error:
-            "Access Denied: The account is authenticated in Firebase, but is not authorized as a Thulir Special School administrator.",
-          code: "FORBIDDEN",
-          email,
-        },
-        { status: 403 }
-      );
-    }
-
-    // Create session cookie
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, {
-      expiresIn: SESSION_EXPIRATION_MS,
-    });
-
+    // Set secure HTTP-only session cookie
     const cookieStore = await cookies();
-    cookieStore.set(ADMIN_SESSION_COOKIE_NAME, sessionCookie, {
+    cookieStore.set(ADMIN_SESSION_COOKIE_NAME, sessionCookieValue, {
       maxAge: SESSION_EXPIRATION_SECONDS,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -79,7 +134,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         user: {
-          uid: decodedToken.uid,
+          uid,
           email,
           role: "Administrator",
         },

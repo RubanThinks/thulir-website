@@ -31,8 +31,9 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!email.trim() || !password) {
-      setErrorMessage("Please enter both email address and password.");
+    const trimmedInput = email.trim();
+    if (!trimmedInput || !password) {
+      setErrorMessage("Please enter both email address / username and password.");
       return;
     }
 
@@ -43,11 +44,16 @@ export default function AdminLoginPage() {
       return;
     }
 
+    // Auto-normalize "admin" or single username to admin@thulirschool.com
+    const loginEmail = trimmedInput.includes("@")
+      ? trimmedInput
+      : `${trimmedInput}@thulirschool.com`;
+
     setLoading(true);
 
     try {
-      // 1. Authenticate with Firebase Client SDK
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      // 1. Authenticate with standard Firebase Client SDK
+      const userCredential = await signInWithEmailAndPassword(auth, loginEmail, password);
       const idToken = await userCredential.user.getIdToken();
 
       // 2. Exchange ID token for secure, server-side HTTP-only session cookie
@@ -67,11 +73,6 @@ export default function AdminLoginPage() {
           setErrorMessage(
             "Access Denied: Your account is verified in Firebase, but it is not on the list of authorized administrators for Thulir Special School."
           );
-        } else if (response.status === 503) {
-          setErrorMessage(
-            data.error ||
-              "Server-side Firebase Admin credentials are not yet configured. Please add the Firebase Service Account key to .env.local."
-          );
         } else {
           setErrorMessage(data.error || "Authentication failed. Please check your credentials.");
         }
@@ -86,8 +87,12 @@ export default function AdminLoginPage() {
       const authErr = err as { code?: string; message?: string };
       let message = "An unexpected error occurred during sign-in. Please try again.";
 
-      if (authErr.code === "auth/invalid-credential" || authErr.code === "auth/wrong-password" || authErr.code === "auth/user-not-found") {
-        message = "Invalid email or password. Please verify your credentials.";
+      if (
+        authErr.code === "auth/invalid-credential" ||
+        authErr.code === "auth/wrong-password" ||
+        authErr.code === "auth/user-not-found"
+      ) {
+        message = `Invalid email or password for "${loginEmail}". Please verify that this user exists under Firebase Console > Authentication > Users with Email/Password sign-in enabled.`;
       } else if (authErr.code === "auth/too-many-requests") {
         message = "Too many failed attempts. Access temporarily locked for security. Please try again later.";
       } else if (authErr.code === "auth/network-request-failed") {
@@ -170,7 +175,7 @@ export default function AdminLoginPage() {
                 htmlFor="email"
                 className="block text-xs font-semibold uppercase tracking-wider text-[#2D3748] mb-1.5"
               >
-                Administrator Email
+                Administrator Email / Username
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
@@ -179,12 +184,12 @@ export default function AdminLoginPage() {
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  type="text"
                   autoComplete="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@thulirschool.com"
+                  placeholder="admin@thulirschool.com or admin"
                   className="w-full pl-10 pr-4 py-2.5 bg-[#FBFBFA] border border-[#E2E8F0] rounded-xl text-sm text-[#151515] placeholder:text-[#64748B]/60 focus:outline-none focus:ring-2 focus:ring-[#101C3A]/20 focus:border-[#101C3A] transition"
                   disabled={loading}
                 />

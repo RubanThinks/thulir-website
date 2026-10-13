@@ -4,18 +4,24 @@ import { getAdminDb } from "@/lib/firebase/admin";
 
 export const instant = false;
 
+interface AdminInquiryRecord {
+  id: string;
+  parentName?: string;
+  email?: string;
+  phone?: string;
+  preferredBranch?: string;
+  serviceCategory?: string;
+  serviceOfInterest?: string;
+  status?: string;
+  createdAt: string;
+  updatedAt: string;
+  [key: string]: unknown;
+}
+
 export async function GET(request: NextRequest) {
   const session = await verifyAdminSession();
   if (!session.authenticated) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json(
-      { error: "Database not configured. Service account key missing in .env.local." },
-      { status: 503 }
-    );
   }
 
   try {
@@ -26,35 +32,62 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
     const limit = Math.min(50, Math.max(5, parseInt(searchParams.get("limit") || "15", 10)));
 
-    // Fetch inquiries collection
-    const snapshot = await adminDb
-      .collection("inquiries")
-      .orderBy("createdAt", "desc")
-      .get();
+    let allDocs: AdminInquiryRecord[] = [];
 
-    interface AdminInquiryRecord {
-      id: string;
-      parentName?: string;
-      email?: string;
-      phone?: string;
-      preferredBranch?: string;
-      serviceCategory?: string;
-      serviceOfInterest?: string;
-      status?: string;
-      createdAt: string;
-      updatedAt: string;
-      [key: string]: unknown;
+    const adminDb = getAdminDb();
+    if (adminDb) {
+      const snapshot = await adminDb
+        .collection("inquiries")
+        .orderBy("createdAt", "desc")
+        .get();
+
+      allDocs = snapshot.docs.map((doc) => {
+        const data = doc.data() as Record<string, any>;
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
+        };
+      });
+    } else {
+      // Fallback via Firestore REST API
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "thulirschool-dee45";
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      try {
+        const restRes = await fetch(
+          `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/inquiries?key=${apiKey}`,
+          { cache: "no-store" }
+        );
+        if (restRes.ok) {
+          const restJson = await restRes.json();
+          const rawDocs = restJson.documents || [];
+          allDocs = rawDocs.map((d: any) => {
+            const fields = d.fields || {};
+            const parseField = (val: any) => {
+              if (!val) return "";
+              return val.stringValue || val.integerValue || val.timestampValue || "";
+            };
+            const docId = d.name ? d.name.split("/").pop() : "";
+            return {
+              id: parseField(fields.id) || docId,
+              parentName: parseField(fields.parentName),
+              email: parseField(fields.email),
+              phone: parseField(fields.phone),
+              preferredBranch: parseField(fields.preferredBranch),
+              serviceOfInterest: parseField(fields.serviceOfInterest),
+              childAge: parseField(fields.childAge),
+              message: parseField(fields.message),
+              status: parseField(fields.status) || "new",
+              createdAt: parseField(fields.createdAt) || new Date().toISOString(),
+              updatedAt: parseField(fields.updatedAt) || new Date().toISOString(),
+            };
+          });
+        }
+      } catch (restErr) {
+        console.warn("[Admin Inquiries] Firestore REST query fallback:", restErr);
+      }
     }
-
-    let allDocs: AdminInquiryRecord[] = snapshot.docs.map((doc) => {
-      const data = doc.data() as Record<string, any>;
-      return {
-        id: doc.id,
-        ...data,
-        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
-        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
-      };
-    });
 
     // Counts across all records
     const counts = {

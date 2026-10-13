@@ -74,41 +74,58 @@ export async function POST(request: NextRequest) {
       message: sanitizeText(input.message),
     };
 
-    // 5. Check Firestore Connection
+    const inquiryId = generateInquiryId();
     const adminDb = getAdminDb();
-    if (!adminDb) {
-      return NextResponse.json(
+
+    if (adminDb) {
+      const inquiryDoc = {
+        id: inquiryId,
+        parentName: sanitizedData.parentName,
+        email: sanitizedData.email,
+        phone: sanitizedData.phone,
+        preferredBranch: sanitizedData.preferredBranch,
+        serviceOfInterest: sanitizedData.serviceCategory,
+        childAge: sanitizedData.childAge,
+        message: sanitizedData.message,
+        status: "new",
+        internalNotes: [],
+        clientIpMasked: clientIp.replace(/\.\d+$/, ".xxx"),
+        emailNotificationSentToAdmin: false,
+        acknowledgementSentToVisitor: false,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      };
+      await adminDb.collection("inquiries").doc(inquiryId).set(inquiryDoc);
+    } else {
+      // Standard Firestore REST API execution (no service account key required)
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "thulirschool-dee45";
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const nowIso = new Date().toISOString();
+
+      await fetch(
+        `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/inquiries?documentId=${inquiryId}&key=${apiKey}`,
         {
-          error:
-            "Inquiry system is currently operating in offline setup mode. Please ensure Firebase Admin credentials are configured in .env.local.",
-          code: "DATABASE_UNAVAILABLE",
-        },
-        { status: 503 }
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              id: { stringValue: inquiryId },
+              parentName: { stringValue: sanitizedData.parentName },
+              email: { stringValue: sanitizedData.email },
+              phone: { stringValue: sanitizedData.phone },
+              preferredBranch: { stringValue: sanitizedData.preferredBranch },
+              serviceOfInterest: { stringValue: sanitizedData.serviceCategory },
+              childAge: { stringValue: sanitizedData.childAge },
+              message: { stringValue: sanitizedData.message },
+              status: { stringValue: "new" },
+              clientIpMasked: { stringValue: clientIp.replace(/\.\d+$/, ".xxx") },
+              createdAt: { timestampValue: nowIso },
+              updatedAt: { timestampValue: nowIso },
+            },
+          }),
+        }
       );
     }
-
-    const inquiryId = generateInquiryId();
-
-    // 6. Save to Firestore `inquiries` Collection
-    const inquiryDoc = {
-      id: inquiryId,
-      parentName: sanitizedData.parentName,
-      email: sanitizedData.email,
-      phone: sanitizedData.phone,
-      preferredBranch: sanitizedData.preferredBranch,
-      serviceOfInterest: sanitizedData.serviceCategory,
-      childAge: sanitizedData.childAge,
-      message: sanitizedData.message,
-      status: "new",
-      internalNotes: [],
-      clientIpMasked: clientIp.replace(/\.\d+$/, ".xxx"),
-      emailNotificationSentToAdmin: false,
-      acknowledgementSentToVisitor: false,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    };
-
-    await adminDb.collection("inquiries").doc(inquiryId).set(inquiryDoc);
 
     // 7. Dispatch Emails asynchronously via Resend
     let emailResult = { adminNotificationSent: false, parentAcknowledgmentSent: false };
