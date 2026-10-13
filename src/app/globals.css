@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #101C3A;
+  --navy-light: #1A2E5A;
+  --navy-dark: #0A1224;
+  --burgundy: #8F2638;
+  --burgundy-light: #A83246;
+  --burgundy-dark: #6B1C2A;
+  --burgundy-surface: #FDF4F5;
+  --yellow: #F4C542;
+  --yellow-hover: #E5B430;
+  --yellow-light: #FEF9E7;
+  --dark: #151515;
+  --charcoal: #2D3748;
+  --muted: #64748B;
+  --surface: #FBFBFA;
+  --surface-alt: #F1F4F9;
+  --border: #E2E8F0;
+}
+
+@theme {
+  --color-navy: #101C3A;
+  --color-navy-light: #1A2E5A;
+  --color-navy-dark: #0A1224;
+  --color-burgundy: #8F2638;
+  --color-burgundy-light: #A83246;
+  --color-burgundy-dark: #6B1C2A;
+  --color-burgundy-surface: #FDF4F5;
+  --color-yellow: #F4C542;
+  --color-yellow-hover: #E5B430;
+  --color-yellow-light: #FEF9E7;
+  --color-dark: #151515;
+  --color-charcoal: #2D3748;
+  --color-muted: #64748B;
+  --color-surface: #FBFBFA;
+  --color-surface-alt: #F1F4F9;
+  --color-border: #E2E8F0;
+  --font-heading: var(--font-heading);
+  --font-serif: var(--font-serif);
+  --font-body: var(--font-body);
+}
+
+.font-serif-luxury {
+  font-family: var(--font-serif), "Playfair Display", Georgia, serif;
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--dark);
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

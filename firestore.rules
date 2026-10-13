@@ -1,0 +1,128 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // HELPER FUNCTIONS & AUTHORIZATION PREDICATES
+    // ===============================================================
+
+    // Check if the request is from any authenticated Firebase user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the user possesses verified administrator authorization
+    // Admins are authenticated users possessing the custom claim `admin: true`
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    // Validation for public visitor inquiry submissions
+    function isValidInquirySubmission() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['parentName', 'phone', 'email', 'message', 'createdAt'])
+        && data.parentName is string && data.parentName.size() > 0 && data.parentName.size() <= 100
+        && data.phone is string && data.phone.size() >= 8 && data.phone.size() <= 25
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 100
+        && data.message is string && data.message.size() <= 2000
+        && (!('status' in data) || data.status == 'new');
+    }
+
+    // ===============================================================
+    // 1. INQUIRIES & ADMISSIONS: `inquiries`
+    // CRITICAL: Public visitors can ONLY create an inquiry.
+    // Reading, listing, updating, and deleting are STRICTLY restricted
+    // to verified administrators to protect child and parent privacy.
+    // ===============================================================
+    match /inquiries/{inquiryId} {
+      allow create: if isValidInquirySubmission();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ===============================================================
+    // 2. PROGRAMS & THERAPIES: `programs` and `services`
+    // Public visitors can read published clinical programs.
+    // Only administrators can create, update, or delete.
+    // ===============================================================
+    match /programs/{programId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /services/{serviceId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 3. CAMPUS & THERAPY GALLERY: `gallery`
+    // Public visitors can view published gallery items.
+    // Only administrators can upload or edit media records.
+    // ===============================================================
+    match /gallery/{itemId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 4. SCHOOL EVENTS & ACTIVITIES: `events`
+    // Public visitors can view published, non-archived events.
+    // Only administrators can manage events.
+    // ===============================================================
+    match /events/{eventId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 5. STUDENT ACHIEVEMENTS & MILESTONES: `achievements`
+    // Child Protection: Public can only view if published AND parent consented.
+    // Only administrators can create or edit achievement records.
+    // ===============================================================
+    match /achievements/{achievementId} {
+      allow read: if (resource.data.isPublished == true && resource.data.parentConsentApproved == true) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 6. PARENT TESTIMONIALS & REVIEWS: `testimonials`
+    // Public visitors can view approved testimonials.
+    // Only administrators can moderate or delete.
+    // ===============================================================
+    match /testimonials/{testimonialId} {
+      allow read: if resource.data.isApproved == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 7. SITE SETTINGS & ANNOUNCEMENT BANNER: `settings` & `site_content`
+    // Public visitors can view settings. Only administrators can update.
+    // ===============================================================
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /site_content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // 8. DURABLE RATE LIMITS: `_rate_limits`
+    // Direct client access is strictly forbidden. Modified exclusively
+    // via trusted server-side Admin SDK operations.
+    // ===============================================================
+    match /_rate_limits/{docId} {
+      allow read, write: if false;
+    }
+
+    // ===============================================================
+    // DEFAULT CATCH-ALL: Deny everything else
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
