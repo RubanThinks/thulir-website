@@ -42,12 +42,16 @@ export async function GET(request: NextRequest) {
         .get();
 
       allDocs = snapshot.docs.map((doc) => {
-        const data = doc.data() as Record<string, any>;
+        const data = doc.data() as Record<string, unknown>;
         return {
           id: doc.id,
           ...data,
-          createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
-          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
+          createdAt: (data?.createdAt as { toDate?: () => Date })?.toDate
+            ? (data.createdAt as { toDate: () => Date }).toDate().toISOString()
+            : new Date().toISOString(),
+          updatedAt: (data?.updatedAt as { toDate?: () => Date })?.toDate
+            ? (data.updatedAt as { toDate: () => Date }).toDate().toISOString()
+            : new Date().toISOString(),
         };
       });
     } else {
@@ -61,16 +65,25 @@ export async function GET(request: NextRequest) {
         );
         if (restRes.ok) {
           const restJson = await restRes.json();
-          const rawDocs = restJson.documents || [];
-          allDocs = rawDocs.map((d: any) => {
+          interface RestField {
+            stringValue?: string;
+            integerValue?: string | number;
+            timestampValue?: string;
+          }
+          interface RestDoc {
+            name?: string;
+            fields?: Record<string, RestField>;
+          }
+          const rawDocs = (restJson.documents || []) as RestDoc[];
+          allDocs = rawDocs.map((d) => {
             const fields = d.fields || {};
-            const parseField = (val: any) => {
+            const parseField = (val?: RestField) => {
               if (!val) return "";
-              return val.stringValue || val.integerValue || val.timestampValue || "";
+              return val.stringValue || (val.integerValue !== undefined ? String(val.integerValue) : "") || val.timestampValue || "";
             };
-            const docId = d.name ? d.name.split("/").pop() : "";
+            const docId = (d.name ? d.name.split("/").pop() : "") || "";
             return {
-              id: parseField(fields.id) || docId,
+              id: parseField(fields.id) || docId || "",
               parentName: parseField(fields.parentName),
               email: parseField(fields.email),
               phone: parseField(fields.phone),

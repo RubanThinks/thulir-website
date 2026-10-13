@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
       const nowIso = new Date().toISOString();
 
-      await fetch(
+      const firestoreRes = await fetch(
         `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/inquiries?documentId=${inquiryId}&key=${apiKey}`,
         {
           method: "POST",
@@ -125,6 +125,12 @@ export async function POST(request: NextRequest) {
           }),
         }
       );
+
+      if (!firestoreRes.ok) {
+        const errText = await firestoreRes.text().catch(() => "");
+        console.error("[Inquiry API] Firestore REST error:", firestoreRes.status, errText);
+        throw new Error(`Firestore REST write failed with status ${firestoreRes.status}`);
+      }
     }
 
     // 7. Dispatch Emails asynchronously via Resend
@@ -141,11 +147,13 @@ export async function POST(request: NextRequest) {
         message: sanitizedData.message,
       });
 
-      // Update email flags in Firestore
-      await adminDb.collection("inquiries").doc(inquiryId).update({
-        emailNotificationSentToAdmin: emailResult.adminNotificationSent,
-        acknowledgementSentToVisitor: emailResult.parentAcknowledgmentSent,
-      });
+      // Update email flags in Firestore if adminDb is configured
+      if (adminDb) {
+        await adminDb.collection("inquiries").doc(inquiryId).update({
+          emailNotificationSentToAdmin: emailResult.adminNotificationSent,
+          acknowledgementSentToVisitor: emailResult.parentAcknowledgmentSent,
+        });
+      }
     } catch (emailErr) {
       console.warn("[Inquiry] Email dispatch failed after document write:", emailErr);
     }

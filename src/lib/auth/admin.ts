@@ -25,8 +25,9 @@ export type AdminSessionResult =
       reason: "NO_SESSION" | "EXPIRED" | "REVOKED" | "UNAUTHORIZED" | "ADMIN_SDK_UNCONFIGURED";
       email?: string | null;
     };
-
 /**
+ * Returns authorized admin emails if configured in environment.
+ */
 export function getAuthorizedAdminEmails(): string[] {
   const envEmails = process.env.ADMIN_EMAILS || "";
   return envEmails

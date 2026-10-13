@@ -66,9 +66,17 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      let payload: Record<string, any>;
+      interface TokenPayload {
+        sub?: string;
+        user_id?: string;
+        email?: string;
+        exp?: number;
+        [key: string]: unknown;
+      }
+
+      let payload: TokenPayload;
       try {
-        payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8")) as TokenPayload;
       } catch {
         return NextResponse.json(
           { error: "Could not parse Firebase authentication token payload." },
@@ -76,7 +84,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      uid = payload.sub || payload.user_id;
+      uid = payload.sub || payload.user_id || "";
       email = payload.email || null;
 
       if (!uid) {
