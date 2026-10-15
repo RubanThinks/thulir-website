@@ -152,19 +152,14 @@ export default function AboutPage() {
         <section className="py-20 lg:py-28 bg-[#FBFBFA] border-b border-[#E2E8F0]">
           <Container>
             <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-              {/* Founder Image & Quick Bio */}
-              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between items-center text-center">
-                <div className="flex flex-col items-center w-full">
-                  <div className="relative w-44 h-44 rounded-full overflow-hidden border-4 border-[#F4C542] shadow-xl mb-6">
-                    <Image
-                      src="/assets/images/founder_dr_venkatesan.jpg"
-                      alt="Dr. S. Venkatesan, Founder and Managing Director of Thulir"
-                      fill
-                      className="object-cover"
-                    />
+              {/* Founder Profile & Quick Bio */}
+              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between items-start text-left">
+                <div className="flex flex-col items-start w-full">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 border border-[#F4C542]/40 flex items-center justify-center mb-6 shadow-inner text-[#F4C542]">
+                    <GraduationCap className="w-7 h-7" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{siteConfig.founder.name}</h3>
-                  <p className="text-xs font-semibold text-[#F4C542] mt-1 tracking-wider uppercase">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">{siteConfig.founder.name}</h3>
+                  <p className="text-xs font-semibold text-[#F4C542] mt-2 tracking-wider uppercase">
                     {siteConfig.founder.credentials}
                   </p>
                   <p className="text-sm text-white/80 mt-1">{siteConfig.founder.role}</p>

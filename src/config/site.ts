@@ -98,7 +98,7 @@ export const siteConfig = {
     phone: "",
     // WhatsApp feature will remain disabled or link to contact form until verified phone number is set
     whatsappNumber: "", 
-    email: "info@thulirtherapycentre.com",
+    email: "thulirspecialschool@gmail.com",
     timings: "Monday - Saturday: 9:00 AM - 5:30 PM (Sessions by prior appointment)",
   },
 

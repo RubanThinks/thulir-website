@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       fullDescription: (body.fullDescription || "").trim(),
       clinicalApproaches: Array.isArray(body.clinicalApproaches) ? body.clinicalApproaches : [],
       targetAgeRange: (body.targetAgeRange || "2 to 16 years").trim(),
-      heroImageUrl: body.heroImageUrl || "/assets/images/occupational_therapy.jpg",
+      heroImageUrl: body.heroImageUrl || "/assets/images/sensory_occupational_room.jpg",
       order: Number(body.order || 99),
       isPublished: Boolean(body.isPublished ?? true),
       createdAt: FieldValue.serverTimestamp(),

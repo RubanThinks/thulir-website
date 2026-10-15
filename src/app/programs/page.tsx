@@ -184,9 +184,10 @@ export default async function ProgramsPage() {
                       }`}
                     >
                       <Image
-                        src={program.heroImageUrl || "/assets/images/occupational_therapy.jpg"}
+                        src={program.heroImageUrl || "/assets/images/sensory_occupational_room.jpg"}
                         alt={program.title}
                         fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         className="object-cover"
                       />
                     </div>

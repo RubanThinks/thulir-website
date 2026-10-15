@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { MapPin, Clock, ShieldCheck, Heart } from "lucide-react";
+import { MapPin, Clock, ShieldCheck, Heart, Mail } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -87,6 +87,16 @@ export function SiteFooter() {
                   <span>Kuniyamuthur Campus</span>
                 </p>
                 <p className="text-white/70 text-[11px] pl-5">No. 54, Anamanaicker St, 6th Cross, Kuniyamuthur 641008</p>
+              </div>
+
+              <div className="pt-1">
+                <a
+                  href={`mailto:${siteConfig.contact.email}`}
+                  className="inline-flex items-center gap-1.5 text-white/90 hover:text-[#F4C542] text-xs font-medium transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[#F4C542] shrink-0" />
+                  <span>{siteConfig.contact.email}</span>
+                </a>
               </div>
 
               <div className="pt-2 border-t border-white/10 space-y-3">

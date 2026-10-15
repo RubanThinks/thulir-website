@@ -44,7 +44,7 @@ export default function AdminProgramsPage() {
   const [formFullDesc, setFormFullDesc] = useState("");
   const [formApproaches, setFormApproaches] = useState("");
   const [formAge, setFormAge] = useState("2 to 16 years");
-  const [formImage, setFormImage] = useState("/assets/images/occupational_therapy.jpg");
+  const [formImage, setFormImage] = useState("/assets/images/sensory_occupational_room.jpg");
   const [formOrder, setFormOrder] = useState(1);
   const [formPublished, setFormPublished] = useState(true);
 
@@ -94,7 +94,7 @@ export default function AdminProgramsPage() {
     setFormFullDesc("");
     setFormApproaches("");
     setFormAge("2 to 16 years");
-    setFormImage("/assets/images/occupational_therapy.jpg");
+    setFormImage("/assets/images/sensory_occupational_room.jpg");
     setFormOrder(programs.length + 1);
     setFormPublished(true);
     setFormError(null);
@@ -250,7 +250,7 @@ export default function AdminProgramsPage() {
             >
               <div className="relative h-44 w-full bg-gray-100 overflow-hidden">
                 <Image
-                  src={prog.heroImageUrl || "/assets/images/occupational_therapy.jpg"}
+                  src={prog.heroImageUrl || "/assets/images/sensory_occupational_room.jpg"}
                   alt={prog.title}
                   fill
                   className="object-cover group-hover:scale-105 transition duration-300"
@@ -451,7 +451,7 @@ Motor planning (praxis) and spatial-body awareness"
                     type="text"
                     value={formImage}
                     onChange={(e) => setFormImage(e.target.value)}
-                    placeholder="/assets/images/occupational_therapy.jpg"
+                    placeholder="/assets/images/sensory_occupational_room.jpg"
                     className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                   />
                 </div>

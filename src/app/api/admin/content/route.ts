@@ -19,7 +19,7 @@ export async function GET() {
         organizationName: siteConfig.brand.primaryName,
         primaryPhone: "+91 97901 81890",
         whatsappNumber: "+91 97901 81890",
-        contactEmail: "admin@thulirspecialschool.org",
+        contactEmail: "thulirspecialschool@gmail.com",
         announcementBanner: {
           isActive: false,
           text: "",
@@ -38,7 +38,7 @@ export async function GET() {
         organizationName: siteConfig.brand.primaryName,
         primaryPhone: "+91 97901 81890",
         whatsappNumber: "+91 97901 81890",
-        contactEmail: "admin@thulirspecialschool.org",
+        contactEmail: "thulirspecialschool@gmail.com",
         announcementBanner: {
           isActive: false,
           text: "",

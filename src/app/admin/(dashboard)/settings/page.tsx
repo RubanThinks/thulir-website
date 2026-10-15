@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
 
   const [primaryPhone, setPrimaryPhone] = useState("+91 97901 81890");
   const [whatsappNumber, setWhatsappNumber] = useState("+91 97901 81890");
-  const [contactEmail, setContactEmail] = useState("admin@thulirspecialschool.org");
+  const [contactEmail, setContactEmail] = useState("thulirspecialschool@gmail.com");
 
   const [heroHeading, setHeroHeading] = useState("Personalized Care for Every Child's Development.");
   const [heroSubheading, setHeroSubheading] = useState(
@@ -209,7 +209,7 @@ export default function AdminSettingsPage() {
                   type="email"
                   value={contactEmail}
                   onChange={(e) => setContactEmail(e.target.value)}
-                  placeholder="admin@thulirspecialschool.org"
+                  placeholder="thulirspecialschool@gmail.com"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                 />
               </div>
