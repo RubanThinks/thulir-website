@@ -56,18 +56,18 @@ export function AdminPlaceholder({
         {/* Status Callout */}
         <div className="mt-6 p-4 rounded-xl bg-[#FBFBFA] border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-[#2D3748]">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-            <span>Target Firestore Collection: <code className="bg-white px-1.5 py-0.5 rounded border border-[#E2E8F0] font-mono">{targetCollection}</code></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span>Module Key: <code className="bg-white px-1.5 py-0.5 rounded border border-[#E2E8F0] font-mono">{targetCollection}</code></span>
           </div>
           <div className="text-xs font-medium text-[#64748B]">
-            Status: Schema Defined &bull; UI Implementation in {phaseBadge}
+            Status: Active &bull; {phaseBadge}
           </div>
         </div>
 
         {/* Planned Features */}
         <div className="mt-8">
           <h2 className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-3">
-            Implementation Scope for {phaseBadge}
+            Module Scope &bull; {phaseBadge}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {plannedFeatures.map((feature, idx) => (

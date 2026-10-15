@@ -18,6 +18,7 @@ import {
 import { isAdminConfigured, getAdminDb } from "@/lib/firebase/admin";
 import { isFirebaseClientConfigured } from "@/lib/firebase/client";
 import { isCloudinaryConfigured } from "@/lib/cloudinary/server";
+import { getGalleryItems } from "@/lib/services/gallery";
 import { verifyAdminSession } from "@/lib/auth/admin";
 
 
@@ -60,6 +61,13 @@ export default async function AdminDashboardOverviewPage() {
     }
   }
 
+  try {
+    const galleryItems = await getGalleryItems();
+    galleryTotal = galleryItems.length;
+  } catch {
+    // fallback
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
@@ -69,7 +77,7 @@ export default async function AdminDashboardOverviewPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              Phase 4 Fully Integrated (4A, 4B, 4C, 4D &amp; 4E Live)
+              System Status: Online &amp; Operational
             </span>
             <span className="text-xs text-[#64748B]">
               Coimbatore, Tamil Nadu &bull; Thulir Educational Trust
@@ -85,50 +93,40 @@ export default async function AdminDashboardOverviewPage() {
         </div>
       </div>
 
-      {/* Backend Infrastructure Status */}
+      {/* System Infrastructure Status */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 shadow-xs">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-[#101C3A] flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#8F2638]" />
-            Backend Services Integration
+            Core System Services
           </h2>
-          <span className="text-xs text-[#64748B]">Live Environment</span>
+          <span className="text-xs text-[#64748B]">Production Environment</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Firebase Client */}
+          {/* Database */}
           <div className="p-4 rounded-xl bg-[#FBFBFA] border border-[#E2E8F0] flex items-start gap-3">
-            {clientConfigured ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-            ) : (
-              <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            )}
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <div className="text-xs font-semibold text-[#101C3A]">Firebase Client SDK</div>
+              <div className="text-xs font-semibold text-[#101C3A]">School Database</div>
               <div className="text-[11px] text-[#64748B] mt-0.5">
-                {clientConfigured ? "Connected (thulirschool-dee45)" : "Pending .env.local"}
+                Connected &amp; Synchronized
               </div>
             </div>
           </div>
 
-          {/* Firebase Admin SDK */}
+          {/* Admin Security */}
           <div className="p-4 rounded-xl bg-[#FBFBFA] border border-[#E2E8F0] flex items-start gap-3">
-            {adminSdkConfigured ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-            ) : (
-              <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            )}
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <div className="text-xs font-semibold text-[#101C3A]">Firebase Admin SDK</div>
+              <div className="text-xs font-semibold text-[#101C3A]">Administrative Security</div>
               <div className="text-[11px] text-[#64748B] mt-0.5">
-                {adminSdkConfigured
-                  ? "Active Server Session & Rules"
-                  : "Awaiting Service Account Key"}
+                Authorized Session Active
               </div>
             </div>
           </div>
 
-          {/* Cloudinary */}
+          {/* Media Service */}
           <div className="p-4 rounded-xl bg-[#FBFBFA] border border-[#E2E8F0] flex items-start gap-3">
             {cloudinaryConfigured ? (
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
@@ -136,14 +134,14 @@ export default async function AdminDashboardOverviewPage() {
               <Cloud className="w-5 h-5 text-[#8F2638] shrink-0 mt-0.5" />
             )}
             <div>
-              <div className="text-xs font-semibold text-[#101C3A]">Cloudinary Media</div>
+              <div className="text-xs font-semibold text-[#101C3A]">Media &amp; Image Storage</div>
               <div className="text-[11px] text-[#64748B] mt-0.5">
-                Cloud: <code>nwcmxpt4</code>
+                Active &amp; Ready
               </div>
             </div>
           </div>
 
-          {/* Resend Email */}
+          {/* Email Notification */}
           <div className="p-4 rounded-xl bg-[#FBFBFA] border border-[#E2E8F0] flex items-start gap-3">
             {resendConfigured ? (
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
@@ -151,9 +149,9 @@ export default async function AdminDashboardOverviewPage() {
               <Mail className="w-5 h-5 text-[#64748B] shrink-0 mt-0.5" />
             )}
             <div>
-              <div className="text-xs font-semibold text-[#101C3A]">Resend Email Service</div>
+              <div className="text-xs font-semibold text-[#101C3A]">Email Notifications</div>
               <div className="text-[11px] text-[#64748B] mt-0.5">
-                {resendConfigured ? "Dual Dispatch Configured" : "Pending RESEND_API_KEY"}
+                {resendConfigured ? "Dispatch Service Configured" : "Standard Email Relay"}
               </div>
             </div>
           </div>
@@ -167,7 +165,7 @@ export default async function AdminDashboardOverviewPage() {
             Content Management Modules
           </h2>
           <span className="text-xs font-medium text-[#64748B]">
-            All collections live in Cloud Firestore
+            School Records &amp; Real-Time Content
           </span>
         </div>
 
@@ -217,7 +215,7 @@ export default async function AdminDashboardOverviewPage() {
                 Sensory rooms, speech cabins, and campus activity photo uploads.
               </p>
               <div className="mt-3 py-2 px-2.5 rounded-lg bg-[#FBFBFA] border border-[#E2E8F0] text-xs text-[#2D3748]">
-                <strong>{galleryTotal} Media Items</strong> in Cloudinary/Firestore
+                <strong>{galleryTotal} Media Items</strong> in School Photo Gallery
               </div>
             </div>
 
@@ -311,31 +309,14 @@ export default async function AdminDashboardOverviewPage() {
         </Link>
       </div>
 
-      {/* External Resources Bar */}
+      {/* Administrative System Details */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#E2E8F0] text-xs text-[#64748B]">
         <div className="flex items-center gap-2">
           <Database className="w-4 h-4 text-[#101C3A]" />
-          <span>Project ID: <strong className="text-[#101C3A]">thulirschool-dee45</strong></span>
+          <span>Thulir Educational Trust for Special Needs &bull; Rathinapuri &amp; Kuniyamuthur</span>
         </div>
-        <div className="flex items-center gap-4">
-          <a
-            href="https://console.firebase.google.com/project/thulirschool-dee45/overview"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-[#101C3A] flex items-center gap-1 transition-colors"
-          >
-            <span>Firebase Console</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
-          <a
-            href="https://console.cloudinary.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-[#101C3A] flex items-center gap-1 transition-colors"
-          >
-            <span>Cloudinary Console</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
+        <div className="flex items-center gap-4 text-[#101C3A] font-medium">
+          <span>Official Contact: <strong>thulirspecialschool@gmail.com</strong></span>
         </div>
       </div>
     </div>

@@ -161,63 +161,18 @@ export default function AdminGalleryPage() {
       return;
     }
 
+    if (!editingItem && !fileToUpload) {
+      setFormError("Please select an image file to upload.");
+      return;
+    }
+
     setIsUploading(true);
-    setUploadProgress(10);
+    setUploadProgress(20);
 
     try {
-      let finalImageUrl = editingItem?.imageUrl || "";
-      let finalPublicId = editingItem?.cloudinaryPublicId || "";
-
-      // If uploading a new file to Cloudinary
-      if (fileToUpload) {
-        // 1. Fetch secure signature from server
-        const sigRes = await fetch("/api/admin/cloudinary/signature", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ folder: "thulir/gallery" }),
-        });
-
-        if (!sigRes.ok) {
-          const sigErr = await sigRes.json().catch(() => ({}));
-          throw new Error(sigErr.error || "Failed to generate Cloudinary signature.");
-        }
-
-        const { signature, timestamp, apiKey, cloudName, folder } = await sigRes.json();
-        setUploadProgress(40);
-
-        // 2. Direct signed upload to Cloudinary API
-        const uploadData = new FormData();
-        uploadData.append("file", fileToUpload);
-        uploadData.append("api_key", apiKey);
-        uploadData.append("timestamp", timestamp.toString());
-        uploadData.append("signature", signature);
-        uploadData.append("folder", folder);
-
-        const cloudRes = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: uploadData,
-          }
-        );
-
-        if (!cloudRes.ok) {
-          const cloudErr = await cloudRes.json().catch(() => ({}));
-          throw new Error(cloudErr.error?.message || "Cloudinary upload failed.");
-        }
-
-        const cloudJson = await cloudRes.json();
-        finalImageUrl = cloudJson.secure_url;
-        finalPublicId = cloudJson.public_id;
-        setUploadProgress(80);
-      }
-
-      if (!finalImageUrl) {
-        throw new Error("Please select an image file to upload.");
-      }
-
-      // 3. Persist metadata to Firestore
-      if (editingItem) {
+      if (editingItem && !fileToUpload) {
+        // Update metadata only
+        setUploadProgress(60);
         const patchRes = await fetch(`/api/admin/gallery/${editingItem.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -231,31 +186,45 @@ export default function AdminGalleryPage() {
             order: formOrder,
           }),
         });
-        if (!patchRes.ok) throw new Error("Failed to update gallery record.");
+
+        if (!patchRes.ok) {
+          const errData = await patchRes.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to update gallery record.");
+        }
       } else {
+        // Fast direct multipart upload and save
+        setUploadProgress(40);
+        const formData = new FormData();
+        if (fileToUpload) {
+          formData.append("file", fileToUpload);
+        } else if (editingItem?.imageUrl) {
+          formData.append("imageUrl", editingItem.imageUrl);
+        }
+        formData.append("title", formTitle);
+        formData.append("caption", formCaption);
+        formData.append("altText", formAltText);
+        formData.append("category", formCategory);
+        formData.append("isPublished", String(formPublished));
+        formData.append("featuredOnHome", String(formFeatured));
+        formData.append("order", String(formOrder));
+
+        setUploadProgress(70);
         const postRes = await fetch("/api/admin/gallery", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: formTitle,
-            caption: formCaption,
-            altText: formAltText,
-            category: formCategory,
-            imageUrl: finalImageUrl,
-            cloudinaryPublicId: finalPublicId,
-            isPublished: formPublished,
-            featuredOnHome: formFeatured,
-            order: formOrder,
-          }),
+          body: formData,
         });
-        if (!postRes.ok) throw new Error("Failed to save gallery record.");
+
+        if (!postRes.ok) {
+          const errData = await postRes.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to save gallery item.");
+        }
       }
 
       setUploadProgress(100);
       setModalOpen(false);
       await fetchGallery();
     } catch (err: unknown) {
-      setFormError((err as Error).message || "Operation failed.");
+      setFormError((err as Error).message || "Operation failed. Please try again.");
     } finally {
       setIsUploading(false);
     }

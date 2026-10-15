@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth/admin";
-import { getAdminDb } from "@/lib/firebase/admin";
+import { updateGalleryItem, deleteGalleryItem } from "@/lib/services/gallery";
 import { deleteCloudinaryAsset } from "@/lib/cloudinary/server";
-import { FieldValue } from "firebase-admin/firestore";
-
-
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -17,10 +14,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
-  }
 
   try {
     const body = await request.json().catch(() => null);
@@ -28,15 +21,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
     }
 
-    const docRef = adminDb.collection("gallery").doc(id);
-    const existing = await docRef.get();
-    if (!existing.exists) {
-      return NextResponse.json({ error: "Gallery item not found." }, { status: 404 });
-    }
-
-    const updates: Record<string, unknown> = {
-      updatedAt: FieldValue.serverTimestamp(),
-    };
+    const updates: Record<string, unknown> = {};
 
     if (body.title !== undefined) updates.title = body.title.trim();
     if (body.caption !== undefined) updates.caption = body.caption.trim();
@@ -46,9 +31,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     if (body.featuredOnHome !== undefined) updates.featuredOnHome = Boolean(body.featuredOnHome);
     if (body.order !== undefined) updates.order = Number(body.order);
 
-    await docRef.update(updates);
+    const updated = await updateGalleryItem(id, updates);
+    if (!updated) {
+      return NextResponse.json({ error: "Gallery item not found." }, { status: 404 });
+    }
 
-    return NextResponse.json({ success: true, message: "Gallery item updated." });
+    return NextResponse.json({ success: true, item: updated, message: "Gallery item updated." });
   } catch (error: unknown) {
     console.error("[Admin Gallery PATCH Error]:", error);
     return NextResponse.json({ error: "Failed to update gallery item." }, { status: 500 });
@@ -62,29 +50,11 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
-  }
 
   try {
-    const docRef = adminDb.collection("gallery").doc(id);
-    const existing = await docRef.get();
-    if (!existing.exists) {
+    const deleted = await deleteGalleryItem(id);
+    if (!deleted) {
       return NextResponse.json({ error: "Gallery item not found." }, { status: 404 });
-    }
-
-    const data = existing.data();
-    const cloudinaryPublicId = data?.cloudinaryPublicId;
-
-    // Delete Firestore document
-    await docRef.delete();
-
-    // Clean up Cloudinary asset if public ID is recorded
-    if (cloudinaryPublicId) {
-      await deleteCloudinaryAsset(cloudinaryPublicId).catch((err) => {
-        console.warn("[Cloudinary Asset Delete Warning]:", err);
-      });
     }
 
     return NextResponse.json({ success: true, message: "Gallery item deleted." });

@@ -533,7 +533,7 @@ export default function AdminEventsPage() {
                     type="url"
                     value={formCoverImage}
                     onChange={(e) => setFormCoverImage(e.target.value)}
-                    placeholder="https://res.cloudinary.com/..."
+                    placeholder="https://... or /assets/images/..."
                     className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                   />
                 </div>

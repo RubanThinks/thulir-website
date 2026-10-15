@@ -159,13 +159,13 @@ export function GalleryGrid() {
           <div className="bg-[#101C3A] text-white p-8 sm:p-10 text-center relative">
             <div className="max-w-2xl mx-auto">
               <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#F4C542] bg-white/10 px-3.5 py-1.5 rounded-full border border-white/20 mb-3">
-                Live Media Repository
+                Campus Photo Gallery
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
                 Archival Visual Gallery
               </h2>
               <p className="mt-3 text-xs sm:text-sm text-white/85 leading-relaxed">
-                Our documentary archives capture everyday breakthroughs at Rathinapuri and Kuniyamuthur campuses. New verified media records published from our Administrative Portal will render here dynamically.
+                Our documentary archives capture everyday breakthroughs, joyful smiles, and dedicated therapy sessions across our Rathinapuri and Kuniyamuthur campuses.
               </p>
             </div>
           </div>

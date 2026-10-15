@@ -53,7 +53,7 @@ export default function GalleryPage() {
               <SectionHeading
                 badge="Visual Archives & Albums"
                 title="Explore Our Campus & Activities"
-                subtitle="Visual documentation of our classrooms, therapy wings, and community life is being curated for dynamic publication via our administrative dashboard."
+                subtitle="Visual documentation of our classrooms, therapy wings, and student community life across our Coimbatore campuses."
               />
             </div>
 

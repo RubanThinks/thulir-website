@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
 
     if (!auth) {
       setErrorMessage(
-        "Firebase Client authentication is not initialized. Please ensure NEXT_PUBLIC_FIREBASE_API_KEY and NEXT_PUBLIC_FIREBASE_PROJECT_ID are configured in .env.local."
+        "Authentication service is currently initializing. Please try again in a few moments."
       );
       return;
     }
@@ -138,11 +138,9 @@ export default function AdminLoginPage() {
             <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-amber-950">Firebase Config Pending</p>
+                <p className="font-semibold text-amber-950">System Initializing</p>
                 <p className="mt-0.5">
-                  Client environment variables are not detected. Verify that{" "}
-                  <code className="bg-amber-100 px-1 py-0.5 rounded text-[11px]">.env.local</code>{" "}
-                  is populated with your project keys.
+                  Administrative services are currently setting up secure authentication channels.
                 </p>
               </div>
             </div>
