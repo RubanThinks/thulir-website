@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, isFirebaseClientConfigured } from "@/lib/firebase/client";
 import {
@@ -14,7 +15,6 @@ import {
   AlertCircle,
   ShieldCheck,
   Loader2,
-  School,
 } from "lucide-react";
 
 export default function AdminLoginPage() {
@@ -120,8 +120,15 @@ export default function AdminLoginPage() {
         <div className="bg-[#101C3A] text-white p-8 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#F4C542_1px,transparent_1px)] [background-size:16px_16px]" />
           <div className="relative z-10 flex flex-col items-center">
-            <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center mb-4 text-[#F4C542]">
-              <School className="w-7 h-7" />
+            <div className="w-16 h-16 rounded-full bg-white shadow-md p-1.5 overflow-hidden relative flex items-center justify-center mb-4 border border-white/30 shrink-0">
+              <Image
+                src="/assets/branding/logo.png"
+                alt="Thulir Special School Official Logo"
+                fill
+                sizes="64px"
+                className="object-contain p-1"
+                priority
+              />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white font-[var(--font-heading)]">
               Thulir Special School

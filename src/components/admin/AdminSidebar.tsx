@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -11,7 +12,6 @@ import {
   MessageSquareQuote,
   Settings,
   ExternalLink,
-  School,
   X,
 } from "lucide-react";
 import { AdminSignOutButton } from "./AdminSignOutButton";
@@ -90,8 +90,15 @@ export function AdminSidebar({ userEmail, isOpen, onClose }: AdminSidebarProps) 
         {/* Header / Brand */}
         <div className="p-5 border-b border-[#E2E8F0] flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-[#101C3A] text-[#F4C542] flex items-center justify-center font-bold shadow-sm group-hover:bg-[#8F2638] transition-colors">
-              <School className="w-5 h-5" />
+            <div className="w-11 h-11 rounded-full bg-white border border-[#E2E8F0] shadow-sm flex items-center justify-center p-1 overflow-hidden relative shrink-0 group-hover:border-[#8F2638]/40 transition-colors">
+              <Image
+                src="/assets/branding/logo.png"
+                alt="Thulir Special School Official Logo"
+                fill
+                sizes="44px"
+                className="object-contain p-0.5"
+                priority
+              />
             </div>
             <div>
               <div className="text-sm font-bold text-[#101C3A] leading-tight font-[var(--font-heading)]">

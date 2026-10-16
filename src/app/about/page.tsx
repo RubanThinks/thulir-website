@@ -111,7 +111,7 @@ export default function AboutPage() {
                     <div>
                       <h4 className="text-sm font-bold text-[#101C3A]">Inception of Thulir Therapy Centre</h4>
                       <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
-                        Started in Rathinapuri, providing dedicated occupational therapy and pediatric rehabilitation.
+                        Started in Rathinapuri, providing dedicated paediatric occupational therapy and pediatric rehabilitation.
                       </p>
                     </div>
                   </div>
@@ -168,11 +168,11 @@ export default function AboutPage() {
                 <div className="w-full mt-8 pt-6 border-t border-white/15 text-xs text-white/70 text-left space-y-2">
                   <p className="flex items-center gap-2">
                     <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>BOT: Kovai Medical Center and Hospital (KMCH)</span>
+                    <span>MOT (Paediatric Specialization): Santosh College of OT, Ghaziabad</span>
                   </p>
                   <p className="flex items-center gap-2">
                     <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>MOT (Pediatrics): Santosh College of OT, Ghaziabad</span>
+                    <span>Certified: CSIT &amp; CAS (Paediatric Sensory &amp; Autism Intervention)</span>
                   </p>
                 </div>
               </div>
@@ -192,10 +192,9 @@ export default function AboutPage() {
                     commitment to service.
                   </p>
                   <p>
-                    He completed his Bachelor of Occupational Therapy (BOT) at KMCH, Coimbatore, and earned his Master of
-                    Occupational Therapy with Pediatric Specialization from Santosh College of Occupational Therapy, Uttar
-                    Pradesh. Guided by a strong belief that early intervention can transform a child&apos;s developmental
-                    trajectory, he dedicated his career to children with autism and developmental challenges.
+                    He earned his Master of Occupational Therapy with Paediatric Specialization from Santosh College of
+                    Occupational Therapy, Uttar Pradesh. Guided by a strong belief that early intervention can transform
+                    a child&apos;s developmental trajectory, he dedicated his career to children with autism and developmental challenges.
                   </p>
                   <p>
                     After gaining extensive clinical experience across private organizations and government-aided institutions,
@@ -278,7 +277,7 @@ export default function AboutPage() {
               <div className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#FBFBFA]">
                 <h4 className="text-base font-bold text-[#101C3A] mb-2">2. Clinical Therapy Services</h4>
                 <p className="text-xs sm:text-sm text-[#4A5568] leading-relaxed">
-                  Evidence-based occupational therapy, speech-language stimulation, and pediatric physiotherapy delivered by
+                  Evidence-based paediatric occupational therapy, speech-language stimulation, and pediatric physiotherapy delivered by
                   trained professionals.
                 </p>
               </div>

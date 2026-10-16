@@ -38,7 +38,7 @@ export async function getPublishedPrograms(): Promise<SeedProgram[]> {
         fullDescription: data.fullDescription || "",
         clinicalApproaches: data.clinicalApproaches || [],
         targetAgeRange: data.targetAgeRange || "2 to 16 years",
-        heroImageUrl: data.heroImageUrl || "/assets/images/sensory_occupational_room.jpg",
+        heroImageUrl: data.heroImageUrl || "/assets/images/therapies/occupational_sensory.jpg",
         order: data.order || 0,
         isPublished: true,
       };

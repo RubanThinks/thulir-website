@@ -37,7 +37,7 @@ export const BASELINE_GALLERY: GalleryItemRecord[] = [
     imageUrl: "/assets/images/sensory_occupational_room.jpg",
     thumbnailUrl: "/assets/images/sensory_occupational_room.jpg",
     category: "campus",
-    tags: ["Occupational Therapy", "Sensory Integration", "Rathinapuri"],
+    tags: ["Paediatric Occupational Therapy", "Sensory Integration", "Rathinapuri"],
     dateCaptured: "2026-02-15",
     isPublished: true,
     featuredOnHome: true,

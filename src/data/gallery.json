@@ -1,0 +1,117 @@
+[
+  {
+    "id": "gallery-sensory-room",
+    "title": "Sensory Integration Therapy Suite",
+    "caption": "Suspended therapeutic swings, bolster apparatus, and tactile exploration modules at our Rathinapuri center.",
+    "altText": "Sensory Integration Therapy Suite at Thulir Special School",
+    "imageUrl": "/assets/images/sensory_occupational_room.jpg",
+    "thumbnailUrl": "/assets/images/sensory_occupational_room.jpg",
+    "category": "campus",
+    "tags": [
+      "Paediatric Occupational Therapy",
+      "Sensory Integration",
+      "Rathinapuri"
+    ],
+    "dateCaptured": "2026-02-15",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 1,
+    "createdAt": "2026-10-15T05:33:21.825Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  },
+  {
+    "id": "gallery-speech-cabin",
+    "title": "Pediatric Speech & Communication Cabin",
+    "caption": "A quiet, distraction-free environment for articulation, oral-motor play, and augmentative communication training.",
+    "altText": "Speech & Communication Therapy room at Thulir Special School",
+    "imageUrl": "/assets/images/speech_language_therapy.jpg",
+    "thumbnailUrl": "/assets/images/speech_language_therapy.jpg",
+    "category": "therapy",
+    "tags": [
+      "Speech Therapy",
+      "Language Development"
+    ],
+    "dateCaptured": "2026-02-18",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 2,
+    "createdAt": "2026-10-15T05:33:21.826Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  },
+  {
+    "id": "gallery-physio-suite",
+    "title": "Pediatric Physiotherapy Wing",
+    "caption": "Postural stability, gross motor milestones, and gait facilitation equipment designed for children.",
+    "altText": "Pediatric Physiotherapy Wing at Thulir",
+    "imageUrl": "/assets/images/pediatric_physiotherapy.jpg",
+    "thumbnailUrl": "/assets/images/pediatric_physiotherapy.jpg",
+    "category": "therapy",
+    "tags": [
+      "Physiotherapy",
+      "Motor Skills"
+    ],
+    "dateCaptured": "2026-02-20",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 3,
+    "createdAt": "2026-10-15T05:33:21.826Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  },
+  {
+    "id": "gallery-special-education",
+    "title": "Specialized Education Classroom",
+    "caption": "Individualized student workstations, visual schedules, and foundational literacy corners.",
+    "altText": "Specialized Education Classroom with learning aids",
+    "imageUrl": "/assets/images/special_education_classroom.jpg",
+    "thumbnailUrl": "/assets/images/special_education_classroom.jpg",
+    "category": "campus",
+    "tags": [
+      "Special Education",
+      "IEP"
+    ],
+    "dateCaptured": "2026-02-22",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 4,
+    "createdAt": "2026-10-15T05:33:21.826Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  },
+  {
+    "id": "gallery-community-outing",
+    "title": "Community Exposure & Life Skills Outing",
+    "caption": "Students practicing social navigation, outdoor physical mobility, and recreational interaction in a natural setting.",
+    "altText": "Students on a community exposure trip in Coimbatore",
+    "imageUrl": "/assets/images/community_outing_park.jpg",
+    "thumbnailUrl": "/assets/images/community_outing_park.jpg",
+    "category": "field-trips",
+    "tags": [
+      "Community Outing",
+      "Life Skills"
+    ],
+    "dateCaptured": "2026-03-01",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 5,
+    "createdAt": "2026-10-15T05:33:21.826Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  },
+  {
+    "id": "gallery-early-intervention",
+    "title": "Early Intervention & Developmental Support",
+    "caption": "Caring, play-based stimulation for infants and young children during foundational developmental windows.",
+    "altText": "Early intervention session with child and educator",
+    "imageUrl": "/assets/images/hero_learning_care.jpg",
+    "thumbnailUrl": "/assets/images/hero_learning_care.jpg",
+    "category": "achievements",
+    "tags": [
+      "Early Intervention",
+      "Milestones"
+    ],
+    "dateCaptured": "2026-03-05",
+    "isPublished": true,
+    "featuredOnHome": true,
+    "order": 6,
+    "createdAt": "2026-10-15T05:33:21.826Z",
+    "updatedAt": "2026-10-15T05:33:21.826Z"
+  }
+]

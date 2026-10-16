@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StackedCardStorytelling } from "@/components/home/StackedCardStorytelling";
 import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
+import { HeroTherapiesCarousel } from "@/components/home/HeroTherapiesCarousel";
 import {
   Users,
   ChevronRight,
@@ -55,27 +56,40 @@ export default function Home() {
           {/* 3. Hero Content Container */}
           <div className="relative z-10 w-full">
             <Container>
-              <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-                {/* A. Prominent Official Logo Badge with Crisp White Placeholder */}
-                <div className="relative mb-6 sm:mb-8 group">
-                  <div className="bg-white px-7 sm:px-10 py-3.5 sm:py-4.5 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-[#F4C542]/80 ring-8 ring-white/15 flex items-center justify-center transition-all duration-300 group-hover:scale-103 group-hover:shadow-3xl">
-                    <div className="relative w-56 sm:w-72 md:w-80 h-16 sm:h-20 md:h-22">
+              <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
+                {/* A. Official Logo with Organic Splash Art Background - Balanced Medium Size */}
+                <div className="relative w-full flex flex-col items-center justify-center pt-2 sm:pt-4">
+                  {/* Organic Splash Art Background Wrapper - Balanced medium height */}
+                  <div className="relative flex items-center justify-center w-full min-h-[170px] sm:min-h-[200px] md:min-h-[230px]">
+                    {/* Splash Graphic - Medium footprint, gently scaled horizontally to frame the rectangular logo */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+                      <div className="relative w-[340px] h-[210px] sm:w-[430px] sm:h-[250px] md:w-[500px] md:h-[280px] lg:w-[540px] lg:h-[290px] scale-x-115 sm:scale-x-120 md:scale-x-125 scale-y-105 sm:scale-y-110 transition-transform duration-500">
+                        <Image
+                          src="/assets/branding/logo_splash_bg.png"
+                          alt=""
+                          fill
+                          priority
+                          className="object-contain filter drop-shadow-[0_14px_30px_rgba(0,0,0,0.35)]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Foreground Logo - Fills the background body naturally with balanced margins (shifted 5mm down) */}
+                    <div className="relative z-10 translate-y-[18px] sm:translate-y-[19px] w-52 sm:w-60 md:w-68 lg:w-72 h-14 sm:h-16 md:h-19 transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 640px) 224px, (max-width: 768px) 288px, 320px"
+                        sizes="(max-width: 640px) 208px, (max-width: 768px) 240px, 288px"
                         className="object-contain"
                       />
                     </div>
                   </div>
-                  {/* Subtle golden ambient glow around the logo */}
-                  <div className="absolute inset-0 rounded-3xl bg-[#F4C542]/20 blur-2xl pointer-events-none -z-10" />
                 </div>
 
-                {/* B. Eyebrow Badge & Tamil Tagline */}
-                <div className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-md border border-white/25 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-white/95 mb-5 shadow-lg">
+                {/* B. Eyebrow Badge & Tamil Tagline - Distinct spacing after the background artwork */}
+                <div className="relative z-20 mt-6 sm:mt-8 md:mt-9 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
                   <span className="w-2 h-2 rounded-full bg-[#F4C542] animate-pulse" />
                   <span>பயிற்சியும், பயிற்றுவித்தல் சார்ந்த இடமும் &bull; Coimbatore</span>
                 </div>
@@ -90,9 +104,9 @@ export default function Home() {
 
                 {/* D. Reassuring Emotional Copy */}
                 <p className="mt-6 text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl font-normal drop-shadow-xs">
-                  At Thulir Special School, we support children with special needs through individualized education,
-                  pediatric occupational &amp; speech therapy, and life skills &mdash; walking alongside families so every
-                  child grows with dignity and independence.
+                  At Thulir Special School, we support children with special needs through individualized educational program,
+                  paediatric occupational therapy &amp; speech therapy, Physiotherapy and life skills &mdash; walking alongside
+                  families so every child grows with dignity and independence.
                 </p>
 
                 {/* E. Action CTA Buttons */}
@@ -111,17 +125,29 @@ export default function Home() {
                     <span>Explore Our Programs</span>
                   </Link>
                 </div>
+              </div>
+            </Container>
 
-                {/* F. Essential Campus & Care Pills (No icon clutter) */}
-                <div className="mt-10 pt-8 border-t border-white/15 w-full max-w-3xl flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-white/80 font-medium">
-                  <span className="bg-black/25 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/10">
-                    &bull; 8+ Years of Service
+            {/* Hero Interactive Carousel: Spanning from screen corner to screen corner across full desktop width */}
+            <div className="mt-10 sm:mt-12 w-full overflow-hidden">
+              <HeroTherapiesCarousel />
+            </div>
+
+            {/* F. Essential Campus & Care Pills (Separated branches & 9+ Years Experience) */}
+            <Container>
+              <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
+                <div className="mt-8 pt-6 border-t border-white/15 w-full max-w-4xl flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm text-white/90 font-medium">
+                  <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15 text-[#F4C542] font-semibold">
+                    &bull; 9+ Years of Experience
                   </span>
-                  <span className="bg-black/25 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/10">
-                    &bull; Rathinapuri &amp; Kuniyamuthur Campuses
+                  <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
+                    &bull; Rathinapuri Branch
                   </span>
-                  <span className="bg-black/25 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/10">
-                    &bull; Sensory Integration &bull; Speech &bull; Special Education
+                  <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
+                    &bull; Kuniyamuthur Branch
+                  </span>
+                  <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
+                    &bull; Paediatric Occupational Therapy &bull; Speech Therapy &bull; Physiotherapy &bull; Special Education
                   </span>
                 </div>
               </div>
@@ -175,8 +201,8 @@ export default function Home() {
 
                   <div className="mt-6 pt-6 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal">
                     <p>
-                      Dr. Venkatesan is an occupational therapist who completed his BOT at KMCH Coimbatore and Master of
-                      Occupational Therapy in Pediatrics from Santosh College, Ghaziabad.
+                      Dr. Venkatesan is a paediatric occupational therapist who completed his Master of Occupational
+                      Therapy with Paediatric Specialization from Santosh College, Ghaziabad.
                     </p>
                     <p>
                       His early professional journey highlighted the significant challenges families face in accessing

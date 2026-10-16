@@ -175,7 +175,7 @@ export function GalleryGrid() {
               <Building2 className="w-8 h-8 text-[#101C3A] mx-auto mb-3" />
               <h3 className="text-sm font-bold text-[#101C3A]">Therapy &amp; Sensory Rooms</h3>
               <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                Sensory integration swings, tactile pathways, and occupational therapy equipment.
+                Sensory integration swings, tactile pathways, and paediatric occupational therapy equipment.
               </p>
             </div>
             <div className="p-5 rounded-2xl bg-white border border-gray-200 text-center">

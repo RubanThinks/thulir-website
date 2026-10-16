@@ -44,7 +44,7 @@ export default function AdminProgramsPage() {
   const [formFullDesc, setFormFullDesc] = useState("");
   const [formApproaches, setFormApproaches] = useState("");
   const [formAge, setFormAge] = useState("2 to 16 years");
-  const [formImage, setFormImage] = useState("/assets/images/sensory_occupational_room.jpg");
+  const [formImage, setFormImage] = useState("/assets/images/therapies/occupational_sensory.jpg");
   const [formOrder, setFormOrder] = useState(1);
   const [formPublished, setFormPublished] = useState(true);
 
@@ -94,7 +94,7 @@ export default function AdminProgramsPage() {
     setFormFullDesc("");
     setFormApproaches("");
     setFormAge("2 to 16 years");
-    setFormImage("/assets/images/sensory_occupational_room.jpg");
+    setFormImage("/assets/images/therapies/occupational_sensory.jpg");
     setFormOrder(programs.length + 1);
     setFormPublished(true);
     setFormError(null);
@@ -206,7 +206,7 @@ export default function AdminProgramsPage() {
             Programs &amp; Clinical Curriculum
           </h1>
           <p className="text-xs text-[#64748B] mt-1">
-            Manage evidence-based Occupational Therapy, Speech &amp; Communication, Physiotherapy, and Special Education programs.
+            Manage evidence-based Paediatric Occupational Therapy, Speech &amp; Communication, Physiotherapy, and Special Education programs.
           </p>
         </div>
 
@@ -367,7 +367,7 @@ export default function AdminProgramsPage() {
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="e.g. Occupational Therapy & Sensory Integration"
+                  placeholder="e.g. Paediatric Occupational Therapy & Sensory Integration"
                   className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                 />
               </div>

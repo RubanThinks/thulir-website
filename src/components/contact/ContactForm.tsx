@@ -26,6 +26,7 @@ interface FormErrors {
   parentName?: string;
   email?: string;
   phone?: string;
+  serviceCategory?: string;
   message?: string;
   general?: string;
 }
@@ -38,17 +39,58 @@ interface SubmissionSuccess {
   serviceCategory: string;
 }
 
+const ALL_PROGRAM_OPTIONS = [
+  "Physiotherapy",
+  "Paediatric Occupational Therapy",
+  "Speech Therapy",
+  "Special Education (IEP)",
+  "Behavior Therapy",
+  "Sensory Integration Therapy",
+  "Neuro Developmental Therapy (NDT)",
+  "Psychological Services",
+  "Play, Art, Music & Dance Therapy",
+  "Autism Support",
+  "ADHD Care & Focus",
+  "Down's Syndrome Support",
+  "Cerebral Palsy Care",
+  "Speech Delay Intervention",
+  "Intellectual Disability Support",
+  "Reading & Writing Difficulty",
+  "Sensory Processing Disorder (SPD)",
+  "Developmental Delay (Early Intervention)",
+  "ADL Training (Activities of Daily Living)",
+  "Pre-vocational & Vocational Training",
+  "Early Intervention (Infants & Toddlers)",
+  "Comprehensive Developmental Assessment",
+  "General Admission Inquiry",
+];
+
 export function ContactForm() {
   const [formData, setFormData] = useState<FormData>({
     parentName: "",
     email: "",
     phone: "",
     campus: "rathinapuri",
-    serviceCategory: "special-education",
+    serviceCategory: "Physiotherapy",
     childAge: "",
     message: "",
     botCheck: "",
   });
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.get("service") || params.get("program");
+    if (requested) {
+      const term = requested.toLowerCase().replace(/-/g, " ");
+      const match = ALL_PROGRAM_OPTIONS.find((opt) =>
+        opt.toLowerCase().includes(term) || term.includes(opt.toLowerCase())
+      );
+      if (match) {
+        setFormData((prev) => ({ ...prev, serviceCategory: match }));
+      }
+    }
+  }, []);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,6 +115,10 @@ export function ContactForm() {
       newErrors.phone = "Please provide a phone number.";
     } else if (formData.phone.trim().replace(/\D/g, "").length < 8) {
       newErrors.phone = "Please provide a valid phone number (at least 8 digits).";
+    }
+
+    if (!formData.serviceCategory.trim()) {
+      newErrors.serviceCategory = "Please select a program or therapy of interest.";
     }
 
     if (!formData.message.trim()) {
@@ -213,7 +259,7 @@ export function ContactForm() {
             <Phone className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               Need immediate assistance? You may also reach out directly to our principal coordinator at{" "}
-              <strong>+91 97901 81890</strong> or via our campus desks.
+              <strong>+91 96599 34210</strong> or via our campus desks at <strong>0422 - 2234210</strong>.
             </p>
           </div>
 
@@ -227,7 +273,7 @@ export function ContactForm() {
                   email: "",
                   phone: "",
                   campus: "rathinapuri",
-                  serviceCategory: "special-education",
+                  serviceCategory: "Physiotherapy",
                   childAge: "",
                   message: "",
                   botCheck: "",
@@ -343,7 +389,7 @@ export function ContactForm() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+91 98765 43210"
+                placeholder="e.g., 96599 34210"
                 aria-invalid={!!errors.phone}
                 aria-describedby={errors.phone ? "phone-error" : undefined}
                 className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-hidden ${
@@ -388,21 +434,55 @@ export function ContactForm() {
                 htmlFor="serviceCategory"
                 className="block text-xs sm:text-sm font-bold text-[#101C3A] mb-2"
               >
-                Program or Therapy of Interest
+                Program or Therapy of Interest <span className="text-[#8F2638]">*</span>
               </label>
               <select
                 id="serviceCategory"
                 name="serviceCategory"
                 value={formData.serviceCategory}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm bg-white focus:border-[#101C3A] focus:ring-2 focus:ring-[#101C3A]/20 transition-all focus:outline-hidden"
+                className={`w-full px-4 py-3 rounded-xl border text-sm bg-white focus:outline-hidden transition-all ${
+                  errors.serviceCategory
+                    ? "border-red-500 bg-red-50/20 focus:ring-2 focus:ring-red-400"
+                    : "border-gray-300 focus:border-[#101C3A] focus:ring-2 focus:ring-[#101C3A]/20"
+                }`}
               >
-                <option value="Special Education & Early Intervention">Special Education & Early Intervention</option>
-                <option value="Occupational Therapy (Sensory/Motor)">Occupational Therapy (Sensory/Motor)</option>
-                <option value="Speech & Communication Therapy">Speech & Communication Therapy</option>
-                <option value="Pediatric Physiotherapy">Pediatric Physiotherapy</option>
-                <option value="Comprehensive Developmental Assessment">Comprehensive Developmental Assessment</option>
+                <optgroup label="Core Clinical Services & Therapies">
+                  <option value="Physiotherapy">Physiotherapy</option>
+                  <option value="Paediatric Occupational Therapy">Paediatric Occupational Therapy</option>
+                  <option value="Speech Therapy">Speech Therapy</option>
+                  <option value="Special Education (IEP)">Special Education (IEP)</option>
+                  <option value="Behavior Therapy">Behavior Therapy</option>
+                  <option value="Sensory Integration Therapy">Sensory Integration Therapy</option>
+                  <option value="Neuro Developmental Therapy">Neuro Developmental Therapy (NDT)</option>
+                  <option value="Psychological Services">Psychological Services</option>
+                  <option value="Play, Art, Music & Dance Therapy">Play, Art, Music &amp; Dance Therapy</option>
+                </optgroup>
+                <optgroup label="Specialized Care & Support Tracks">
+                  <option value="Autism Support">Autism Spectrum Support</option>
+                  <option value="ADHD Support">ADHD Care &amp; Focus</option>
+                  <option value="Down's Syndrome Support">Down&apos;s Syndrome Support</option>
+                  <option value="Cerebral Palsy Care">Cerebral Palsy Care</option>
+                  <option value="Speech Delay Intervention">Speech Delay Intervention</option>
+                  <option value="Intellectual Disability Support">Intellectual Disability Support</option>
+                  <option value="Reading & Writing Difficulty">Reading &amp; Writing Difficulty</option>
+                  <option value="Sensory Processing Disorder (SPD)">Sensory Processing Disorder (SPD)</option>
+                  <option value="Developmental Delay Support">Developmental Delay Support</option>
+                  <option value="ADL Training (Activities of Daily Living)">ADL Training (Activities of Daily Living)</option>
+                  <option value="Pre-vocational & Vocational Training">Pre-vocational &amp; Vocational Training</option>
+                </optgroup>
+                <optgroup label="General Consultations & Early Years">
+                  <option value="Early Intervention (Infants & Toddlers)">Early Intervention (Infants &amp; Toddlers)</option>
+                  <option value="Comprehensive Developmental Assessment">Comprehensive Developmental Assessment</option>
+                  <option value="General Admission Inquiry">General Admission Inquiry / Unsure</option>
+                </optgroup>
               </select>
+              {errors.serviceCategory && (
+                <p id="serviceCategory-error" className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  {errors.serviceCategory}
+                </p>
+              )}
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Calendar,
@@ -15,6 +15,9 @@ import {
   X,
   MapPin,
   Clock,
+  Upload,
+  Image as ImageIcon,
+  Sparkles,
 } from "lucide-react";
 
 interface EventItem {
@@ -52,6 +55,14 @@ export default function AdminEventsPage() {
   const [formParticipants, setFormParticipants] = useState<number | undefined>();
   const [formPublished, setFormPublished] = useState(true);
   const [formArchived, setFormArchived] = useState(false);
+
+  // File Upload State
+  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [showManualUrl, setShowManualUrl] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -93,6 +104,8 @@ export default function AdminEventsPage() {
 
   const handleOpenCreate = () => {
     setEditingEvent(null);
+    setFileToUpload(null);
+    setPreviewUrl("");
     setFormTitle("");
     setFormDate(new Date().toISOString().slice(0, 10));
     setFormLocation("Coimbatore, Tamil Nadu");
@@ -104,23 +117,48 @@ export default function AdminEventsPage() {
     setFormPublished(true);
     setFormArchived(false);
     setFormError(null);
+    setShowManualUrl(false);
     setModalOpen(true);
   };
 
   const handleOpenEdit = (evt: EventItem) => {
     setEditingEvent(evt);
+    setFileToUpload(null);
+    setPreviewUrl(evt.coverImageUrl || "");
+    setFormCoverImage(evt.coverImageUrl || "");
     setFormTitle(evt.title);
     setFormDate(evt.eventDate);
     setFormLocation(evt.location || "");
     setFormCategory(evt.category || "celebration");
     setFormSummary(evt.summary || "");
     setFormReport(evt.detailedReport || "");
-    setFormCoverImage(evt.coverImageUrl || "");
     setFormParticipants(evt.participantCount);
     setFormPublished(evt.isPublished);
     setFormArchived(evt.isArchived);
     setFormError(null);
+    setShowManualUrl(false);
     setModalOpen(true);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setFormError("Only image files (JPEG, PNG, WebP) are allowed.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setFormError("Image file size must be less than 10MB.");
+      return;
+    }
+
+    setFileToUpload(file);
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    setFormCoverImage(objectUrl);
+    setFormError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,42 +171,58 @@ export default function AdminEventsPage() {
     }
 
     setIsSubmitting(true);
+    setIsUploading(true);
+    setUploadProgress(25);
+
     try {
-      const payload = {
-        title: formTitle,
-        eventDate: formDate,
-        location: formLocation,
-        category: formCategory,
-        summary: formSummary,
-        detailedReport: formReport,
-        coverImageUrl: formCoverImage,
-        participantCount: formParticipants,
-        isPublished: formPublished,
-        isArchived: formArchived,
-      };
+      const formData = new FormData();
+      if (fileToUpload) {
+        formData.append("file", fileToUpload);
+      } else if (formCoverImage) {
+        formData.append("coverImageUrl", formCoverImage);
+      }
+      formData.append("title", formTitle);
+      formData.append("eventDate", formDate);
+      formData.append("location", formLocation);
+      formData.append("category", formCategory);
+      formData.append("summary", formSummary);
+      formData.append("detailedReport", formReport);
+      if (formParticipants !== undefined) {
+        formData.append("participantCount", String(formParticipants));
+      }
+      formData.append("isPublished", String(formPublished));
+      formData.append("isArchived", String(formArchived));
+
+      setUploadProgress(65);
 
       if (editingEvent) {
         const res = await fetch(`/api/admin/events/${editingEvent.id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: formData,
         });
-        if (!res.ok) throw new Error("Failed to update event.");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to update event.");
+        }
       } else {
         const res = await fetch("/api/admin/events", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: formData,
         });
-        if (!res.ok) throw new Error("Failed to create event.");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to create event.");
+        }
       }
 
+      setUploadProgress(100);
       setModalOpen(false);
       await fetchEvents();
     } catch (err: unknown) {
       setFormError((err as Error).message);
     } finally {
       setIsSubmitting(false);
+      setIsUploading(false);
     }
   };
 
@@ -524,31 +578,147 @@ export default function AdminEventsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-[#101C3A] mb-1">
-                    Cover Image URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formCoverImage}
-                    onChange={(e) => setFormCoverImage(e.target.value)}
-                    placeholder="https://... or /assets/images/..."
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
-                  />
+              {/* Cover Photo File Upload */}
+              <div className="space-y-2">
+                <label className="block font-semibold text-[#101C3A]">
+                  Cover Image
+                </label>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {previewUrl ? (
+                  <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#F8FAFC] p-3 flex flex-col sm:flex-row items-center gap-4">
+                    <div className="relative w-full sm:w-36 h-28 shrink-0 rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-xs">
+                      <Image
+                        src={previewUrl}
+                        alt="Event cover preview"
+                        fill
+                        unoptimized={previewUrl.startsWith("blob:")}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-1.5 text-center sm:text-left">
+                      <p className="text-xs font-bold text-[#101C3A] truncate">
+                        {fileToUpload ? fileToUpload.name : "Current Event Cover"}
+                      </p>
+                      {fileToUpload && (
+                        <p className="text-[11px] text-[#64748B]">
+                          {(fileToUpload.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload
+                        </p>
+                      )}
+                      <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#101C3A] text-white hover:bg-[#1A2E5A] transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Change Photo</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFileToUpload(null);
+                            setPreviewUrl("");
+                            setFormCoverImage("");
+                          }}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-red-200 text-red-600 hover:bg-red-50 transition cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files?.[0];
+                      if (file && file.type.startsWith("image/")) {
+                        setFileToUpload(file);
+                        const objUrl = URL.createObjectURL(file);
+                        setPreviewUrl(objUrl);
+                        setFormCoverImage(objUrl);
+                      }
+                    }}
+                    className="border-2 border-dashed border-[#CBD5E1] hover:border-[#101C3A] bg-[#F8FAFC] hover:bg-white rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center text-[#101C3A] group-hover:scale-110 group-hover:text-[#8F2638] transition-transform mb-2.5">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-[#101C3A]">
+                      Click to choose event cover photo or drag and drop
+                    </p>
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
+                      JPG, PNG, or WebP up to 10MB &bull; Uploads directly to secure media storage
+                    </p>
+                  </div>
+                )}
+
+                {/* Upload progress */}
+                {isUploading && (
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#64748B]">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <RefreshCw className="w-3 h-3 animate-spin text-[#8F2638]" />
+                        Uploading photo...
+                      </span>
+                      <span className="font-bold">{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#101C3A] to-[#8F2638] transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Optional Manual URL Link */}
+                <div className="pt-1 text-right">
+                  <button
+                    type="button"
+                    onClick={() => setShowManualUrl(!showManualUrl)}
+                    className="text-[11px] text-[#64748B] hover:text-[#101C3A] underline"
+                  >
+                    {showManualUrl ? "Hide manual URL option" : "Or enter image URL manually"}
+                  </button>
+                  {showManualUrl && (
+                    <div className="mt-2 text-left">
+                      <input
+                        type="url"
+                        value={formCoverImage}
+                        onChange={(e) => {
+                          setFormCoverImage(e.target.value);
+                          setPreviewUrl(e.target.value);
+                        }}
+                        placeholder="https://... or /assets/images/..."
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
+                      />
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label className="block font-semibold text-[#101C3A] mb-1">
-                    Participant Count
-                  </label>
-                  <input
-                    type="number"
-                    value={formParticipants || ""}
-                    onChange={(e) => setFormParticipants(e.target.value ? parseInt(e.target.value, 10) : undefined)}
-                    placeholder="e.g. 1000"
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#101C3A] mb-1">
+                  Participant Count
+                </label>
+                <input
+                  type="number"
+                  value={formParticipants || ""}
+                  onChange={(e) => setFormParticipants(e.target.value ? parseInt(e.target.value, 10) : undefined)}
+                  placeholder="e.g. 1000"
+                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
+                />
               </div>
 
               <div className="flex items-center gap-6 pt-2">

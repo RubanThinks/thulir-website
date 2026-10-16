@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { MapPin, Clock, ShieldCheck, Heart, Mail } from "lucide-react";
+import { MapPin, Clock, ShieldCheck, Heart, Mail, Phone } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -25,7 +25,7 @@ export function SiteFooter() {
               </div>
             </Link>
             <p className="text-xs font-normal text-white/75 max-w-sm leading-relaxed">
-              Managed by <strong>{siteConfig.brand.parentOrganization}</strong>. Providing specialized pediatric
+              Managed by <strong>{siteConfig.brand.parentOrganization}</strong>. Providing specialized paediatric
               occupational therapy, speech development, special education, and family support across Coimbatore since 2017.
             </p>
             <div className="pt-1 text-xs text-white/80">
@@ -89,7 +89,23 @@ export function SiteFooter() {
                 <p className="text-white/70 text-[11px] pl-5">No. 54, Anamanaicker St, 6th Cross, Kuniyamuthur 641008</p>
               </div>
 
-              <div className="pt-1">
+              <div className="pt-1 space-y-1">
+                <a
+                  href="tel:04222234210"
+                  className="flex items-center gap-1.5 text-white/90 hover:text-[#F4C542] text-xs font-medium transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5 text-[#F4C542] shrink-0" />
+                  <span>0422 - 2234210</span>
+                </a>
+                <a
+                  href="tel:+919659934210"
+                  className="flex items-center gap-1.5 text-white/80 hover:text-[#F4C542] text-[11px] transition-colors pl-5"
+                >
+                  <span>Mobile: +91 96599 34210</span>
+                </a>
+              </div>
+
+              <div>
                 <a
                   href={`mailto:${siteConfig.contact.email}`}
                   className="inline-flex items-center gap-1.5 text-white/90 hover:text-[#F4C542] text-xs font-medium transition-colors"

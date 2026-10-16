@@ -51,10 +51,10 @@ export const siteConfig = {
 
   founder: {
     name: "Dr. S. Venkatesan",
-    credentials: "BOT, CSIT, CAS, MOT (Pediatric Specialization)",
+    credentials: "MOT, CSIT, CAS (Paediatric Occupational Therapist)",
     role: "Founder and Managing Director",
     bioSummary:
-      "A compassionate occupational therapist and first-generation graduate from Kallakurichi district. Dr. Venkatesan completed his Bachelor of Occupational Therapy (BOT) at Kovai Medical Center and Hospital (KMCH), Coimbatore, and his Master of Occupational Therapy with Pediatric Specialization from Santosh College of Occupational Therapy, Ghaziabad. He founded Thulir with an unwavering commitment to making evidence-based, compassionate pediatric therapy and special education accessible to every family.",
+      "A compassionate paediatric occupational therapist and first-generation graduate from Kallakurichi district. Dr. Venkatesan earned his Master of Occupational Therapy with Paediatric Specialization from Santosh College of Occupational Therapy, Ghaziabad. He founded Thulir with an unwavering commitment to making evidence-based, compassionate paediatric therapy and special education accessible to every family.",
   },
 
   leadership: [
@@ -78,7 +78,7 @@ export const siteConfig = {
 
   // Reported in February 2026 Profile
   verifiedMetrics: {
-    yearsOfService: "8+",
+    yearsOfService: "9+",
     studentsHandled: "100+",
     inclusiveTransitions: "30+", // Students transitioning toward mainstream schooling
     branches: "2",
@@ -94,46 +94,106 @@ export const siteConfig = {
     "To nurture each student's individual skills through personalized training, helping them develop and lead a more independent and meaningful life.",
 
   contact: {
-    // Kept empty until confirmed to avoid inventing phone numbers
-    phone: "",
-    // WhatsApp feature will remain disabled or link to contact form until verified phone number is set
-    whatsappNumber: "", 
+    phone: "0422 - 2234210",
+    phoneDisplay: "0422 - 2234210",
+    mobiles: ["+91 96599 34210", "+91 89255 14210"],
+    whatsappNumber: "919659934210", 
     email: "thulirspecialschool@gmail.com",
     timings: "Monday - Saturday: 9:00 AM - 5:30 PM (Sessions by prior appointment)",
   },
 
+  // Official clinical services and therapies from Thulir Centre
+  clinicalServices: [
+    "Physiotherapy",
+    "Paediatric Occupational Therapy",
+    "Speech Therapy",
+    "Special Education",
+    "Behavior Therapy",
+    "Sensory Integration Therapy",
+    "Neuro Developmental Therapy",
+    "Psychological Services",
+    "Play, Art, Music & Dance Therapy",
+  ],
+
+  // Conditions & specialized care tracks supported
+  conditionsSupported: [
+    "Autism",
+    "ADHD",
+    "Down's Syndrome",
+    "Cerebral Palsy",
+    "Speech Delay",
+    "Intellectual Disability",
+    "Reading & Writing Difficulty",
+    "Sensory Processing Disorder",
+    "Developmental Delay",
+    "ADL Training",
+    "Pre-vocational & Vocational Training",
+  ],
+
   programsAndTherapies: [
     {
       id: "occupational-therapy",
-      title: "Occupational Therapy",
+      title: "Paediatric Occupational Therapy & Sensory Integration",
       shortDesc:
         "Sensory integration, fine & gross motor coordination, postural balance, and Activities of Daily Living (ADL) tailored to each child's pace.",
       badge: "Pediatric Specialized",
-      image: "/assets/images/sensory_occupational_room.jpg",
+      image: "/assets/images/therapies/occupational_sensory.jpg",
     },
     {
       id: "speech-therapy",
       title: "Speech & Communication Therapy",
       shortDesc:
-        "Oral-motor stimulation, expressive vocabulary, articulation, social interactions, and functional language acquisition.",
+        "Oral-motor stimulation, expressive vocabulary, articulation, speech delay intervention, and functional language acquisition.",
       badge: "Clinical Intervention",
-      image: "/assets/images/speech_language_therapy.jpg",
+      image: "/assets/images/therapies/speech_therapy.jpg",
     },
     {
       id: "physiotherapy",
       title: "Pediatric Physiotherapy",
       shortDesc:
-        "Strengthening musculoskeletal development, coordination, functional mobility, and balance support through gentle physical exercises.",
+        "Strengthening musculoskeletal development, coordination, functional mobility, and postural support through gentle physical exercises.",
       badge: "Movement & Mobility",
-      image: "/assets/images/pediatric_physiotherapy.jpg",
+      image: "/assets/images/therapies/pediatric_physiotherapy.jpg",
     },
     {
       id: "special-education",
-      title: "Special Education & Early Intervention",
+      title: "Special Education (IEP)",
       shortDesc:
         "Individualized Education Programs (IEP), cognitive readiness, structured routines, and developmental milestone tracking for inclusive transition.",
       badge: "Individualized IEP",
-      image: "/assets/images/special_education_classroom.jpg",
+      image: "/assets/images/therapies/special_education_iep.jpg",
+    },
+    {
+      id: "behavior-therapy",
+      title: "Behavior Therapy",
+      shortDesc:
+        "Positive behavioral support, emotional regulation, coping strategies, and structured behavioral modification for social confidence.",
+      badge: "Behavioral Support",
+      image: "/assets/images/therapies/behavior_therapy.jpg",
+    },
+    {
+      id: "neuro-developmental-therapy",
+      title: "Neuro Developmental Therapy (NDT)",
+      shortDesc:
+        "Neurological reflex facilitation, motor pattern refinement, and postural alignment for children with cerebral palsy and neuromuscular challenges.",
+      badge: "Neuro Rehabilitation",
+      image: "/assets/images/therapies/neuro_developmental_ndt.jpg",
+    },
+    {
+      id: "psychological-services",
+      title: "Psychological Services",
+      shortDesc:
+        "Comprehensive psycho-developmental evaluation, behavioral counseling, parent guidance, and developmental diagnostic assessments.",
+      badge: "Clinical Psychology",
+      image: "/assets/images/therapies/psychological_services.jpg",
+    },
+    {
+      id: "expressive-arts-therapy",
+      title: "Play, Art, Music & Dance Therapy",
+      shortDesc:
+        "Creative sensory exploration, emotional expression, rhythm-based coordination, and joyful therapeutic social interactions.",
+      badge: "Creative Therapies",
+      image: "/assets/images/therapies/art_music_dance_therapy.jpg",
     },
   ],
 

@@ -19,6 +19,8 @@ import { isAdminConfigured, getAdminDb } from "@/lib/firebase/admin";
 import { isFirebaseClientConfigured } from "@/lib/firebase/client";
 import { isCloudinaryConfigured } from "@/lib/cloudinary/server";
 import { getGalleryItems } from "@/lib/services/gallery";
+import { getInquiriesList } from "@/lib/services/inquiries";
+import { getEventsList } from "@/lib/services/events";
 import { verifyAdminSession } from "@/lib/auth/admin";
 
 
@@ -39,26 +41,19 @@ export default async function AdminDashboardOverviewPage() {
   let eventsTotal = 0;
   let programsTotal = 6;
 
-  const adminDb = getAdminDb();
-  if (adminDb) {
-    try {
-      const inqSnap = await adminDb.collection("inquiries").get();
-      inquiriesTotal = inqSnap.size;
-      inquiriesNew = inqSnap.docs.filter((d) => d.data()?.status === "new").length;
+  try {
+    const inqData = await getInquiriesList();
+    inquiriesTotal = inqData.counts.total;
+    inquiriesNew = inqData.counts.new;
+  } catch {
+    // fallback
+  }
 
-      const galSnap = await adminDb.collection("gallery").get();
-      galleryTotal = galSnap.size;
-
-      const evtSnap = await adminDb.collection("events").get();
-      eventsTotal = evtSnap.size;
-
-      const progSnap = await adminDb.collection("services").get();
-      if (!progSnap.empty) {
-        programsTotal = progSnap.size;
-      }
-    } catch {
-      // Offline fallback
-    }
+  try {
+    const events = await getEventsList();
+    eventsTotal = events.length;
+  } catch {
+    // fallback
   }
 
   try {
@@ -66,6 +61,18 @@ export default async function AdminDashboardOverviewPage() {
     galleryTotal = galleryItems.length;
   } catch {
     // fallback
+  }
+
+  const adminDb = getAdminDb();
+  if (adminDb) {
+    try {
+      const progSnap = await adminDb.collection("services").get();
+      if (!progSnap.empty) {
+        programsTotal = progSnap.size;
+      }
+    } catch {
+      // Offline fallback
+    }
   }
 
   return (
@@ -270,7 +277,7 @@ export default async function AdminDashboardOverviewPage() {
                 </span>
               </div>
               <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
-                Occupational therapy, speech therapy, and special education offerings.
+                Paediatric occupational therapy, speech therapy, and special education offerings.
               </p>
               <div className="mt-3 py-2 px-2.5 rounded-lg bg-[#FBFBFA] border border-[#E2E8F0] text-xs text-[#2D3748]">
                 <strong>{programsTotal} Clinical Programs</strong> configured

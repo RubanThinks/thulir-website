@@ -13,6 +13,7 @@ import {
   Building2,
   Heart,
   ShieldCheck,
+  Phone,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -134,6 +135,42 @@ export default function ContactPage() {
                       <span className="text-sm font-medium text-white">
                         {siteConfig.brand.parentOrganization}
                       </span>
+                    </div>
+
+                    <div className="flex items-start gap-3 pt-2 border-t border-white/10">
+                      <Phone className="w-4 h-4 text-[#F4C542] shrink-0 mt-0.5" />
+                      <div>
+                        <span className="block text-[11px] uppercase tracking-wider text-white/60">
+                          Direct Campus Helplines
+                        </span>
+                        <div className="space-y-1 mt-0.5">
+                          <p>
+                            <span className="text-white/70">Main Desk: </span>
+                            <a
+                              href="tel:04222234210"
+                              className="text-white hover:text-[#F4C542] font-semibold transition-colors"
+                            >
+                              0422 - 2234210
+                            </a>
+                          </p>
+                          <p>
+                            <span className="text-white/70">Mobile: </span>
+                            <a
+                              href="tel:+919659934210"
+                              className="text-white hover:text-[#F4C542] font-semibold transition-colors"
+                            >
+                              +91 96599 34210
+                            </a>
+                            <span className="text-white/50 mx-1.5">&bull;</span>
+                            <a
+                              href="tel:+918925514210"
+                              className="text-white hover:text-[#F4C542] font-semibold transition-colors"
+                            >
+                              +91 89255 14210
+                            </a>
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex items-start gap-3 pt-2 border-t border-white/10">

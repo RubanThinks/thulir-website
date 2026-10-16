@@ -1,10 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 import { verifyAdminSession } from "@/lib/auth/admin";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { siteConfig } from "@/config/site";
 import { FieldValue } from "firebase-admin/firestore";
 
+const DATA_DIR = path.join(process.cwd(), "src", "data");
+const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
+const DEFAULT_SETTINGS = {
+  organizationName: siteConfig.brand.primaryName,
+  primaryPhone: "0422 - 2234210",
+  whatsappNumber: "+91 96599 34210",
+  contactEmail: "thulirspecialschool@gmail.com",
+  updatedAt: new Date().toISOString(),
+};
+
+function readLocalSettings() {
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.warn("[Local Settings Read Error]:", err);
+  }
+  return DEFAULT_SETTINGS;
+}
+
+function writeLocalSettings(data: Record<string, unknown>) {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (err) {
+    console.error("[Local Settings Write Error]:", err);
+  }
+}
 
 export async function GET() {
   const session = await verifyAdminSession();
@@ -12,50 +46,22 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
+  const local = readLocalSettings();
   const adminDb = getAdminDb();
   if (!adminDb) {
-    return NextResponse.json({
-      settings: {
-        organizationName: siteConfig.brand.primaryName,
-        primaryPhone: "+91 97901 81890",
-        whatsappNumber: "+91 97901 81890",
-        contactEmail: "thulirspecialschool@gmail.com",
-        announcementBanner: {
-          isActive: false,
-          text: "",
-          linkUrl: "",
-        },
-        heroHeading: "Specialized Pediatric Care & Education",
-        heroSubheading: "Empowering children with autism, developmental delays, and sensory processing needs.",
-      },
-    });
+    return NextResponse.json({ settings: local });
   }
 
   try {
     const doc = await adminDb.collection("settings").doc("general").get();
-    if (!doc.exists) {
-      const defaultSettings = {
-        organizationName: siteConfig.brand.primaryName,
-        primaryPhone: "+91 97901 81890",
-        whatsappNumber: "+91 97901 81890",
-        contactEmail: "thulirspecialschool@gmail.com",
-        announcementBanner: {
-          isActive: false,
-          text: "",
-          linkUrl: "",
-        },
-        heroHeading: "Specialized Pediatric Care & Education",
-        heroSubheading: "Empowering children with autism, developmental delays, and sensory processing needs.",
-        updatedAt: new Date().toISOString(),
-      };
-      return NextResponse.json({ settings: defaultSettings });
+    if (doc.exists) {
+      const data = doc.data();
+      return NextResponse.json({ settings: { ...local, ...data } });
     }
-
-    const data = doc.data();
-    return NextResponse.json({ settings: data });
+    return NextResponse.json({ settings: local });
   } catch (error: unknown) {
-    console.error("[Admin Settings GET Error]:", error);
-    return NextResponse.json({ error: "Failed to retrieve settings." }, { status: 500 });
+    console.warn("[Admin Settings GET Cloud Warning - using local]:", error);
+    return NextResponse.json({ settings: local });
   }
 }
 
@@ -65,38 +71,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
-  }
-
   try {
     const body = await request.json().catch(() => null);
     if (!body) {
       return NextResponse.json({ error: "Invalid payload." }, { status: 400 });
     }
 
-    const docRef = adminDb.collection("settings").doc("general");
-
-    const settingsDoc = {
+    const currentLocal = readLocalSettings();
+    const updatedSettings = {
+      ...currentLocal,
       organizationName: body.organizationName || siteConfig.brand.primaryName,
-      primaryPhone: (body.primaryPhone || "").trim(),
-      whatsappNumber: (body.whatsappNumber || "").trim(),
-      contactEmail: (body.contactEmail || "").trim(),
-      announcementBanner: {
-        isActive: Boolean(body.announcementBanner?.isActive),
-        text: (body.announcementBanner?.text || "").trim(),
-        linkUrl: (body.announcementBanner?.linkUrl || "").trim(),
-      },
-      heroHeading: (body.heroHeading || "").trim(),
-      heroSubheading: (body.heroSubheading || "").trim(),
-      updatedAt: FieldValue.serverTimestamp(),
+      primaryPhone: body.primaryPhone !== undefined ? String(body.primaryPhone).trim() : currentLocal.primaryPhone,
+      whatsappNumber: body.whatsappNumber !== undefined ? String(body.whatsappNumber).trim() : currentLocal.whatsappNumber,
+      contactEmail: body.contactEmail !== undefined ? String(body.contactEmail).trim() : currentLocal.contactEmail,
+      updatedAt: new Date().toISOString(),
       updatedBy: session.user.email,
     };
 
-    await docRef.set(settingsDoc, { merge: true });
+    // 1. Persist locally
+    writeLocalSettings(updatedSettings);
 
-    return NextResponse.json({ success: true, settings: settingsDoc });
+    // 2. Dual-write to cloud database if available
+    try {
+      const adminDb = getAdminDb();
+      if (adminDb) {
+        await adminDb.collection("settings").doc("general").set(
+          {
+            ...updatedSettings,
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
+      }
+    } catch (cloudErr) {
+      console.warn("[Admin Settings Cloud Save Warning]:", cloudErr);
+    }
+
+    return NextResponse.json({ success: true, settings: updatedSettings });
   } catch (error: unknown) {
     console.error("[Admin Settings POST Error]:", error);
     return NextResponse.json({ error: "Failed to update settings." }, { status: 500 });

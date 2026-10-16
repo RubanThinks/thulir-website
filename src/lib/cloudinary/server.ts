@@ -63,7 +63,8 @@ export function generateUploadSignature(
  */
 export async function uploadImageBuffer(
   buffer: Buffer,
-  originalFilename = "image.jpg"
+  originalFilename = "image.jpg",
+  subfolder = "gallery"
 ): Promise<{ url: string; publicId: string }> {
   // 1. Try Cloudinary upload if configured
   if (isCloudinaryConfigured()) {
@@ -77,7 +78,7 @@ export async function uploadImageBuffer(
       const dataUri = `data:${mime};base64,${base64}`;
 
       const res = await cloudinary.uploader.upload(dataUri, {
-        folder: "thulir/gallery",
+        folder: `thulir/${subfolder}`,
         resource_type: "image",
       });
 
@@ -95,7 +96,7 @@ export async function uploadImageBuffer(
   // 2. Reliable Local Storage Fallback
   const fs = await import("fs");
   const path = await import("path");
-  const uploadsDir = path.join(process.cwd(), "public", "uploads", "gallery");
+  const uploadsDir = path.join(process.cwd(), "public", "uploads", subfolder);
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
@@ -105,7 +106,7 @@ export async function uploadImageBuffer(
   fs.writeFileSync(filePath, buffer);
 
   return {
-    url: `/uploads/gallery/${safeName}`,
+    url: `/uploads/${subfolder}/${safeName}`,
     publicId: "",
   };
 }

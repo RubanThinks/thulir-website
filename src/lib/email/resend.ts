@@ -163,7 +163,7 @@ function buildParentAcknowledgmentHtml(params: SendInquiryEmailParams): string {
       </div>
 
       <p style="margin-top: 24px; font-size: 13px; color: #64748B;">
-        For urgent inquiries, you can reach our helpline directly via WhatsApp or call at <strong>+91 97901 81890</strong>.
+        For urgent inquiries, you can reach our helpline directly via WhatsApp or call at <strong>+91 96599 34210</strong> or <strong>0422 - 2234210</strong>.
       </p>
       <p style="margin-bottom: 0;">
         Warm regards,<br />

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminDb } from "@/lib/firebase/admin";
 import { inquirySubmissionSchema, sanitizeText } from "@/lib/validations/inquiry";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sendInquiryEmails } from "@/lib/email/resend";
-import { FieldValue } from "firebase-admin/firestore";
+import { saveInquiry } from "@/lib/services/inquiries";
 
 
 
@@ -75,65 +74,8 @@ export async function POST(request: NextRequest) {
     };
 
     const inquiryId = generateInquiryId();
-    const adminDb = getAdminDb();
 
-    if (adminDb) {
-      const inquiryDoc = {
-        id: inquiryId,
-        parentName: sanitizedData.parentName,
-        email: sanitizedData.email,
-        phone: sanitizedData.phone,
-        preferredBranch: sanitizedData.preferredBranch,
-        serviceOfInterest: sanitizedData.serviceCategory,
-        childAge: sanitizedData.childAge,
-        message: sanitizedData.message,
-        status: "new",
-        internalNotes: [],
-        clientIpMasked: clientIp.replace(/\.\d+$/, ".xxx"),
-        emailNotificationSentToAdmin: false,
-        acknowledgementSentToVisitor: false,
-        createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp(),
-      };
-      await adminDb.collection("inquiries").doc(inquiryId).set(inquiryDoc);
-    } else {
-      // Standard Firestore REST API execution (no service account key required)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "thulirschool-dee45";
-      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-      const nowIso = new Date().toISOString();
-
-      const firestoreRes = await fetch(
-        `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/inquiries?documentId=${inquiryId}&key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              id: { stringValue: inquiryId },
-              parentName: { stringValue: sanitizedData.parentName },
-              email: { stringValue: sanitizedData.email },
-              phone: { stringValue: sanitizedData.phone },
-              preferredBranch: { stringValue: sanitizedData.preferredBranch },
-              serviceOfInterest: { stringValue: sanitizedData.serviceCategory },
-              childAge: { stringValue: sanitizedData.childAge },
-              message: { stringValue: sanitizedData.message },
-              status: { stringValue: "new" },
-              clientIpMasked: { stringValue: clientIp.replace(/\.\d+$/, ".xxx") },
-              createdAt: { timestampValue: nowIso },
-              updatedAt: { timestampValue: nowIso },
-            },
-          }),
-        }
-      );
-
-      if (!firestoreRes.ok) {
-        const errText = await firestoreRes.text().catch(() => "");
-        console.error("[Inquiry API] Firestore REST error:", firestoreRes.status, errText);
-        throw new Error(`Firestore REST write failed with status ${firestoreRes.status}`);
-      }
-    }
-
-    // 7. Dispatch Emails asynchronously via Resend
+    // 5. Dispatch Emails via Resend
     let emailResult = { adminNotificationSent: false, parentAcknowledgmentSent: false };
     try {
       emailResult = await sendInquiryEmails({
@@ -146,17 +88,27 @@ export async function POST(request: NextRequest) {
         childAge: sanitizedData.childAge,
         message: sanitizedData.message,
       });
-
-      // Update email flags in Firestore if adminDb is configured
-      if (adminDb) {
-        await adminDb.collection("inquiries").doc(inquiryId).update({
-          emailNotificationSentToAdmin: emailResult.adminNotificationSent,
-          acknowledgementSentToVisitor: emailResult.parentAcknowledgmentSent,
-        });
-      }
     } catch (emailErr) {
-      console.warn("[Inquiry] Email dispatch failed after document write:", emailErr);
+      console.warn("[Inquiry] Email dispatch failed:", emailErr);
     }
+
+    // 6. Persist Inquiry in persistent multi-tier storage (local file + cloud database)
+    await saveInquiry({
+      id: inquiryId,
+      parentName: sanitizedData.parentName,
+      email: sanitizedData.email,
+      phone: sanitizedData.phone,
+      preferredBranch: sanitizedData.preferredBranch,
+      serviceCategory: sanitizedData.serviceCategory,
+      serviceOfInterest: sanitizedData.serviceCategory,
+      childAge: sanitizedData.childAge,
+      message: sanitizedData.message,
+      status: "new",
+      internalNotes: [],
+      clientIpMasked: clientIp.replace(/\.\d+$/, ".xxx"),
+      emailNotificationSentToAdmin: emailResult.adminNotificationSent,
+      acknowledgementSentToVisitor: emailResult.parentAcknowledgmentSent,
+    });
 
     // 8. Return Verified Success
     return NextResponse.json(

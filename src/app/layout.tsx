@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "Thulir Special School",
     "Thulir Therapy Centre",
     "Special Education Coimbatore",
-    "Occupational Therapy Rathinapuri",
+    "Paediatric Occupational Therapy Rathinapuri",
     "Speech Therapy Coimbatore",
     "Autism Centre Coimbatore",
     "Dr S Venkatesan Thulir",

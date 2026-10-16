@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth/admin";
-import { getAdminDb } from "@/lib/firebase/admin";
-import { FieldValue } from "firebase-admin/firestore";
-
-
+import { getEventsList, saveEvent } from "@/lib/services/events";
+import { uploadImageBuffer } from "@/lib/cloudinary/server";
 
 export async function GET() {
   const session = await verifyAdminSession();
@@ -11,23 +9,8 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ events: [] });
-  }
-
   try {
-    const snapshot = await adminDb.collection("events").orderBy("eventDate", "desc").get();
-    const events = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        createdAt: data?.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
-        updatedAt: data?.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
-      };
-    });
-
+    const events = await getEventsList();
     return NextResponse.json({ events });
   } catch (error: unknown) {
     console.error("[Admin Events GET Error]:", error);
@@ -41,43 +24,88 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
-  }
-
   try {
-    const body = await request.json().catch(() => null);
-    if (!body || !body.title || !body.eventDate) {
+    const contentType = request.headers.get("content-type") || "";
+
+    let title = "";
+    let eventDate = "";
+    let location = "Coimbatore, Tamil Nadu";
+    let category = "celebration";
+    let summary = "";
+    let detailedReport = "";
+    let coverImageUrl = "";
+    let participantCount: number | undefined = undefined;
+    let isPublished = true;
+    let isArchived = false;
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("file") as File | null;
+
+      title = (formData.get("title") as string || "").trim();
+      eventDate = (formData.get("eventDate") as string || "").trim();
+      location = (formData.get("location") as string || "Coimbatore, Tamil Nadu").trim();
+      category = (formData.get("category") as string || "celebration").trim();
+      summary = (formData.get("summary") as string || "").trim();
+      detailedReport = (formData.get("detailedReport") as string || "").trim();
+      coverImageUrl = (formData.get("coverImageUrl") as string || "").trim();
+      isPublished = formData.get("isPublished") !== "false";
+      isArchived = formData.get("isArchived") === "true";
+      const pCount = formData.get("participantCount");
+      if (pCount) participantCount = Number(pCount) || undefined;
+
+      if (file && file.size > 0) {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const uploadResult = await uploadImageBuffer(buffer, file.name, "events");
+        coverImageUrl = uploadResult.url;
+      }
+    } else {
+      const body = await request.json().catch(() => null);
+      if (!body) {
+        return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+      }
+      title = (body.title || "").trim();
+      eventDate = (body.eventDate || "").trim();
+      location = (body.location || "Coimbatore, Tamil Nadu").trim();
+      category = (body.category || "celebration").trim();
+      summary = (body.summary || "").trim();
+      detailedReport = (body.detailedReport || "").trim();
+      coverImageUrl = (body.coverImageUrl || "").trim();
+      participantCount = body.participantCount ? Number(body.participantCount) : undefined;
+      isPublished = Boolean(body.isPublished ?? true);
+      isArchived = Boolean(body.isArchived ?? false);
+    }
+
+    if (!title || !eventDate) {
       return NextResponse.json(
         { error: "Event title and event date are required." },
         { status: 400 }
       );
     }
 
-    const slug = body.slug || body.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const docRef = adminDb.collection("events").doc(slug || undefined);
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    const eventId = slug || `event-${Date.now()}`;
 
-    const newDoc = {
-      id: docRef.id,
-      title: body.title.trim(),
-      slug: docRef.id,
-      eventDate: body.eventDate,
-      location: (body.location || "Coimbatore, Tamil Nadu").trim(),
-      category: body.category || "celebration",
-      summary: (body.summary || "").trim(),
-      detailedReport: (body.detailedReport || "").trim(),
-      coverImageUrl: body.coverImageUrl || "",
-      photos: Array.isArray(body.photos) ? body.photos : [],
-      participantCount: body.participantCount ? Number(body.participantCount) : undefined,
-      isPublished: Boolean(body.isPublished ?? true),
-      isArchived: Boolean(body.isArchived ?? false),
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-      createdBy: session.user.email,
-    };
-
-    await docRef.set(newDoc);
+    const newDoc = await saveEvent({
+      id: eventId,
+      title,
+      slug: eventId,
+      eventDate,
+      location,
+      category,
+      summary,
+      detailedReport,
+      coverImageUrl,
+      photos: [],
+      participantCount,
+      isPublished,
+      isArchived,
+      createdBy: session.user?.email || "admin",
+    });
 
     return NextResponse.json({ success: true, event: newDoc }, { status: 201 });
   } catch (error: unknown) {
