@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thulirtherapycentre.com";
+  const siteUrl = siteConfig.brand.officialWebsite;
 
   return {
     rules: [
