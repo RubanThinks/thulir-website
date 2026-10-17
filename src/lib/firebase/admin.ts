@@ -47,11 +47,6 @@ export function getAdminApp(): App | null {
   const privateKey = getFormattedPrivateKey(rawPrivateKey);
 
   if (!projectId || !clientEmail || !privateKey) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(
-        "[Firebase Admin] Missing service account credentials. Set FIREBASE_ADMIN_CLIENT_EMAIL and FIREBASE_ADMIN_PRIVATE_KEY in .env.local to enable server-side admin operations."
-      );
-    }
     return null;
   }
 
