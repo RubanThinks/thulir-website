@@ -66,9 +66,9 @@ export async function verifyAdminSession(): Promise<AdminSessionResult> {
 
   // 1. Try Firebase Admin SDK verification if configured
   if (isAdminConfigured()) {
-    const adminAuth = getAdminAuth();
-    if (adminAuth) {
-      try {
+    try {
+      const adminAuth = getAdminAuth();
+      if (adminAuth) {
         const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
         const email = decodedClaims.email || null;
         const hasAdminClaim = decodedClaims.admin === true;
@@ -92,25 +92,30 @@ export async function verifyAdminSession(): Promise<AdminSessionResult> {
             customAdminClaim: hasAdminClaim,
           },
         };
-      } catch {
-        // Fall back to standard session parsing below
       }
+    } catch {
+      // Fall back to standard session parsing below
     }
   }
 
-  // 2. Standard Firebase session parsing (no Service Account key required)
+  // 2. Standard session parsing (no Service Account key required)
   try {
     let sessionData: { uid: string; email?: string | null; expiresAt?: number } | null = null;
 
     if (sessionCookie.startsWith("{") || sessionCookie.startsWith("%7B")) {
       sessionData = JSON.parse(decodeURIComponent(sessionCookie));
     } else {
-      // Decode Base64 or JWT payload
-      const parts = sessionCookie.split(".");
+      // Decode Base64 or Base64URL JWT payload
+      const cleanCookie = sessionCookie.trim();
+      const parts = cleanCookie.split(".");
       if (parts.length === 3) {
-        sessionData = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        const base64Url = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=");
+        sessionData = JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
       } else {
-        sessionData = JSON.parse(Buffer.from(sessionCookie, "base64").toString("utf8"));
+        const base64Url = cleanCookie.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=");
+        sessionData = JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
       }
     }
 
@@ -118,7 +123,9 @@ export async function verifyAdminSession(): Promise<AdminSessionResult> {
       return { authenticated: false, user: null, reason: "NO_SESSION" };
     }
 
-
+    if (sessionData.expiresAt && sessionData.expiresAt < Date.now()) {
+      return { authenticated: false, user: null, reason: "EXPIRED" };
+    }
 
     const email = sessionData.email || null;
     const authorized = isAuthorizedAdmin(email, true);

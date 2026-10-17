@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
     let email: string | null = null;
     let sessionCookieValue = "";
 
-    // 1. If Firebase Admin SDK is fully configured with private key, use it
+    // 1. If Firebase Admin SDK is fully configured with private key, attempt verification
     if (isAdminConfigured()) {
-      const adminAuth = getAdminAuth();
-      if (adminAuth) {
-        try {
+      try {
+        const adminAuth = getAdminAuth();
+        if (adminAuth) {
           const decodedToken = await adminAuth.verifyIdToken(idToken, true);
           uid = decodedToken.uid;
           email = decodedToken.email || null;
@@ -50,15 +50,16 @@ export async function POST(request: NextRequest) {
           sessionCookieValue = await adminAuth.createSessionCookie(idToken, {
             expiresIn: SESSION_EXPIRATION_MS,
           });
-        } catch (adminErr) {
-          console.warn("[Admin Auth] Admin SDK token verify fallback:", adminErr);
         }
+      } catch (adminErr) {
+        console.warn("[Admin Auth] Admin SDK session fallback:", adminErr);
       }
     }
 
-    // 2. Standard Firebase Client session handler (no Service Account key needed)
+    // 2. Standard resilient session handler (no Service Account key required)
     if (!sessionCookieValue) {
-      const parts = idToken.split(".");
+      const cleanToken = idToken.trim();
+      const parts = cleanToken.split(".");
       if (parts.length !== 3) {
         return NextResponse.json(
           { error: "Malformed Firebase authentication token." },
@@ -76,8 +77,12 @@ export async function POST(request: NextRequest) {
 
       let payload: TokenPayload;
       try {
-        payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8")) as TokenPayload;
-      } catch {
+        // Support standard Base64 and Base64URL JWT payloads
+        const base64Url = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=");
+        payload = JSON.parse(Buffer.from(padded, "base64").toString("utf8")) as TokenPayload;
+      } catch (parseErr) {
+        console.error("[Session Auth Parse Error]:", parseErr);
         return NextResponse.json(
           { error: "Could not parse Firebase authentication token payload." },
           { status: 400 }
@@ -116,11 +121,11 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      // Lightweight session payload without bloating cookie header size
       const sessionPayload = {
         uid,
         email,
         role: "Administrator",
-        idToken,
         createdAt: Date.now(),
         expiresAt: Date.now() + SESSION_EXPIRATION_MS,
       };
@@ -128,17 +133,8 @@ export async function POST(request: NextRequest) {
       sessionCookieValue = Buffer.from(JSON.stringify(sessionPayload)).toString("base64");
     }
 
-    // Set secure HTTP-only session cookie
-    const cookieStore = await cookies();
-    cookieStore.set(ADMIN_SESSION_COOKIE_NAME, sessionCookieValue, {
-      maxAge: SESSION_EXPIRATION_SECONDS,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      sameSite: "lax",
-    });
-
-    return NextResponse.json(
+    // 3. Build response and set HTTP-only cookie reliably on both response & cookieStore
+    const response = NextResponse.json(
       {
         success: true,
         user: {
@@ -149,8 +145,35 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
+
+    // Set cookie on the outgoing NextResponse
+    response.cookies.set(ADMIN_SESSION_COOKIE_NAME, sessionCookieValue, {
+      maxAge: SESSION_EXPIRATION_SECONDS,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "lax",
+    });
+
+    // Also sync with Next.js cookieStore if available
+    try {
+      const cookieStore = await cookies();
+      cookieStore.set(ADMIN_SESSION_COOKIE_NAME, sessionCookieValue, {
+        maxAge: SESSION_EXPIRATION_SECONDS,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        sameSite: "lax",
+      });
+    } catch {
+      // response.cookies already handles setting the cookie header
+    }
+
+    return response;
   } catch (error: unknown) {
+    console.error("[Admin Auth Session Error]:", error);
     const err = error as { code?: string; message?: string };
+
     if (err.code === "auth/id-token-expired") {
       return NextResponse.json(
         { error: "Authentication token has expired. Please sign in again." },
@@ -167,7 +190,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Failed to authenticate administrator session.",
-        message: process.env.NODE_ENV !== "production" ? err.message : undefined,
+        details: err.message || String(error),
       },
       { status: 500 }
     );
@@ -175,35 +198,22 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE() {
+  const response = NextResponse.json({ success: true, message: "Logged out successfully" });
+
+  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, "", {
+    maxAge: 0,
+    path: "/",
+  });
+
   try {
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get(ADMIN_SESSION_COOKIE_NAME)?.value;
-
-    if (sessionCookie) {
-      const adminAuth = getAdminAuth();
-      if (adminAuth) {
-        try {
-          const decoded = await adminAuth.verifySessionCookie(sessionCookie);
-          await adminAuth.revokeRefreshTokens(decoded.sub);
-        } catch {
-          // Cookie might already be expired; continue clearing cookie
-        }
-      }
-    }
-
     cookieStore.delete({
       name: ADMIN_SESSION_COOKIE_NAME,
       path: "/",
     });
-
-    return NextResponse.json({ success: true, message: "Logged out successfully" });
   } catch {
-    // Ensure cookie is still deleted
-    const cookieStore = await cookies();
-    cookieStore.delete({
-      name: ADMIN_SESSION_COOKIE_NAME,
-      path: "/",
-    });
-    return NextResponse.json({ success: true });
+    // response.cookies already clears the cookie
   }
+
+  return response;
 }
