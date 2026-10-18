@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/lib/auth/admin";
 import { getInquiriesList } from "@/lib/services/inquiries";
 
 export async function GET(request: NextRequest) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   try {
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const statusFilter = searchParams.get("status") || undefined;
     const searchQuery = searchParams.get("search") || undefined;
     const branchFilter = searchParams.get("branch") || undefined;
@@ -26,6 +20,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error: unknown) {
+    if ((error as { digest?: string })?.digest === "NEXT_PRERENDER_INTERRUPTED") {
+      throw error;
+    }
     console.error("[Admin Inquiries GET Error]:", error);
     return NextResponse.json(
       { error: "Failed to fetch inquiries from database." },

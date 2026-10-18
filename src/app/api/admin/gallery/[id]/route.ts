@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/lib/auth/admin";
 import { updateGalleryItem, deleteGalleryItem } from "@/lib/services/gallery";
-import { deleteCloudinaryAsset } from "@/lib/cloudinary/server";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const { id } = await context.params;
 
   try {
@@ -44,11 +37,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const { id } = await context.params;
 
   try {

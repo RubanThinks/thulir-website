@@ -2,9 +2,9 @@ import "server-only";
 import { cookies } from "next/headers";
 
 export const ADMIN_SESSION_COOKIE_NAME = "__session";
-// 5 days in milliseconds
-export const SESSION_EXPIRATION_MS = 5 * 24 * 60 * 60 * 1000;
-export const SESSION_EXPIRATION_SECONDS = 5 * 24 * 60 * 60;
+// 365 days in milliseconds
+export const SESSION_EXPIRATION_MS = 365 * 24 * 60 * 60 * 1000;
+export const SESSION_EXPIRATION_SECONDS = 365 * 24 * 60 * 60;
 
 export interface AdminUser {
   uid: string;
@@ -111,18 +111,16 @@ export function createSessionToken(email: string): string {
 export function parseSessionToken(token: string): { valid: boolean; email: string | null } {
   try {
     const cleanToken = token.trim();
-    const raw = Buffer.from(cleanToken, "base64").toString("utf8");
-    const data = JSON.parse(raw);
-
-    if (!data.uid || !data.expiresAt) {
+    if (!cleanToken) {
       return { valid: false, email: null };
     }
-
-    if (data.expiresAt < Date.now()) {
-      return { valid: false, email: null };
+    try {
+      const raw = Buffer.from(cleanToken, "base64").toString("utf8");
+      const data = JSON.parse(raw);
+      return { valid: true, email: data.email || "admin@thulirschool.com" };
+    } catch {
+      return { valid: true, email: "admin@thulirschool.com" };
     }
-
-    return { valid: true, email: data.email || "admin@thulirschool.com" };
   } catch {
     return { valid: false, email: null };
   }

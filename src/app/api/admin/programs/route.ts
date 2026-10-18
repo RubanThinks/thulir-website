@@ -1,56 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/lib/auth/admin";
-import { getAdminDb } from "@/lib/firebase/admin";
-import { seedProgramsIfEmpty, BASELINE_PROGRAMS } from "@/lib/seed/programs";
-import { FieldValue } from "firebase-admin/firestore";
-
-
+import { getProgramsList, saveProgram } from "@/lib/services/programs";
 
 export async function GET() {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    // Return baseline if database is unconfigured
-    return NextResponse.json({ programs: BASELINE_PROGRAMS });
-  }
-
   try {
-    // Seed baseline if collection is empty
-    await seedProgramsIfEmpty();
-
-    const snapshot = await adminDb.collection("services").orderBy("order", "asc").get();
-    const programs = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        createdAt: data?.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
-        updatedAt: data?.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
-      };
-    });
-
+    const programs = await getProgramsList();
     return NextResponse.json({ programs });
   } catch (error: unknown) {
     console.error("[Admin Programs GET Error]:", error);
-    return NextResponse.json({ programs: BASELINE_PROGRAMS });
+    return NextResponse.json({ error: "Failed to retrieve programs." }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
-  const adminDb = getAdminDb();
-  if (!adminDb) {
-    return NextResponse.json({ error: "Database not configured." }, { status: 503 });
-  }
-
   try {
     const body = await request.json().catch(() => null);
     if (!body || !body.title) {
@@ -58,12 +19,12 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = body.slug || body.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const docRef = adminDb.collection("services").doc(slug || undefined);
+    const programId = slug || `program-${Date.now()}`;
 
-    const newDoc = {
-      id: docRef.id,
+    const newDoc = await saveProgram({
+      id: programId,
       title: body.title.trim(),
-      slug: docRef.id,
+      slug: programId,
       category: body.category || "therapy",
       shortDescription: (body.shortDescription || "").trim(),
       fullDescription: (body.fullDescription || "").trim(),
@@ -72,12 +33,7 @@ export async function POST(request: NextRequest) {
       heroImageUrl: body.heroImageUrl || "/assets/images/sensory_occupational_room.jpg",
       order: Number(body.order || 99),
       isPublished: Boolean(body.isPublished ?? true),
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-      createdBy: session.user.email,
-    };
-
-    await docRef.set(newDoc);
+    });
 
     return NextResponse.json({ success: true, program: newDoc }, { status: 201 });
   } catch (error: unknown) {

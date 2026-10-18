@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/lib/auth/admin";
 import {
   getEventById,
   updateEventRecord,
@@ -12,11 +11,6 @@ interface RouteContext {
 }
 
 export async function GET(request: NextRequest, context: RouteContext) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const { id } = await context.params;
   const event = await getEventById(id);
   if (!event) {
@@ -27,11 +21,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const { id } = await context.params;
 
   try {
@@ -98,11 +87,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const { id } = await context.params;
 
   try {

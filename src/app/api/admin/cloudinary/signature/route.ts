@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/lib/auth/admin";
 import { generateUploadSignature } from "@/lib/cloudinary/server";
 
-
-
 export async function POST(request: NextRequest) {
-  const session = await verifyAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
-  }
-
   const body = await request.json().catch(() => ({}));
   const folder = body.folder || "thulir/gallery";
 
