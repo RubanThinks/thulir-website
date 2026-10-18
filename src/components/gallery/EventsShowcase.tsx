@@ -68,6 +68,7 @@ export function EventsShowcase() {
                       alt={evt.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      unoptimized={Boolean(evt.coverImageUrl?.startsWith("data:") || evt.coverImageUrl?.startsWith("/uploads/"))}
                     />
                     <div className="absolute top-3 left-3">
                       <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/95 text-[#8F2638] shadow-xs backdrop-blur-xs">

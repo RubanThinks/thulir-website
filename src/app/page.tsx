@@ -57,31 +57,31 @@ export default function Home() {
           <div className="relative z-10 w-full">
             <Container>
               <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
-                {/* A. Official Logo with Organic Splash Art Background - Balanced Medium Size */}
+                {/* A. Official Logo with Organic Splash Art Background - Extra-Large Heroic Scale */}
                 <div className="relative w-full flex flex-col items-center justify-center pt-2 sm:pt-4">
-                  {/* Organic Splash Art Background Wrapper - Balanced medium height */}
-                  <div className="relative flex items-center justify-center w-full min-h-[170px] sm:min-h-[200px] md:min-h-[230px]">
-                    {/* Splash Graphic - Medium footprint, gently scaled horizontally to frame the rectangular logo */}
+                  {/* Organic Splash Art Background Wrapper */}
+                  <div className="relative flex items-center justify-center w-full min-h-[260px] sm:min-h-[320px] md:min-h-[370px] lg:min-h-[410px]">
+                    {/* Splash Graphic - Framed expansively behind the logo */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-                      <div className="relative w-[340px] h-[210px] sm:w-[430px] sm:h-[250px] md:w-[500px] md:h-[280px] lg:w-[540px] lg:h-[290px] scale-x-115 sm:scale-x-120 md:scale-x-125 scale-y-105 sm:scale-y-110 transition-transform duration-500">
+                      <div className="relative w-[520px] h-[320px] sm:w-[680px] sm:h-[400px] md:w-[800px] md:h-[460px] lg:w-[900px] lg:h-[500px] scale-x-115 sm:scale-x-120 md:scale-x-125 scale-y-105 sm:scale-y-110 transition-transform duration-500">
                         <Image
                           src="/assets/branding/logo_splash_bg.png"
                           alt=""
                           fill
                           priority
-                          className="object-contain filter drop-shadow-[0_14px_30px_rgba(0,0,0,0.35)]"
+                          className="object-contain filter drop-shadow-[0_24px_50px_rgba(0,0,0,0.46)]"
                         />
                       </div>
                     </div>
 
-                    {/* Foreground Logo - Fills the background body naturally with balanced margins (shifted 5mm down) */}
-                    <div className="relative z-10 translate-y-[18px] sm:translate-y-[19px] w-52 sm:w-60 md:w-68 lg:w-72 h-14 sm:h-16 md:h-19 transition-transform duration-300 hover:scale-102">
+                    {/* Foreground Logo - Monumental hero brand presentation */}
+                    <div className="relative z-10 translate-y-[24px] sm:translate-y-[29px] md:translate-y-[34px] lg:translate-y-[38px] w-[320px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-[92px] sm:h-[125px] md:h-[148px] lg:h-[170px] transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 640px) 208px, (max-width: 768px) 240px, 288px"
+                        sizes="(max-width: 640px) 320px, (max-width: 768px) 440px, 600px"
                         className="object-contain"
                       />
                     </div>
@@ -89,7 +89,7 @@ export default function Home() {
                 </div>
 
                 {/* B. Eyebrow Badge & Tamil Tagline - Distinct spacing after the background artwork */}
-                <div className="relative z-20 mt-6 sm:mt-8 md:mt-9 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
+                <div className="relative z-20 mt-8 sm:mt-11 md:mt-14 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
                   <span className="w-2 h-2 rounded-full bg-[#F4C542] animate-pulse" />
                   <span>பயிற்சியும், பயிற்றுவித்தல் சார்ந்த இடமும் &bull; Coimbatore</span>
                 </div>

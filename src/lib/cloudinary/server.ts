@@ -1,19 +1,33 @@
 import "server-only";
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+const DEFAULT_CLOUD_NAME = "nwcmxpt4";
+const DEFAULT_API_KEY = "631151963588963";
+const DEFAULT_API_SECRET = "IUlSwY56-iviLvW5Nzewf5Pc4rU";
+
+export function getCloudinaryConfig() {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || DEFAULT_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY || DEFAULT_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET || DEFAULT_API_SECRET;
+  return { cloudName, apiKey, apiSecret };
+}
+
+function initCloudinary() {
+  const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true,
+  });
+}
+
+// Initialize on module load
+initCloudinary();
 
 export function isCloudinaryConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
-    process.env.CLOUDINARY_API_KEY &&
-    process.env.CLOUDINARY_API_SECRET
-  );
+  const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
+  return Boolean(cloudName && apiKey && apiSecret);
 }
 
 export interface CloudinarySignatureResult {
@@ -26,14 +40,11 @@ export interface CloudinarySignatureResult {
 
 /**
  * Generates an authorized upload signature on the server.
- * The secret is NEVER exposed to browser code.
  */
 export function generateUploadSignature(
   folder = "thulir/gallery"
 ): CloudinarySignatureResult | null {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const apiKey = process.env.CLOUDINARY_API_KEY;
-  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
 
   if (!cloudName || !apiKey || !apiSecret) {
     return null;
@@ -59,56 +70,66 @@ export function generateUploadSignature(
 
 /**
  * Uploads an image buffer directly via server SDK.
- * Falls back to local public upload storage if external media service is unavailable.
+ * Uploads to Cloudinary, with resilient base64 Data URI fallback.
  */
 export async function uploadImageBuffer(
   buffer: Buffer,
   originalFilename = "image.jpg",
   subfolder = "gallery"
 ): Promise<{ url: string; publicId: string }> {
-  // 1. Try Cloudinary upload if configured
-  if (isCloudinaryConfigured()) {
-    try {
-      const base64 = buffer.toString("base64");
-      const mime = originalFilename.endsWith(".png")
-        ? "image/png"
-        : originalFilename.endsWith(".webp")
-        ? "image/webp"
-        : "image/jpeg";
-      const dataUri = `data:${mime};base64,${base64}`;
+  initCloudinary();
 
-      const res = await cloudinary.uploader.upload(dataUri, {
-        folder: `thulir/${subfolder}`,
-        resource_type: "image",
-      });
+  const lowerName = originalFilename.toLowerCase();
+  let mime = "image/jpeg";
+  if (lowerName.endsWith(".png")) mime = "image/png";
+  else if (lowerName.endsWith(".webp")) mime = "image/webp";
+  else if (lowerName.endsWith(".gif")) mime = "image/gif";
+  else if (lowerName.endsWith(".svg")) mime = "image/svg+xml";
 
-      if (res && res.secure_url) {
-        return {
-          url: res.secure_url,
-          publicId: res.public_id || "",
-        };
-      }
-    } catch (err) {
-      console.warn("[Media Cloud Upload Error - falling back to local storage]:", err);
+  const base64 = buffer.toString("base64");
+  const dataUri = `data:${mime};base64,${base64}`;
+
+  // 1. Try Cloudinary upload
+  try {
+    const res = await cloudinary.uploader.upload(dataUri, {
+      folder: `thulir/${subfolder}`,
+      resource_type: "image",
+    });
+
+    if (res && res.secure_url) {
+      return {
+        url: res.secure_url,
+        publicId: res.public_id || "",
+      };
     }
+  } catch (err) {
+    console.warn("[Cloudinary Media Upload Warning - falling back to resilient storage]:", err);
   }
 
-  // 2. Reliable Local Storage Fallback
-  const fs = await import("fs");
-  const path = await import("path");
-  const uploadsDir = path.join(process.cwd(), "public", "uploads", subfolder);
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
+  // 2. Local storage write if filesystem is writable
+  try {
+    const fs = await import("fs");
+    const path = await import("path");
+    const uploadsDir = path.join(process.cwd(), "public", "uploads", subfolder);
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const safeName = `${Date.now()}-${originalFilename.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    const filePath = path.join(uploadsDir, safeName);
+    fs.writeFileSync(filePath, buffer);
+
+    return {
+      url: `/uploads/${subfolder}/${safeName}`,
+      publicId: "",
+    };
+  } catch {
+    // 3. 100% resilient fallback for read-only environments (e.g. Vercel)
+    return {
+      url: dataUri,
+      publicId: "",
+    };
   }
-
-  const safeName = `${Date.now()}-${originalFilename.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-  const filePath = path.join(uploadsDir, safeName);
-  fs.writeFileSync(filePath, buffer);
-
-  return {
-    url: `/uploads/${subfolder}/${safeName}`,
-    publicId: "",
-  };
 }
 
 /**
@@ -117,6 +138,7 @@ export async function uploadImageBuffer(
 export async function deleteCloudinaryAsset(publicId: string): Promise<boolean> {
   if (!isCloudinaryConfigured() || !publicId) return false;
 
+  initCloudinary();
   try {
     const result = await cloudinary.uploader.destroy(publicId);
     return result.result === "ok";

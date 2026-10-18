@@ -355,6 +355,7 @@ export default function AdminGalleryPage() {
                   alt={item.altText || item.title}
                   fill
                   className="object-cover group-hover:scale-105 transition duration-300"
+                  unoptimized={Boolean(item.imageUrl?.startsWith("data:") || item.imageUrl?.startsWith("/uploads/"))}
                 />
                 <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
                   <span
@@ -451,7 +452,8 @@ export default function AdminGalleryPage() {
                 </label>
                 {previewUrl ? (
                   <div className="relative h-44 w-full rounded-xl overflow-hidden border border-[#E2E8F0] bg-gray-50 mb-2">
-                    <Image src={previewUrl} alt="Preview" fill className="object-cover" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => {

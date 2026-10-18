@@ -371,6 +371,7 @@ export default function AdminEventsPage() {
                       alt={evt.title}
                       fill
                       className="object-cover group-hover:scale-105 transition duration-300"
+                      unoptimized={Boolean(evt.coverImageUrl?.startsWith("data:") || evt.coverImageUrl?.startsWith("/uploads/"))}
                     />
                     <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
                       <span

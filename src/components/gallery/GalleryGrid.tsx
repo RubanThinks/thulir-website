@@ -126,6 +126,7 @@ export function GalleryGrid() {
                   alt={item.altText || item.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized={Boolean(item.imageUrl?.startsWith("data:") || item.imageUrl?.startsWith("/uploads/"))}
                 />
                 <div className="absolute inset-0 bg-[#101C3A]/0 group-hover:bg-[#101C3A]/30 transition-colors duration-300 flex items-center justify-center">
                   <div className="w-10 h-10 rounded-full bg-white/90 text-[#101C3A] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
@@ -246,6 +247,7 @@ export function GalleryGrid() {
                 fill
                 className="object-contain"
                 priority
+                unoptimized={Boolean(activeItem.imageUrl?.startsWith("data:") || activeItem.imageUrl?.startsWith("/uploads/"))}
               />
             </div>
             <div className="text-center mt-4 max-w-xl">
