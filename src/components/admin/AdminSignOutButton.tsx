@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase/client";
 import { LogOut, Loader2 } from "lucide-react";
 
 interface AdminSignOutButtonProps {
@@ -22,13 +21,8 @@ export function AdminSignOutButton({ variant = "header" }: AdminSignOutButtonPro
       await fetch("/api/admin/auth/session", {
         method: "DELETE",
       }).catch(() => {});
-
-      // 2. Sign out client instance if available
-      if (auth) {
-        await auth.signOut().catch(() => {});
-      }
     } finally {
-      // 3. Redirect back to login screen
+      // 2. Redirect back to login screen
       router.push("/admin/login");
       router.refresh();
       setLoading(false);

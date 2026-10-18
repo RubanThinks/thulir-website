@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { isAdminConfigured } from "@/lib/firebase/admin";
-import { isFirebaseClientConfigured } from "@/lib/firebase/client";
 import { verifyAdminSession, getAuthorizedAdminEmails } from "@/lib/auth/admin";
 
 export async function GET() {
@@ -8,9 +6,7 @@ export async function GET() {
 
   return NextResponse.json({
     status: "ok",
-    clientConfigured: isFirebaseClientConfigured(),
-    adminSdkConfigured: isAdminConfigured(),
-    authorizedAdminEmailsCount: getAuthorizedAdminEmails().length,
+    authorizedUsersCount: getAuthorizedAdminEmails().length,
     session: session.authenticated
       ? {
           authenticated: true,

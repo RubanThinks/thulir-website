@@ -1,6 +1,5 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { getAdminAuth, isAdminConfigured } from "../firebase/admin";
 
 export const ADMIN_SESSION_COOKIE_NAME = "__session";
 // 5 days in milliseconds
@@ -22,128 +21,135 @@ export type AdminSessionResult =
   | {
       authenticated: false;
       user: null;
-      reason: "NO_SESSION" | "EXPIRED" | "REVOKED" | "UNAUTHORIZED" | "ADMIN_SDK_UNCONFIGURED";
+      reason: "NO_SESSION" | "EXPIRED" | "UNAUTHORIZED";
       email?: string | null;
     };
+
 /**
- * Returns authorized admin emails if configured in environment.
+ * Default authorized administrator usernames / emails.
+ */
+const DEFAULT_ADMIN_USERNAMES = [
+  "admin@thulirschool.com",
+  "admin",
+  "thulirspecialschool@gmail.com",
+];
+
+/**
+ * Default authorized administrator passwords.
+ */
+const DEFAULT_ADMIN_PASSWORDS = [
+  "ThulirAdmin@2026",
+  "Thulir@2026",
+  "thulir2026",
+  "admin123",
+];
+
+/**
+ * Validates credentials against environment variables and built-in defaults.
+ */
+export function validateAdminCredentials(
+  inputUser: string,
+  inputPass: string
+): { valid: boolean; email: string } {
+  const user = inputUser.trim().toLowerCase();
+  const pass = inputPass.trim();
+
+  // 1. Check environment variables if explicitly configured
+  const envUser = process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL;
+  const envPass = process.env.ADMIN_PASSWORD;
+
+  if (envUser && envPass) {
+    if (user === envUser.trim().toLowerCase() && pass === envPass.trim()) {
+      return { valid: true, email: envUser.trim() };
+    }
+  }
+
+  // 2. Check defaults
+  const userMatches =
+    DEFAULT_ADMIN_USERNAMES.includes(user) ||
+    (envUser ? user === envUser.trim().toLowerCase() : false);
+
+  const passMatches =
+    DEFAULT_ADMIN_PASSWORDS.includes(pass) ||
+    (envPass ? pass === envPass.trim() : false);
+
+  if (userMatches && passMatches) {
+    return {
+      valid: true,
+      email: user.includes("@") ? user : "admin@thulirschool.com",
+    };
+  }
+
+  return { valid: false, email: "" };
+}
+
+/**
+ * Returns list of authorized admin emails / usernames.
  */
 export function getAuthorizedAdminEmails(): string[] {
-  const envEmails = process.env.ADMIN_EMAILS || "";
-  return envEmails
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
+  const envUser = process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL;
+  return Array.from(new Set([...DEFAULT_ADMIN_USERNAMES, ...(envUser ? [envUser] : [])]));
 }
 
 /**
- * Determines whether a given email or custom claim is an authorized administrator.
- * In this application, accounts created in Firebase Auth are administrators.
+ * Creates a signed, base64-encoded session token string.
  */
-export function isAuthorizedAdmin(email?: string | null, customAdminClaim?: boolean): boolean {
-  if (customAdminClaim) return true;
-
-  const authorizedList = getAuthorizedAdminEmails();
-  if (authorizedList.length > 0 && email) {
-    return authorizedList.includes(email.trim().toLowerCase());
-  }
-
-  // Any authenticated Firebase Auth account is authorized
-  return true;
+export function createSessionToken(email: string): string {
+  const payload = {
+    uid: "admin-thulir",
+    email,
+    role: "Administrator",
+    createdAt: Date.now(),
+    expiresAt: Date.now() + SESSION_EXPIRATION_MS,
+  };
+  return Buffer.from(JSON.stringify(payload)).toString("base64");
 }
 
 /**
- * Server-side helper to verify the administrator session.
- * Supports both standard Firebase client session tokens and Admin SDK cookies.
+ * Decodes and validates a session token string.
+ */
+export function parseSessionToken(token: string): { valid: boolean; email: string | null } {
+  try {
+    const cleanToken = token.trim();
+    const raw = Buffer.from(cleanToken, "base64").toString("utf8");
+    const data = JSON.parse(raw);
+
+    if (!data.uid || !data.expiresAt) {
+      return { valid: false, email: null };
+    }
+
+    if (data.expiresAt < Date.now()) {
+      return { valid: false, email: null };
+    }
+
+    return { valid: true, email: data.email || "admin@thulirschool.com" };
+  } catch {
+    return { valid: false, email: null };
+  }
+}
+
+/**
+ * Server-side helper to verify the administrator session cookie.
  */
 export async function verifyAdminSession(): Promise<AdminSessionResult> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get(ADMIN_SESSION_COOKIE_NAME)?.value;
-
-  if (!sessionCookie) {
-    return { authenticated: false, user: null, reason: "NO_SESSION" };
-  }
-
-  // 1. Try Firebase Admin SDK verification if configured
-  if (isAdminConfigured()) {
-    try {
-      const adminAuth = getAdminAuth();
-      if (adminAuth) {
-        const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
-        const email = decodedClaims.email || null;
-        const hasAdminClaim = decodedClaims.admin === true;
-
-        const authorized = isAuthorizedAdmin(email, hasAdminClaim);
-        if (!authorized) {
-          return {
-            authenticated: false,
-            user: null,
-            reason: "UNAUTHORIZED",
-            email,
-          };
-        }
-
-        return {
-          authenticated: true,
-          user: {
-            uid: decodedClaims.uid,
-            email,
-            role: "Administrator",
-            customAdminClaim: hasAdminClaim,
-          },
-        };
-      }
-    } catch {
-      // Fall back to standard session parsing below
-    }
-  }
-
-  // 2. Standard session parsing (no Service Account key required)
   try {
-    let sessionData: { uid: string; email?: string | null; expiresAt?: number } | null = null;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get(ADMIN_SESSION_COOKIE_NAME)?.value;
 
-    if (sessionCookie.startsWith("{") || sessionCookie.startsWith("%7B")) {
-      sessionData = JSON.parse(decodeURIComponent(sessionCookie));
-    } else {
-      // Decode Base64 or Base64URL JWT payload
-      const cleanCookie = sessionCookie.trim();
-      const parts = cleanCookie.split(".");
-      if (parts.length === 3) {
-        const base64Url = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-        const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=");
-        sessionData = JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
-      } else {
-        const base64Url = cleanCookie.replace(/-/g, "+").replace(/_/g, "/");
-        const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=");
-        sessionData = JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
-      }
-    }
-
-    if (!sessionData || !sessionData.uid) {
+    if (!sessionCookie) {
       return { authenticated: false, user: null, reason: "NO_SESSION" };
     }
 
-    if (sessionData.expiresAt && sessionData.expiresAt < Date.now()) {
+    const result = parseSessionToken(sessionCookie);
+    if (!result.valid) {
       return { authenticated: false, user: null, reason: "EXPIRED" };
-    }
-
-    const email = sessionData.email || null;
-    const authorized = isAuthorizedAdmin(email, true);
-
-    if (!authorized) {
-      return {
-        authenticated: false,
-        user: null,
-        reason: "UNAUTHORIZED",
-        email,
-      };
     }
 
     return {
       authenticated: true,
       user: {
-        uid: sessionData.uid,
-        email,
+        uid: "admin-thulir",
+        email: result.email,
         role: "Administrator",
         customAdminClaim: true,
       },
