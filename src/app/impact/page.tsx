@@ -333,13 +333,13 @@ export default function ImpactPage() {
                   </div>
                   <h3 className="text-lg font-bold text-[#101C3A]">Inclusive Schooling Support</h3>
                   <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                    Over 30 children have been prepared and supported through transitions into mainstream inclusive
+                    Over 40 children have been prepared and supported through transitions into mainstream inclusive
                     classrooms, working with partner institutions and class teachers for seamless integration.
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-gray-100 text-xs font-bold text-[#101C3A] flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  30+ transitions documented
+                  40+ transitions documented
                 </div>
               </div>
             </div>

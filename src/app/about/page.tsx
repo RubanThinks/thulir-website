@@ -15,6 +15,7 @@ import {
   GraduationCap,
   ShieldCheck,
 } from "lucide-react";
+import { StackedStaffSection } from "@/components/about/StackedStaffSection";
 
 export const metadata: Metadata = {
   title: "About Thulir Special School | Our Story & Mission",
@@ -134,7 +135,7 @@ export default function AboutPage() {
                       Present
                     </span>
                     <div>
-                      <h4 className="text-sm font-bold text-[#101C3A]">Over 100 Children &amp; 30+ Inclusive Transitions</h4>
+                      <h4 className="text-sm font-bold text-[#101C3A]">Over 500+ Children &amp; 40+ Inclusive Transitions</h4>
                       <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                         Comprehensive therapy programs and documented student transitions toward mainstream schooling.
                       </p>
@@ -153,26 +154,44 @@ export default function AboutPage() {
           <Container>
             <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden grid grid-cols-1 lg:grid-cols-12">
               {/* Founder Profile & Quick Bio */}
-              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between items-start text-left">
-                <div className="flex flex-col items-start w-full">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 border border-[#F4C542]/40 flex items-center justify-center mb-6 shadow-inner text-[#F4C542]">
-                    <GraduationCap className="w-7 h-7" />
+              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] via-[#142347] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between items-center text-center">
+                <div className="flex flex-col items-center w-full">
+                  {/* Large Circular Photo Frame */}
+                  <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-[#D4AF37] mb-6 shadow-2xl shrink-0 bg-[#101C3A]">
+                    <Image
+                      src="/assets/staffs/Dr%20S.Venkatesan.PNG"
+                      alt={siteConfig.founder.name}
+                      fill
+                      className="object-cover object-top"
+                      priority
+                    />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white">{siteConfig.founder.name}</h3>
-                  <p className="text-xs font-semibold text-[#F4C542] mt-2 tracking-wider uppercase">
+
+                  <span className="inline-block text-[11px] font-extrabold tracking-widest uppercase bg-[#D4AF37] text-[#101C3A] px-3.5 py-1 rounded-full mb-3 shadow-sm">
+                    Founder &amp; Business Owner
+                  </span>
+
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white text-center">
+                    {siteConfig.founder.name}
+                  </h3>
+
+                  <p className="text-xs font-semibold text-[#F4C542] mt-2 tracking-wider uppercase text-center">
                     {siteConfig.founder.credentials}
                   </p>
-                  <p className="text-sm text-white/80 mt-1">{siteConfig.founder.role}</p>
+
+                  <p className="text-sm text-white/80 mt-1 text-center font-medium">
+                    {siteConfig.founder.role}
+                  </p>
                 </div>
 
-                <div className="w-full mt-8 pt-6 border-t border-white/15 text-xs text-white/70 text-left space-y-2">
-                  <p className="flex items-center gap-2">
+                <div className="w-full mt-8 pt-6 border-t border-white/15 text-xs text-white/70 space-y-2 text-center">
+                  <p className="flex items-center justify-center gap-2">
                     <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>MOT (Paediatric Specialization): Santosh College of OT, Ghaziabad</span>
+                    <span>MOT (Paediatrics): Santosh College of OT, Ghaziabad</span>
                   </p>
-                  <p className="flex items-center gap-2">
+                  <p className="flex items-center justify-center gap-2">
                     <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>Certified: CSIT &amp; CAS (Paediatric Sensory &amp; Autism Intervention)</span>
+                    <span>Certified: CSIT &amp; CAS (Paediatric Sensory &amp; Autism)</span>
                   </p>
                 </div>
               </div>
@@ -318,7 +337,12 @@ export default function AboutPage() {
         </section>
 
         {/* ==================================================
-            SECTION F: LEADERSHIP AND TRUSTEES
+            SECTION F: OUR DEDICATED FACULTY & SPECIALISTS
+        ================================================== */}
+        <StackedStaffSection />
+
+        {/* ==================================================
+            SECTION G: LEADERSHIP AND TRUSTEES
         ================================================== */}
         <section className="py-20 lg:py-28 bg-[#FBFBFA] border-b border-[#E2E8F0]">
           <Container>

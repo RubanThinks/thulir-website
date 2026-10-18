@@ -7,7 +7,6 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
-import { EventsShowcase } from "@/components/gallery/EventsShowcase";
 import { ArrowRight, Heart } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -60,9 +59,6 @@ export default function GalleryPage() {
             <GalleryGrid />
           </Container>
         </section>
-
-        {/* Live School Events Showcase */}
-        <EventsShowcase />
 
         {/* ==================================================
             CLOSING CALL TO ACTION

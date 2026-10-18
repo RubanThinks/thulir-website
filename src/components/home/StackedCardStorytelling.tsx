@@ -73,34 +73,32 @@ export function StackedCardStorytelling() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Only register and run ScrollTrigger in browser
     if (typeof window === "undefined") return;
 
-    // Check prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    // Don't pin on mobile devices or if user prefers reduced motion
-    const isMobile = window.innerWidth < 1024;
-    if (prefersReducedMotion || isMobile) {
-      return;
-    }
+    if (prefersReducedMotion) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
+      if (cards.length === 0) return;
+
+      const isMobile = window.innerWidth < 768;
+      const scrollStep = isMobile ? 180 : 250;
 
       cards.forEach((card, index) => {
-        if (index === 0) return; // Keep first card static as base
+        if (index === 0) return; // Base card stays static at the bottom of the stack
 
         gsap.fromTo(
           card,
           {
-            yPercent: 120,
+            yPercent: 110,
             opacity: 0.7,
-            scale: 0.95,
+            scale: 0.96,
           },
           {
             yPercent: 0,
@@ -109,36 +107,37 @@ export function StackedCardStorytelling() {
             ease: "power2.out",
             scrollTrigger: {
               trigger: containerRef.current,
-              start: () => `top+=${index * 240} top`,
-              end: () => `top+=${(index + 1) * 240} top`,
-              scrub: 0.8,
+              start: () => `top+=${index * scrollStep} top+=90`,
+              end: () => `top+=${(index + 1) * scrollStep} top+=90`,
+              scrub: 0.6,
               invalidateOnRefresh: true,
             },
           }
         );
       });
 
-      // Pin the cards wrapper smoothly
+      // Pin the cards wrapper smoothly across both desktop and mobile
       ScrollTrigger.create({
         trigger: containerRef.current,
-        start: "top top+=100",
-        end: () => `+=${cards.length * 240}`,
+        start: "top top+=90",
+        end: () => `+=${cards.length * scrollStep}`,
         pin: true,
         pinSpacing: true,
         scrub: true,
+        anticipatePin: 1,
       });
     }, containerRef);
 
     return () => {
-      ctx.revert(); // Clean up all GSAP timelines and ScrollTriggers
+      ctx.revert();
     };
   }, []);
 
   return (
-    <section className="py-24 bg-[#F1F4F9]/60 border-t border-[#E2E8F0] relative overflow-hidden">
+    <section className="py-20 sm:py-24 bg-[#F1F4F9]/60 border-t border-[#E2E8F0] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
           <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#8F2638] bg-[#8F2638]/5 px-3.5 py-1.5 rounded-full border border-[#8F2638]/15 mb-3">
             Our Core Educational Philosophy
           </span>
@@ -151,10 +150,10 @@ export function StackedCardStorytelling() {
           </p>
         </div>
 
-        {/* Stacked Cards Area */}
+        {/* Stacked Cards Area - Perfectly stacked on both mobile and desktop */}
         <div
           ref={containerRef}
-          className="relative max-w-4xl mx-auto min-h-[460px] lg:h-[460px]"
+          className="relative max-w-4xl mx-auto h-[480px] sm:h-[440px] md:h-[420px]"
         >
           {STORY_PANELS.map((panel, idx) => {
             const Icon = panel.icon;
@@ -164,16 +163,13 @@ export function StackedCardStorytelling() {
                 ref={(el) => {
                   cardsRef.current[idx] = el;
                 }}
-                className={`w-full rounded-3xl p-8 sm:p-12 shadow-xl border border-white/10 ${panel.accentBg} ${
-                  // On desktop with GSAP, absolute overlay; on mobile/reduced motion, natural stack with margin
-                  "lg:absolute lg:inset-0 mb-6 lg:mb-0"
-                } flex flex-col justify-between transition-shadow`}
+                className={`absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-10 md:p-12 shadow-2xl border border-white/10 ${panel.accentBg} flex flex-col justify-between transition-shadow will-change-transform`}
                 style={{
                   zIndex: idx + 1,
                 }}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <span
                       className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white/10 border border-white/20 ${panel.tagColor}`}
                     >
@@ -184,16 +180,16 @@ export function StackedCardStorytelling() {
                     </div>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-4">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-3 sm:mb-4">
                     {panel.title}
                   </h3>
 
-                  <p className="text-base sm:text-lg text-white/85 leading-relaxed font-normal">
+                  <p className="text-sm sm:text-base md:text-lg text-white/85 leading-relaxed font-normal">
                     {panel.description}
                   </p>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-white/15 flex items-center justify-between text-xs text-white/70">
+                <div className="mt-6 pt-4 sm:pt-6 border-t border-white/15 flex items-center justify-between text-xs text-white/70">
                   <span>Thulir Special School • Guiding Principles</span>
                   <span className="font-semibold text-white/90">Step {idx + 1} of 5</span>
                 </div>

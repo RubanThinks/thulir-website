@@ -52,7 +52,7 @@ export const siteConfig = {
   founder: {
     name: "Dr. S. Venkatesan",
     credentials: "MOT, CSIT, CAS (Paediatric Occupational Therapist)",
-    role: "Founder and Managing Director",
+    role: "Founder & Business Owner, Managing Director",
     bioSummary:
       "A compassionate paediatric occupational therapist and first-generation graduate from Kallakurichi district. Dr. Venkatesan earned his Master of Occupational Therapy with Paediatric Specialization from Santosh College of Occupational Therapy, Ghaziabad. He founded Thulir with an unwavering commitment to making evidence-based, compassionate paediatric therapy and special education accessible to every family.",
   },
@@ -60,7 +60,7 @@ export const siteConfig = {
   leadership: [
     {
       name: "Dr. S. Venkatesan",
-      role: "Founder & Managing Director",
+      role: "Founder & Business Owner, Managing Director",
     },
     {
       name: "Dr. E. Premkumar",
@@ -79,8 +79,8 @@ export const siteConfig = {
   // Reported in February 2026 Profile
   verifiedMetrics: {
     yearsOfService: "9+",
-    studentsHandled: "100+",
-    inclusiveTransitions: "30+", // Students transitioning toward mainstream schooling
+    studentsHandled: "500+",
+    inclusiveTransitions: "40+", // Students transitioning toward mainstream schooling
     branches: "2",
     walkathonParticipants: "1,000", // April 6 Race Course Walkathon
     communityMedicalAssistanceINR: "1.5 Lakhs", // Emergency surgery support for K. Sharvin
@@ -99,7 +99,7 @@ export const siteConfig = {
     mobiles: ["+91 96599 34210", "+91 89255 14210"],
     whatsappNumber: "919659934210", 
     email: "thulirspecialschool@gmail.com",
-    timings: "Monday - Saturday: 9:00 AM - 5:30 PM (Sessions by prior appointment)",
+    timings: "Monday - Saturday: 9:00 AM - 9:00 PM (Sessions by prior appointment)",
   },
 
   // Official clinical services and therapies from Thulir Centre

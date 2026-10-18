@@ -294,11 +294,13 @@ export default function AdminGalleryPage() {
       <div className="flex flex-wrap items-center gap-2">
         {[
           { id: "all", label: "All Collections" },
-          { id: "campus", label: "Campus & Sensory Rooms" },
-          { id: "therapy", label: "Clinical Therapies" },
-          { id: "events", label: "Events & Celebrations" },
-          { id: "field-trips", label: "Community Field Trips" },
           { id: "achievements", label: "Student Milestones" },
+          { id: "therapy", label: "Clinical Therapies" },
+          { id: "celebrations", label: "Festivals & Celebrations" },
+          { id: "field-trips", label: "Community Field Trips" },
+          { id: "life-skills", label: "Daily Life Skills" },
+          { id: "campus", label: "Campus & Sensory Rooms" },
+          { id: "events", label: "Legacy Events" },
         ].map((cat) => (
           <button
             key={cat.id}
@@ -508,11 +510,13 @@ export default function AdminGalleryPage() {
                     onChange={(e) => setFormCategory(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white focus:outline-none focus:border-[#101C3A]"
                   >
-                    <option value="campus">Campus & Sensory Rooms</option>
+                    <option value="achievements">Student Milestones & Awards</option>
                     <option value="therapy">Clinical Therapies</option>
-                    <option value="events">Events & Celebrations</option>
+                    <option value="celebrations">Festivals & Celebrations</option>
                     <option value="field-trips">Community Field Trips</option>
-                    <option value="achievements">Student Milestones</option>
+                    <option value="life-skills">Daily Life Skills</option>
+                    <option value="campus">Campus & Sensory Rooms</option>
+                    <option value="events">Events</option>
                   </select>
                 </div>
               </div>

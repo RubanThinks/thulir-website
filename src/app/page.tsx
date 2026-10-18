@@ -192,14 +192,29 @@ export default function Home() {
               {/* Founder Context Column */}
               <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#F4C542]">Our Roots &amp; Founder</span>
-                  <h3 className="text-2xl font-bold text-white mt-2">{siteConfig.founder.name}</h3>
-                  <p className="text-xs font-semibold text-[#F4C542] mt-1 tracking-wider uppercase">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shrink-0 shadow-md">
+                      <Image
+                        src="/assets/staffs/Dr%20S.Venkatesan.PNG"
+                        alt={siteConfig.founder.name}
+                        fill
+                        className="object-cover object-top"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#F4C542]">Our Roots &amp; Founder</span>
+                      <h3 className="text-xl font-extrabold text-white leading-tight">{siteConfig.founder.name}</h3>
+                      <p className="text-[11px] font-bold text-[#F4C542] mt-0.5 tracking-wider uppercase">
+                        Founder &amp; Business Owner
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-white/80 font-medium">
                     {siteConfig.founder.credentials}
                   </p>
-                  <p className="text-xs text-white/70 mt-0.5">{siteConfig.founder.role}</p>
 
-                  <div className="mt-6 pt-6 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal">
+                  <div className="mt-5 pt-5 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal">
                     <p>
                       Dr. Venkatesan is a paediatric occupational therapist who completed his Master of Occupational
                       Therapy with Paediatric Specialization from Santosh College, Ghaziabad.
@@ -249,7 +264,7 @@ export default function Home() {
                     href="/about"
                     className="text-sm font-bold text-[#8F2638] hover:text-[#101C3A] inline-flex items-center gap-1.5 transition-colors"
                   >
-                    <span>Discover Our Story</span>
+                    <span>Meet All 19 Clinical Specialists &amp; Faculty</span>
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
