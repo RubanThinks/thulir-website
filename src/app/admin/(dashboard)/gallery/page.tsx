@@ -65,8 +65,11 @@ export default function AdminGalleryPage() {
     try {
       const params = new URLSearchParams();
       if (categoryFilter !== "all") params.append("category", categoryFilter);
+      params.append("_t", String(Date.now()));
 
-      const res = await fetch(`/api/admin/gallery?${params.toString()}`);
+      const res = await fetch(`/api/admin/gallery?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to load gallery items.");
       const data = await res.json();
       setItems(data.items || []);
@@ -83,8 +86,11 @@ export default function AdminGalleryPage() {
       try {
         const params = new URLSearchParams();
         if (categoryFilter !== "all") params.append("category", categoryFilter);
+        params.append("_t", String(Date.now()));
 
-        const res = await fetch(`/api/admin/gallery?${params.toString()}`);
+        const res = await fetch(`/api/admin/gallery?${params.toString()}`, {
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to load gallery items.");
         const data = await res.json();
         if (active) setItems(data.items || []);
@@ -170,35 +176,55 @@ export default function AdminGalleryPage() {
     setUploadProgress(20);
 
     try {
-      if (editingItem && !fileToUpload) {
-        // Update metadata only
-        setUploadProgress(60);
-        const patchRes = await fetch(`/api/admin/gallery/${editingItem.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: formTitle,
-            caption: formCaption,
-            altText: formAltText,
-            category: formCategory,
-            isPublished: formPublished,
-            featuredOnHome: formFeatured,
-            order: formOrder,
-          }),
-        });
+      if (editingItem) {
+        // ALWAYS update existing item via PATCH
+        setUploadProgress(50);
+        if (fileToUpload) {
+          const formData = new FormData();
+          formData.append("file", fileToUpload);
+          formData.append("title", formTitle);
+          formData.append("caption", formCaption);
+          formData.append("altText", formAltText);
+          formData.append("category", formCategory);
+          formData.append("isPublished", String(formPublished));
+          formData.append("featuredOnHome", String(formFeatured));
+          formData.append("order", String(formOrder));
 
-        if (!patchRes.ok) {
-          const errData = await patchRes.json().catch(() => ({}));
-          throw new Error(errData.error || "Failed to update gallery record.");
+          const patchRes = await fetch(`/api/admin/gallery/${editingItem.id}`, {
+            method: "PATCH",
+            body: formData,
+          });
+
+          if (!patchRes.ok) {
+            const errData = await patchRes.json().catch(() => ({}));
+            throw new Error(errData.error || "Failed to update gallery record.");
+          }
+        } else {
+          const patchRes = await fetch(`/api/admin/gallery/${editingItem.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: formTitle,
+              caption: formCaption,
+              altText: formAltText,
+              category: formCategory,
+              isPublished: formPublished,
+              featuredOnHome: formFeatured,
+              order: formOrder,
+            }),
+          });
+
+          if (!patchRes.ok) {
+            const errData = await patchRes.json().catch(() => ({}));
+            throw new Error(errData.error || "Failed to update gallery record.");
+          }
         }
       } else {
-        // Fast direct multipart upload and save
+        // Create new gallery item via POST
         setUploadProgress(40);
         const formData = new FormData();
         if (fileToUpload) {
           formData.append("file", fileToUpload);
-        } else if (editingItem?.imageUrl) {
-          formData.append("imageUrl", editingItem.imageUrl);
         }
         formData.append("title", formTitle);
         formData.append("caption", formCaption);

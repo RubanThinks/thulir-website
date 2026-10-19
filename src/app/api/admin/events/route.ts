@@ -3,13 +3,31 @@ import { verifyAdminSession } from "@/lib/auth/admin";
 import { getEventsList, saveEvent } from "@/lib/services/events";
 import { uploadImageBuffer } from "@/lib/cloudinary/server";
 
+
 export async function GET() {
   try {
     const events = await getEventsList();
-    return NextResponse.json({ events });
+    return NextResponse.json(
+      { events },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error: unknown) {
     console.error("[Admin Events GET Error]:", error);
-    return NextResponse.json({ error: "Failed to retrieve events." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to retrieve events." },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   }
 }
 

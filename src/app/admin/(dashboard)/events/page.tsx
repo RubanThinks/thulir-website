@@ -71,7 +71,9 @@ export default function AdminEventsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/events");
+      const res = await fetch(`/api/admin/events?_t=${Date.now()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to load events.");
       const data = await res.json();
       setEvents(data.events || []);
@@ -86,7 +88,9 @@ export default function AdminEventsPage() {
     let active = true;
     async function load() {
       try {
-        const res = await fetch("/api/admin/events");
+        const res = await fetch(`/api/admin/events?_t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to load events.");
         const data = await res.json();
         if (active) setEvents(data.events || []);

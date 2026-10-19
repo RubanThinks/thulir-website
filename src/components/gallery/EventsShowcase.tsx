@@ -4,14 +4,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Calendar,
   MapPin,
-  Clock,
   ArrowRight,
-  Users,
   Trophy,
-  Sparkles,
-  Camera,
   Layers,
 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -20,13 +15,11 @@ interface EventItem {
   id: string;
   title: string;
   slug: string;
-  eventDate: string;
   location: string;
   category: string;
   summary: string;
   coverImageUrl?: string;
   photos?: string[];
-  participantCount?: number;
 }
 
 const EVENT_CATEGORY_FILTERS = [
@@ -47,7 +40,9 @@ export function EventsShowcase() {
   useEffect(() => {
     async function loadEvents() {
       try {
-        const res = await fetch("/api/events");
+        const res = await fetch(`/api/events?_t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (res.ok) {
           const data = await res.json();
           setEvents(data.events || []);
@@ -161,48 +156,19 @@ export function EventsShowcase() {
                         {evt.category}
                       </span>
                     </div>
-
-                    {/* Participant Counter */}
-                    {evt.participantCount && (
-                      <div className="absolute top-3.5 right-3.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white flex items-center gap-1.5 border border-white/20">
-                        <Users className="w-3 h-3 text-[#F4C542]" />
-                        <span>{evt.participantCount}+ Participants</span>
-                      </div>
-                    )}
-
-                    {/* Extra Photos Badge */}
-                    {evt.photos && evt.photos.length > 0 && (
-                      <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-white/90 flex items-center gap-1">
-                        <Camera className="w-3 h-3 text-[#F4C542]" />
-                        <span>+{evt.photos.length} photos</span>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <div className="h-32 bg-gradient-to-br from-[#101C3A] to-[#1c2e56] text-white p-6 flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#F4C542]">
                       {evt.category}
                     </span>
-                    <Calendar className="w-6 h-6 text-white/50" />
                   </div>
                 )}
 
                 {/* Content Area */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    {/* Date Tag */}
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#8F2638]">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>
-                        {new Date(evt.eventDate).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </div>
-
-                    <h3 className="text-base sm:text-lg font-black text-[#101C3A] mt-2 group-hover:text-[#8F2638] transition-colors leading-snug">
+                    <h3 className="text-base sm:text-lg font-black text-[#101C3A] mt-1 group-hover:text-[#8F2638] transition-colors leading-snug">
                       {evt.title}
                     </h3>
 

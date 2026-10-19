@@ -51,7 +51,9 @@ export function GalleryGrid() {
     async function loadGallery() {
       setLoading(true);
       try {
-        const res = await fetch("/api/gallery");
+        const res = await fetch(`/api/gallery?_t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (res.ok) {
           const data = await res.json();
           setItems(data.items || []);

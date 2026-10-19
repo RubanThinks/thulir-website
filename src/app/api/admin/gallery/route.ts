@@ -3,18 +3,36 @@ import { verifyAdminSession } from "@/lib/auth/admin";
 import { getGalleryItems, addGalleryItem } from "@/lib/services/gallery";
 import { uploadImageBuffer } from "@/lib/cloudinary/server";
 
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get("category") || undefined;
     const items = await getGalleryItems(category, false);
-    return NextResponse.json({ items });
+    return NextResponse.json(
+      { items },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error: unknown) {
     if ((error as { digest?: string })?.digest === "NEXT_PRERENDER_INTERRUPTED") {
       throw error;
     }
     console.error("[Admin Gallery GET Error]:", error);
-    return NextResponse.json({ error: "Failed to retrieve gallery items." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to retrieve gallery items." },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   }
 }
 

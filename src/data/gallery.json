@@ -7,13 +7,18 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0009.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0009.jpg.jpeg",
     "category": "achievements",
-    "tags": ["Super Singer Junior", "Talent Audition", "Musical Inclusion", "Coimbatore"],
+    "tags": [
+      "Super Singer Junior",
+      "Talent Audition",
+      "Musical Inclusion",
+      "Coimbatore"
+    ],
     "dateCaptured": "2024-08-10",
     "isPublished": true,
     "featuredOnHome": true,
     "order": 1,
     "createdAt": "2024-08-10T10:00:00.000Z",
-    "updatedAt": "2024-08-10T10:00:00.000Z"
+    "updatedAt": "2026-10-19T05:26:45.920Z"
   },
   {
     "id": "gallery-union-minister-sports-honor",
@@ -23,7 +28,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0012.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0012.jpg.jpeg",
     "category": "achievements",
-    "tags": ["Union Minister", "Ramakrishna Mission", "Adapted Sports", "Institutional Honor"],
+    "tags": [
+      "Union Minister",
+      "Ramakrishna Mission",
+      "Adapted Sports",
+      "Institutional Honor"
+    ],
     "dateCaptured": "2024-06-18",
     "isPublished": true,
     "featuredOnHome": true,
@@ -39,7 +49,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0026.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0026.jpg.jpeg",
     "category": "achievements",
-    "tags": ["Interschool Trophy", "INQ-Fest Talentia", "Champions", "Cultural Arts"],
+    "tags": [
+      "Interschool Trophy",
+      "INQ-Fest Talentia",
+      "Champions",
+      "Cultural Arts"
+    ],
     "dateCaptured": "2024-09-14",
     "isPublished": true,
     "featuredOnHome": true,
@@ -55,7 +70,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0015.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0015.jpg.jpeg",
     "category": "achievements",
-    "tags": ["Kovai Marathon", "Athletics", "Medal Winners", "Decathlon"],
+    "tags": [
+      "Kovai Marathon",
+      "Athletics",
+      "Medal Winners",
+      "Decathlon"
+    ],
     "dateCaptured": "2024-05-20",
     "isPublished": true,
     "featuredOnHome": true,
@@ -71,7 +91,11 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0019.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0019.jpg.jpeg",
     "category": "achievements",
-    "tags": ["State Recognition", "Indra Ganesan College", "Cultural Memento"],
+    "tags": [
+      "State Recognition",
+      "Indra Ganesan College",
+      "Cultural Memento"
+    ],
     "dateCaptured": "2024-07-28",
     "isPublished": true,
     "featuredOnHome": false,
@@ -87,7 +111,12 @@
     "imageUrl": "/assets/images/IMG-20240705-WA0012.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20240705-WA0012.jpg.jpeg",
     "category": "events",
-    "tags": ["Adaptive Athletics", "Sprint Race", "Gross Motor", "Sports Day"],
+    "tags": [
+      "Adaptive Athletics",
+      "Sprint Race",
+      "Gross Motor",
+      "Sports Day"
+    ],
     "dateCaptured": "2024-07-05",
     "isPublished": true,
     "featuredOnHome": true,
@@ -103,7 +132,11 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0016.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0016.jpg.jpeg",
     "category": "events",
-    "tags": ["Medal Ceremony", "Sports Day", "Athletic Triumphs"],
+    "tags": [
+      "Medal Ceremony",
+      "Sports Day",
+      "Athletic Triumphs"
+    ],
     "dateCaptured": "2024-07-05",
     "isPublished": true,
     "featuredOnHome": false,
@@ -119,7 +152,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0006.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0006.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Children's Day", "Park Carnival", "Mickey Mouse", "Dance & Joy"],
+    "tags": [
+      "Children's Day",
+      "Park Carnival",
+      "Mickey Mouse",
+      "Dance & Joy"
+    ],
     "dateCaptured": "2024-11-14",
     "isPublished": true,
     "featuredOnHome": true,
@@ -135,7 +173,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0021.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0021.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Pongal", "Harvest Festival", "Tamil Tradition", "Community Feast"],
+    "tags": [
+      "Pongal",
+      "Harvest Festival",
+      "Tamil Tradition",
+      "Community Feast"
+    ],
     "dateCaptured": "2024-01-12",
     "isPublished": true,
     "featuredOnHome": true,
@@ -151,7 +194,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0006.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0006.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Pongal 2024", "Family Partnership", "Cultural Gathering"],
+    "tags": [
+      "Pongal 2024",
+      "Family Partnership",
+      "Cultural Gathering"
+    ],
     "dateCaptured": "2024-01-12",
     "isPublished": true,
     "featuredOnHome": false,
@@ -167,7 +214,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0021.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0021.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Diwali", "Festival of Lights", "Sparklers", "Sensory Wonder"],
+    "tags": [
+      "Diwali",
+      "Festival of Lights",
+      "Sparklers",
+      "Sensory Wonder"
+    ],
     "dateCaptured": "2024-10-31",
     "isPublished": true,
     "featuredOnHome": true,
@@ -183,7 +235,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0016.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0016.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Independence Day", "Patriotic Arts", "Tactile Painting", "National Pride"],
+    "tags": [
+      "Independence Day",
+      "Patriotic Arts",
+      "Tactile Painting",
+      "National Pride"
+    ],
     "dateCaptured": "2024-08-15",
     "isPublished": true,
     "featuredOnHome": true,
@@ -199,7 +256,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0023.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0023.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Birthday Celebration", "Social Milestones", "Classroom Friendship"],
+    "tags": [
+      "Birthday Celebration",
+      "Social Milestones",
+      "Classroom Friendship"
+    ],
     "dateCaptured": "2024-09-08",
     "isPublished": true,
     "featuredOnHome": false,
@@ -215,7 +276,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0022.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0022.jpg.jpeg",
     "category": "celebrations",
-    "tags": ["Milestone Festivities", "Balloon Activity", "Social Engagement"],
+    "tags": [
+      "Milestone Festivities",
+      "Balloon Activity",
+      "Social Engagement"
+    ],
     "dateCaptured": "2024-01-01",
     "isPublished": true,
     "featuredOnHome": false,
@@ -231,7 +296,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0024.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0024.jpg.jpeg",
     "category": "events",
-    "tags": ["Autism Awareness", "Coimbatore Police", "Community Advocacy", "Tree Saplings"],
+    "tags": [
+      "Autism Awareness",
+      "Coimbatore Police",
+      "Community Advocacy",
+      "Tree Saplings"
+    ],
     "dateCaptured": "2024-04-02",
     "isPublished": true,
     "featuredOnHome": true,
@@ -247,7 +317,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0015.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0015.jpg.jpeg",
     "category": "events",
-    "tags": ["Breaking Barriers", "ABLEity", "Kumaraguru", "Inclusion Fest"],
+    "tags": [
+      "Breaking Barriers",
+      "ABLEity",
+      "Kumaraguru",
+      "Inclusion Fest"
+    ],
     "dateCaptured": "2024-02-24",
     "isPublished": true,
     "featuredOnHome": false,
@@ -263,7 +338,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0024.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0024.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Double-Decker Bus", "Community Outing", "Transit Skills", "Coimbatore"],
+    "tags": [
+      "Double-Decker Bus",
+      "Community Outing",
+      "Transit Skills",
+      "Coimbatore"
+    ],
     "dateCaptured": "2024-11-28",
     "isPublished": true,
     "featuredOnHome": true,
@@ -279,7 +359,11 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0011.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0011.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Upper Deck Ride", "Sensory Breeze", "Urban Navigation"],
+    "tags": [
+      "Upper Deck Ride",
+      "Sensory Breeze",
+      "Urban Navigation"
+    ],
     "dateCaptured": "2024-11-28",
     "isPublished": true,
     "featuredOnHome": false,
@@ -295,7 +379,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0020.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0020.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Trichy Junction", "Railway Journey", "Life Skills", "Intercity Outing"],
+    "tags": [
+      "Trichy Junction",
+      "Railway Journey",
+      "Life Skills",
+      "Intercity Outing"
+    ],
     "dateCaptured": "2024-03-10",
     "isPublished": true,
     "featuredOnHome": true,
@@ -311,7 +400,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0019.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0019.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Public Transit", "Platform Orientation", "Independent Travel Skills"],
+    "tags": [
+      "Public Transit",
+      "Platform Orientation",
+      "Independent Travel Skills"
+    ],
     "dateCaptured": "2024-03-10",
     "isPublished": true,
     "featuredOnHome": false,
@@ -327,7 +420,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0016.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0016.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Adiyogi", "Isha Coimbatore", "Nature Outing", "Community Trip"],
+    "tags": [
+      "Adiyogi",
+      "Isha Coimbatore",
+      "Nature Outing",
+      "Community Trip"
+    ],
     "dateCaptured": "2024-02-18",
     "isPublished": true,
     "featuredOnHome": true,
@@ -343,7 +441,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0017.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0017.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Botanical Garden", "Sensory Nature Play", "Family Picnic"],
+    "tags": [
+      "Botanical Garden",
+      "Sensory Nature Play",
+      "Family Picnic"
+    ],
     "dateCaptured": "2024-02-18",
     "isPublished": true,
     "featuredOnHome": false,
@@ -359,7 +461,12 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0014.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0014.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Traffic Park", "Road Safety", "Zebra Crossing", "Community Living"],
+    "tags": [
+      "Traffic Park",
+      "Road Safety",
+      "Zebra Crossing",
+      "Community Living"
+    ],
     "dateCaptured": "2024-04-18",
     "isPublished": true,
     "featuredOnHome": true,
@@ -375,7 +482,11 @@
     "imageUrl": "/assets/images/IMG-20250312-WA0026.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250312-WA0026.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Traffic Light Recognition", "Pedestrian Training", "Practical Safety"],
+    "tags": [
+      "Traffic Light Recognition",
+      "Pedestrian Training",
+      "Practical Safety"
+    ],
     "dateCaptured": "2024-04-18",
     "isPublished": true,
     "featuredOnHome": false,
@@ -391,7 +502,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0010.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0010.jpg.jpeg",
     "category": "field-trips",
-    "tags": ["Hydro-Sensory", "Waterfall Excursion", "Tactile Stimulation", "Joy"],
+    "tags": [
+      "Hydro-Sensory",
+      "Waterfall Excursion",
+      "Tactile Stimulation",
+      "Joy"
+    ],
     "dateCaptured": "2024-06-25",
     "isPublished": true,
     "featuredOnHome": true,
@@ -407,7 +523,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0011.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0011.jpg.jpeg",
     "category": "life-skills",
-    "tags": ["Craft Therapy", "Fine Motor Art", "Family Keepsake", "Self-Expression"],
+    "tags": [
+      "Craft Therapy",
+      "Fine Motor Art",
+      "Family Keepsake",
+      "Self-Expression"
+    ],
     "dateCaptured": "2024-06-25",
     "isPublished": true,
     "featuredOnHome": false,
@@ -423,7 +544,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0021.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0021.jpg.jpeg",
     "category": "therapy",
-    "tags": ["Physiotherapy", "Joint Mobilization", "Gait Training", "Rehabilitation"],
+    "tags": [
+      "Physiotherapy",
+      "Joint Mobilization",
+      "Gait Training",
+      "Rehabilitation"
+    ],
     "dateCaptured": "2024-08-05",
     "isPublished": true,
     "featuredOnHome": true,
@@ -439,7 +565,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0026.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0026.jpg.jpeg",
     "category": "therapy",
-    "tags": ["Vestibular Therapy", "Dynamic Balance", "Dr. S. Venkatesan", "Sensory Integration"],
+    "tags": [
+      "Vestibular Therapy",
+      "Dynamic Balance",
+      "Dr. S. Venkatesan",
+      "Sensory Integration"
+    ],
     "dateCaptured": "2024-08-12",
     "isPublished": true,
     "featuredOnHome": true,
@@ -455,7 +586,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0024.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0024.jpg.jpeg",
     "category": "therapy",
-    "tags": ["Deep Pressure", "Proprioception", "Sensory Calming", "Occupational Therapy"],
+    "tags": [
+      "Deep Pressure",
+      "Proprioception",
+      "Sensory Calming",
+      "Occupational Therapy"
+    ],
     "dateCaptured": "2024-08-14",
     "isPublished": true,
     "featuredOnHome": false,
@@ -471,7 +607,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0018.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0018.jpg.jpeg",
     "category": "therapy",
-    "tags": ["Speech Therapy", "Oral-Motor", "Articulation", "Sensory Massage"],
+    "tags": [
+      "Speech Therapy",
+      "Oral-Motor",
+      "Articulation",
+      "Sensory Massage"
+    ],
     "dateCaptured": "2024-08-20",
     "isPublished": true,
     "featuredOnHome": true,
@@ -487,7 +628,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0022.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0022.jpg.jpeg",
     "category": "life-skills",
-    "tags": ["ADL Training", "Fine Motor", "Independence", "Dressing Skills"],
+    "tags": [
+      "ADL Training",
+      "Fine Motor",
+      "Independence",
+      "Dressing Skills"
+    ],
     "dateCaptured": "2024-08-22",
     "isPublished": true,
     "featuredOnHome": true,
@@ -503,7 +649,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0023.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0023.jpg.jpeg",
     "category": "campus",
-    "tags": ["Special Education", "Early Literacy", "Flashcards", "Autism Learning"],
+    "tags": [
+      "Special Education",
+      "Early Literacy",
+      "Flashcards",
+      "Autism Learning"
+    ],
     "dateCaptured": "2024-08-25",
     "isPublished": true,
     "featuredOnHome": false,
@@ -519,7 +670,11 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0027.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0027.jpg.jpeg",
     "category": "therapy",
-    "tags": ["Fine Motor", "Hand-Eye Coordination", "Graded Play"],
+    "tags": [
+      "Fine Motor",
+      "Hand-Eye Coordination",
+      "Graded Play"
+    ],
     "dateCaptured": "2024-08-28",
     "isPublished": true,
     "featuredOnHome": false,
@@ -535,7 +690,12 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0025.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0025.jpg.jpeg",
     "category": "campus",
-    "tags": ["Dr. S. Venkatesan", "Clinical Consultation", "Warmth & Trust", "Compassion"],
+    "tags": [
+      "Dr. S. Venkatesan",
+      "Clinical Consultation",
+      "Warmth & Trust",
+      "Compassion"
+    ],
     "dateCaptured": "2024-09-02",
     "isPublished": true,
     "featuredOnHome": true,
@@ -551,7 +711,11 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0017.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0017.jpg.jpeg",
     "category": "events",
-    "tags": ["Science Expo", "Tactile Learning", "Student Exhibition"],
+    "tags": [
+      "Science Expo",
+      "Tactile Learning",
+      "Student Exhibition"
+    ],
     "dateCaptured": "2024-10-15",
     "isPublished": true,
     "featuredOnHome": false,
@@ -567,7 +731,11 @@
     "imageUrl": "/assets/images/IMG-20250321-WA0008.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250321-WA0008.jpg.jpeg",
     "category": "campus",
-    "tags": ["Corporate Partnership", "Community Engagement", "Campus Visitors"],
+    "tags": [
+      "Corporate Partnership",
+      "Community Engagement",
+      "Campus Visitors"
+    ],
     "dateCaptured": "2024-11-05",
     "isPublished": true,
     "featuredOnHome": false,
@@ -583,7 +751,12 @@
     "imageUrl": "/assets/images/IMG-20250311-WA0013.jpg.jpeg",
     "thumbnailUrl": "/assets/images/IMG-20250311-WA0013.jpg.jpeg",
     "category": "events",
-    "tags": ["Yoga Day", "Adapted Postures", "Mindfulness", "Assembly"],
+    "tags": [
+      "Yoga Day",
+      "Adapted Postures",
+      "Mindfulness",
+      "Assembly"
+    ],
     "dateCaptured": "2024-06-21",
     "isPublished": true,
     "featuredOnHome": false,
@@ -599,7 +772,12 @@
     "imageUrl": "/assets/images/thulir_team_board.jpg",
     "thumbnailUrl": "/assets/images/thulir_team_board.jpg",
     "category": "campus",
-    "tags": ["Clinical Faculty", "Leadership", "Special Educators", "Care Staff"],
+    "tags": [
+      "Clinical Faculty",
+      "Leadership",
+      "Special Educators",
+      "Care Staff"
+    ],
     "dateCaptured": "2024-07-01",
     "isPublished": true,
     "featuredOnHome": true,
