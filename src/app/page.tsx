@@ -216,8 +216,8 @@ export default function Home() {
 
                   <div className="mt-5 pt-5 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal">
                     <p>
-                      Dr. Venkatesan is a paediatric occupational therapist who completed his Master of Occupational
-                      Therapy with Paediatric Specialization from Santosh College, Ghaziabad.
+                      Dr. Venkatesan completed his BOT from KMCH College of Occupational Therapy (The Tamil Nadu Dr. M.G.R. Medical University)
+                      and his MOT (Paediatrics) from Santosh Medical College, Ghaziabad (Atal Bihari Vajpayee Medical University).
                     </p>
                     <p>
                       His early professional journey highlighted the significant challenges families face in accessing

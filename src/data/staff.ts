@@ -20,7 +20,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
     category: "founder",
     fileName: "Dr S.Venkatesan.PNG",
     image: "/assets/staffs/Dr%20S.Venkatesan.PNG",
-    qualifications: "MOT (Paediatrics), Certified CSIT & CAS",
+    qualifications: "BOT (KMCH, The Tamil Nadu Dr. M.G.R. Med Univ), MOT (Santosh Med College, ABVMU)",
     isFounder: true,
   },
   {

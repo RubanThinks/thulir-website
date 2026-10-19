@@ -184,15 +184,19 @@ export default function AboutPage() {
                   </p>
                 </div>
 
-                <div className="w-full mt-8 pt-6 border-t border-white/15 text-xs text-white/70 space-y-2 text-center">
-                  <p className="flex items-center justify-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>MOT (Paediatrics): Santosh College of OT, Ghaziabad</span>
-                  </p>
-                  <p className="flex items-center justify-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0" />
-                    <span>Certified: CSIT &amp; CAS (Paediatric Sensory &amp; Autism)</span>
-                  </p>
+                <div className="w-full mt-8 pt-6 border-t border-white/15 text-xs text-white/80 space-y-2.5 text-center">
+                  <div className="flex items-start justify-center gap-2 text-left sm:text-center">
+                    <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0 mt-0.5" />
+                    <span>
+                      <strong className="text-white">BOT:</strong> KMCH College of Occupational Therapy, The Tamil Nadu Dr. M.G.R. Medical University
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-center gap-2 text-left sm:text-center">
+                    <GraduationCap className="w-4 h-4 text-[#F4C542] shrink-0 mt-0.5" />
+                    <span>
+                      <strong className="text-white">MOT (Paediatrics):</strong> Santosh Medical College, Ghaziabad (Atal Bihari Vajpayee Medical University)
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -211,14 +215,16 @@ export default function AboutPage() {
                     commitment to service.
                   </p>
                   <p>
-                    He earned his Master of Occupational Therapy with Paediatric Specialization from Santosh College of
-                    Occupational Therapy, Uttar Pradesh. Guided by a strong belief that early intervention can transform
-                    a child&apos;s developmental trajectory, he dedicated his career to children with autism and developmental challenges.
+                    He pursued his Bachelor of Occupational Therapy (BOT) at KMCH College of Occupational Therapy, affiliated
+                    with The Tamil Nadu Dr. M.G.R. Medical University. Following his undergraduate clinical grounding, he earned
+                    his Master of Occupational Therapy (MOT) with Paediatric Specialization from Santosh Medical College, Ghaziabad,
+                    affiliated with Atal Bihari Vajpayee Medical University.
                   </p>
                   <p>
-                    After gaining extensive clinical experience across private organizations and government-aided institutions,
-                    he established Thulir Educational Trust to ensure evidence-based therapy remains accessible, holistic, and
-                    grounded in family partnership.
+                    Guided by a strong belief that early intervention can transform a child&apos;s developmental trajectory, he
+                    dedicated his career to children with autism and developmental challenges. After gaining extensive clinical
+                    experience across private organizations and government-aided institutions, he established Thulir Educational
+                    Trust to ensure evidence-based therapy remains accessible, holistic, and grounded in family partnership.
                   </p>
                 </div>
               </div>
