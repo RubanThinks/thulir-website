@@ -56,32 +56,66 @@ export default function Home() {
           {/* 3. Hero Content Container */}
           <div className="relative z-10 w-full">
             <Container>
-              <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
+              <div className="max-w-6xl xl:max-w-7xl mx-auto text-center flex flex-col items-center">
                 {/* A. Official Logo with Organic Splash Art Background - Extra-Large Heroic Scale */}
                 <div className="relative w-full flex flex-col items-center justify-center pt-2 sm:pt-4">
-                  {/* Organic Splash Art Background Wrapper */}
-                  <div className="relative flex items-center justify-center w-full min-h-[260px] sm:min-h-[320px] md:min-h-[370px] lg:min-h-[410px]">
-                    {/* Splash Graphic - Framed expansively behind the logo */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-                      <div className="relative w-[520px] h-[320px] sm:w-[680px] sm:h-[400px] md:w-[800px] md:h-[460px] lg:w-[900px] lg:h-[500px] scale-x-115 sm:scale-x-120 md:scale-x-125 scale-y-105 sm:scale-y-110 transition-transform duration-500">
+                  {/* ========================================================
+                      1. MOBILE-ONLY HERO LOGO & SPLATTER (Screen width < 640px)
+                      Completely independent: tune mobile sizing without touching desktop
+                  ======================================================== */}
+                  <div className="relative flex sm:hidden items-center justify-center w-full min-h-[340px]">
+                    {/* Mobile Background Splash Graphic */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible -translate-y-10">
+                      <div className="relative w-[200vw] max-w-[960px] h-[800px] scale-[1.7] transition-transform duration-500">
                         <Image
                           src="/assets/branding/logo_splash_bg.png"
                           alt=""
                           fill
                           priority
-                          className="object-contain filter drop-shadow-[0_24px_50px_rgba(0,0,0,0.46)]"
+                          className="object-contain filter drop-shadow-[0_20px_50px_rgba(255,255,255,0.18)] drop-shadow-[0_24px_50px_rgba(0,0,0,0.46)]"
                         />
                       </div>
                     </div>
 
-                    {/* Foreground Logo - Monumental hero brand presentation */}
-                    <div className="relative z-10 translate-y-[24px] sm:translate-y-[29px] md:translate-y-[34px] lg:translate-y-[38px] w-[320px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-[92px] sm:h-[125px] md:h-[148px] lg:h-[170px] transition-transform duration-300 hover:scale-102">
+                    {/* Mobile Foreground Logo - Reduced slightly in size (Mobile-only) */}
+                    <div className="relative z-10 -translate-x-3 -translate-y-6 w-[70vw] max-w-[255px] h-[152px] transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 640px) 320px, (max-width: 768px) 440px, 600px"
+                        sizes="(max-width: 640px) 70vw, 255px"
+                        className="object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* ========================================================
+                      2. DESKTOP-ONLY HERO LOGO & SPLATTER (Screen width >= 640px)
+                      Completely independent: 100% original desktop dimensions & layout
+                  ======================================================== */}
+                  <div className="relative hidden sm:flex items-center justify-center w-full sm:min-h-[350px] md:min-h-[400px] lg:min-h-[440px]">
+                    {/* Desktop Background Splash Graphic - Enlarged significantly behind the logo */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 -translate-y-4 md:-translate-y-6 lg:-translate-y-8">
+                      <div className="relative w-[880px] h-[520px] md:w-[1050px] md:h-[620px] lg:w-[1240px] lg:h-[720px] xl:w-[1380px] xl:h-[800px] scale-120 md:scale-125 lg:scale-125 transition-transform duration-500">
+                        <Image
+                          src="/assets/branding/logo_splash_bg.png"
+                          alt=""
+                          fill
+                          priority
+                          className="object-contain filter drop-shadow-[0_20px_50px_rgba(255,255,255,0.18)] drop-shadow-[0_28px_60px_rgba(0,0,0,0.5)]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Desktop Foreground Logo - Reduced slightly in size */}
+                    <div className="relative z-10 -translate-x-2 md:-translate-x-3 lg:-translate-x-4 translate-y-[10px] md:translate-y-[12px] lg:translate-y-[14px] w-[450px] md:w-[540px] lg:w-[610px] h-[160px] md:h-[190px] lg:h-[215px] transition-transform duration-300 hover:scale-102">
+                      <Image
+                        src="/assets/branding/logo.png"
+                        alt="Thulir Special School Official Logo"
+                        fill
+                        priority
+                        sizes="(max-width: 768px) 450px, (max-width: 1024px) 540px, 610px"
                         className="object-contain"
                       />
                     </div>
@@ -89,28 +123,28 @@ export default function Home() {
                 </div>
 
                 {/* B. Eyebrow Badge & Tamil Tagline - Distinct spacing after the background artwork */}
-                <div className="relative z-20 mt-8 sm:mt-11 md:mt-14 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
+                <div className="relative z-20 mt-6 sm:mt-8 md:mt-10 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
                   <span className="w-2 h-2 rounded-full bg-[#F4C542] animate-pulse" />
                   <span>பயிற்சியும், பயிற்றுவித்தல் சார்ந்த இடமும் &bull; Coimbatore</span>
                 </div>
 
-                {/* C. Headline with Luxury Typography */}
-                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.12] drop-shadow-md">
-                  Every Child Deserves the Chance to{" "}
+                {/* C. Headline with Luxury Typography - 'Deserves' highlighted in #F4C542 */}
+                <h1 className="relative z-20 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.12] drop-shadow-md">
+                  Every Child <span className="text-[#F4C542]">Deserves</span> the Chance to{" "}
                   <span className="font-serif-luxury italic font-normal text-[#F4C542] block sm:inline drop-shadow-lg">
                     Flourish.
                   </span>
                 </h1>
 
                 {/* D. Reassuring Emotional Copy */}
-                <p className="mt-6 text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl font-normal drop-shadow-xs">
+                <p className="relative z-20 mt-6 text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl font-normal drop-shadow-xs">
                   At Thulir Special School, we support children with special needs through individualized educational program,
                   paediatric occupational therapy &amp; speech therapy, Physiotherapy and life skills &mdash; walking alongside
                   families so every child grows with dignity and independence.
                 </p>
 
                 {/* E. Action CTA Buttons */}
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <div className="relative z-20 mt-8 flex flex-wrap items-center justify-center gap-4">
                   <Link
                     href="/contact"
                     className="bg-[#F4C542] hover:bg-[#E5B430] text-[#151515] font-bold px-7 sm:px-9 py-4 rounded-xl text-sm sm:text-base transition-all shadow-xl hover:shadow-2xl active:scale-95 flex items-center gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white"
