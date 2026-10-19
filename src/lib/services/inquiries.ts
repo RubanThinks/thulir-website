@@ -86,43 +86,30 @@ export const BASELINE_INQUIRIES: InquiryItemRecord[] = [
   },
 ];
 
+import seedInquiriesData from "@/data/inquiries.json";
+import { readJsonSafe, writeJsonSafe } from "./storageHelper";
+
+let memoryInquiriesItems: InquiryItemRecord[] | null = null;
+
 /**
- * Reads local persistent inquiries file. Seeds baseline if non-existent.
+ * Reads local persistent inquiries file safely in any runtime (local dev or read-only Vercel).
  */
 export function readLocalInquiries(): InquiryItemRecord[] {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(INQUIRIES_FILE)) {
-      fs.writeFileSync(INQUIRIES_FILE, JSON.stringify(BASELINE_INQUIRIES, null, 2), "utf8");
-      return BASELINE_INQUIRIES;
-    }
-    const raw = fs.readFileSync(INQUIRIES_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      fs.writeFileSync(INQUIRIES_FILE, JSON.stringify(BASELINE_INQUIRIES, null, 2), "utf8");
-      return BASELINE_INQUIRIES;
-    }
-    return parsed;
-  } catch (err) {
-    console.warn("[Inquiries Local Store Read Warning]:", err);
-    return BASELINE_INQUIRIES;
+  if (memoryInquiriesItems && memoryInquiriesItems.length > 0) {
+    return memoryInquiriesItems;
   }
+  const defaultItems = (seedInquiriesData as unknown as InquiryItemRecord[]) || BASELINE_INQUIRIES;
+  const items = readJsonSafe<InquiryItemRecord[]>("inquiries.json", defaultItems);
+  memoryInquiriesItems = Array.isArray(items) && items.length > 0 ? items : defaultItems;
+  return memoryInquiriesItems;
 }
 
 /**
- * Writes inquiries safely to persistent JSON storage.
+ * Writes inquiries safely to persistent JSON storage (local in dev, /tmp in serverless).
  */
 export function writeLocalInquiries(items: InquiryItemRecord[]): void {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    fs.writeFileSync(INQUIRIES_FILE, JSON.stringify(items, null, 2), "utf8");
-  } catch (err) {
-    console.error("[Inquiries Local Store Write Error]:", err);
-  }
+  memoryInquiriesItems = items;
+  writeJsonSafe("inquiries.json", items);
 }
 
 /**

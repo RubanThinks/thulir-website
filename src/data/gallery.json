@@ -763,26 +763,5 @@
     "order": 37,
     "createdAt": "2024-06-21T08:30:00.000Z",
     "updatedAt": "2024-06-21T08:30:00.000Z"
-  },
-  {
-    "id": "gallery-faculty-team-board",
-    "title": "Thulir Multidisciplinary Faculty & Care Team",
-    "caption": "The full team of certified occupational therapists, special educators, speech therapists, physiotherapists, and care attendants assembled on campus.",
-    "altText": "Thulir Special School complete faculty and staff team photograph",
-    "imageUrl": "/assets/images/thulir_team_board.jpg",
-    "thumbnailUrl": "/assets/images/thulir_team_board.jpg",
-    "category": "campus",
-    "tags": [
-      "Clinical Faculty",
-      "Leadership",
-      "Special Educators",
-      "Care Staff"
-    ],
-    "dateCaptured": "2024-07-01",
-    "isPublished": true,
-    "featuredOnHome": true,
-    "order": 38,
-    "createdAt": "2024-07-01T09:00:00.000Z",
-    "updatedAt": "2024-07-01T09:00:00.000Z"
   }
 ]

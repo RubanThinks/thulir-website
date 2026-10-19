@@ -1,8 +1,8 @@
 import "server-only";
-import fs from "fs";
-import path from "path";
 import { getAdminDb } from "../firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
+import seedGalleryData from "@/data/gallery.json";
+import { readJsonSafe, writeJsonSafe } from "./storageHelper";
 
 export interface GalleryItemRecord {
   id: string;
@@ -23,151 +23,57 @@ export interface GalleryItemRecord {
   createdBy?: string | null;
 }
 
-const DATA_DIR = path.join(process.cwd(), "src", "data");
-const GALLERY_FILE = path.join(DATA_DIR, "gallery.json");
+// 100% statically-bundled seed gallery items (38 verified campus photos)
+export const BASELINE_GALLERY: GalleryItemRecord[] = seedGalleryData as GalleryItemRecord[];
 
-// Verified baseline gallery items with real campus photography
-export const BASELINE_GALLERY: GalleryItemRecord[] = [
-  {
-    id: "gallery-sensory-room",
-    title: "Sensory Integration Therapy Suite",
-    caption:
-      "Suspended therapeutic swings, bolster apparatus, and tactile exploration modules at our Rathinapuri center.",
-    altText: "Sensory Integration Therapy Suite at Thulir Special School",
-    imageUrl: "/assets/images/sensory_occupational_room.jpg",
-    thumbnailUrl: "/assets/images/sensory_occupational_room.jpg",
-    category: "campus",
-    tags: ["Paediatric Occupational Therapy", "Sensory Integration", "Rathinapuri"],
-    dateCaptured: "2026-02-15",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "gallery-speech-cabin",
-    title: "Pediatric Speech & Communication Cabin",
-    caption:
-      "A quiet, distraction-free environment for articulation, oral-motor play, and augmentative communication training.",
-    altText: "Speech & Communication Therapy room at Thulir Special School",
-    imageUrl: "/assets/images/speech_language_therapy.jpg",
-    thumbnailUrl: "/assets/images/speech_language_therapy.jpg",
-    category: "therapy",
-    tags: ["Speech Therapy", "Language Development"],
-    dateCaptured: "2026-02-18",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 2,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "gallery-physio-suite",
-    title: "Pediatric Physiotherapy Wing",
-    caption:
-      "Postural stability, gross motor milestones, and gait facilitation equipment designed for children.",
-    altText: "Pediatric Physiotherapy Wing at Thulir",
-    imageUrl: "/assets/images/pediatric_physiotherapy.jpg",
-    thumbnailUrl: "/assets/images/pediatric_physiotherapy.jpg",
-    category: "therapy",
-    tags: ["Physiotherapy", "Motor Skills"],
-    dateCaptured: "2026-02-20",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 3,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "gallery-special-education",
-    title: "Specialized Education Classroom",
-    caption:
-      "Individualized student workstations, visual schedules, and foundational literacy corners.",
-    altText: "Specialized Education Classroom with learning aids",
-    imageUrl: "/assets/images/special_education_classroom.jpg",
-    thumbnailUrl: "/assets/images/special_education_classroom.jpg",
-    category: "campus",
-    tags: ["Special Education", "IEP"],
-    dateCaptured: "2026-02-22",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 4,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "gallery-community-outing",
-    title: "Community Exposure & Life Skills Outing",
-    caption:
-      "Students practicing social navigation, outdoor physical mobility, and recreational interaction in a natural setting.",
-    altText: "Students on a community exposure trip in Coimbatore",
-    imageUrl: "/assets/images/community_outing_park.jpg",
-    thumbnailUrl: "/assets/images/community_outing_park.jpg",
-    category: "field-trips",
-    tags: ["Community Outing", "Life Skills"],
-    dateCaptured: "2026-03-01",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 5,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "gallery-early-intervention",
-    title: "Early Intervention & Developmental Support",
-    caption:
-      "Caring, play-based stimulation for infants and young children during foundational developmental windows.",
-    altText: "Early intervention session with child and educator",
-    imageUrl: "/assets/images/hero_learning_care.jpg",
-    thumbnailUrl: "/assets/images/hero_learning_care.jpg",
-    category: "achievements",
-    tags: ["Early Intervention", "Milestones"],
-    dateCaptured: "2026-03-05",
-    isPublished: true,
-    featuredOnHome: true,
-    order: 6,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+// In-memory cache to ensure warm serverless lambdas have instantaneous consistency
+let memoryGalleryItems: GalleryItemRecord[] | null = null;
 
 /**
- * Reads local persistent gallery storage. Seeds baseline items if empty.
+ * Reads persistent gallery storage safely in any runtime (local dev or read-only Vercel).
  */
-function readLocalGallery(): GalleryItemRecord[] {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(GALLERY_FILE)) {
-      fs.writeFileSync(GALLERY_FILE, JSON.stringify(BASELINE_GALLERY, null, 2), "utf8");
-      return BASELINE_GALLERY;
-    }
-    const raw = fs.readFileSync(GALLERY_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      fs.writeFileSync(GALLERY_FILE, JSON.stringify(BASELINE_GALLERY, null, 2), "utf8");
-      return BASELINE_GALLERY;
-    }
-    return parsed;
-  } catch (err) {
-    console.warn("[Gallery Store Read Error - using baseline]:", err);
-    return BASELINE_GALLERY;
+export function readLocalGallery(): GalleryItemRecord[] {
+  if (memoryGalleryItems && memoryGalleryItems.length > 0) {
+    return memoryGalleryItems;
   }
+  const items = readJsonSafe<GalleryItemRecord[]>("gallery.json", BASELINE_GALLERY);
+  memoryGalleryItems = Array.isArray(items) && items.length > 0 ? items : BASELINE_GALLERY;
+  return memoryGalleryItems;
 }
 
 /**
- * Saves gallery records to local persistent storage.
+ * Saves gallery records safely (writes to local src/data in dev, or /tmp in serverless).
  */
-function writeLocalGallery(items: GalleryItemRecord[]): void {
+export function writeLocalGallery(items: GalleryItemRecord[]): void {
+  memoryGalleryItems = items;
+  writeJsonSafe("gallery.json", items);
+}
+
+/**
+ * Helper to auto-seed Firestore if it is connected but empty.
+ */
+async function autoSeedFirestoreIfEmpty(items: GalleryItemRecord[]): Promise<void> {
+  const adminDb = getAdminDb();
+  if (!adminDb || items.length === 0) return;
+
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    const existing = await adminDb.collection("gallery").limit(1).get();
+    if (existing.empty) {
+      console.log(`[Firestore Gallery Auto-Seed] Seeding ${items.length} records into Firestore...`);
+      const batch = adminDb.batch();
+      for (const item of items) {
+        const docRef = adminDb.collection("gallery").doc(item.id);
+        batch.set(docRef, {
+          ...item,
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      }
+      await batch.commit();
+      console.log("[Firestore Gallery Auto-Seed] Successfully seeded gallery records.");
     }
-    fs.writeFileSync(GALLERY_FILE, JSON.stringify(items, null, 2), "utf8");
-  } catch (err) {
-    console.error("[Gallery Store Write Error]:", err);
+  } catch (seedErr) {
+    console.warn("[Firestore Gallery Auto-Seed Warning]:", seedErr);
   }
 }
 
@@ -180,9 +86,9 @@ export async function getGalleryItems(
 ): Promise<GalleryItemRecord[]> {
   const adminDb = getAdminDb();
 
-  if (adminDb) {
+  if (adminDb && process.env.NEXT_PHASE !== "phase-production-build") {
     try {
-      let query = adminDb.collection("gallery").orderBy("order", "asc");
+      let query: FirebaseFirestore.Query = adminDb.collection("gallery");
       if (publishedOnly) {
         query = query.where("isPublished", "==", true);
       }
@@ -192,7 +98,7 @@ export async function getGalleryItems(
 
       const snapshot = await query.get();
       if (!snapshot.empty) {
-        return snapshot.docs.map((doc) => {
+        const items = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -217,13 +123,19 @@ export async function getGalleryItems(
             createdBy: data.createdBy || null,
           };
         });
+        items.sort((a, b) => a.order - b.order);
+        return items;
+      } else {
+        // If Firestore is empty, auto-seed it with the baseline items in the background
+        const baseline = readLocalGallery();
+        autoSeedFirestoreIfEmpty(baseline).catch(() => {});
       }
     } catch (err) {
-      console.warn("[Firestore Gallery GET failed, falling back to local store]:", err);
+      console.warn("[Firestore Gallery GET failed, falling back to resilient local store]:", err);
     }
   }
 
-  // Fallback to local persistent store
+  // Fallback to resilient local/tmp store
   let items = readLocalGallery();
   if (publishedOnly) {
     items = items.filter((item) => item.isPublished);
@@ -235,7 +147,7 @@ export async function getGalleryItems(
 }
 
 /**
- * Saves a new gallery record. Persists to both Firestore (if available) and local store.
+ * Saves a new gallery record. Persists to both Firestore (if available) and resilient local store.
  */
 export async function addGalleryItem(
   data: Omit<GalleryItemRecord, "id" | "createdAt" | "updatedAt">
@@ -262,12 +174,12 @@ export async function addGalleryItem(
     createdBy: data.createdBy || null,
   };
 
-  // 1. Save to local durable store
-  const localItems = readLocalGallery();
+  // 1. Save to local/tmp resilient store
+  const localItems = [...readLocalGallery()];
   localItems.push(newRecord);
   writeLocalGallery(localItems);
 
-  // 2. Also save to Firestore if configured
+  // 2. Dual-save to Firestore if configured
   const adminDb = getAdminDb();
   if (adminDb) {
     try {
@@ -285,7 +197,7 @@ export async function addGalleryItem(
 }
 
 /**
- * Updates an existing gallery record.
+ * Updates an existing gallery record. Resiliently handles both Firestore and local store.
  */
 export async function updateGalleryItem(
   id: string,
@@ -293,33 +205,67 @@ export async function updateGalleryItem(
 ): Promise<GalleryItemRecord | null> {
   const now = new Date().toISOString();
 
-  // 1. Update in local store
-  const localItems = readLocalGallery();
+  // 1. Update in local/tmp store
+  const localItems = [...readLocalGallery()];
   const index = localItems.findIndex((item) => item.id === id);
-  if (index === -1) {
-    return null;
-  }
 
-  const updatedRecord: GalleryItemRecord = {
-    ...localItems[index],
-    ...updates,
-    updatedAt: now,
-  };
-  localItems[index] = updatedRecord;
-  writeLocalGallery(localItems);
+  let updatedRecord: GalleryItemRecord | null = null;
+
+  if (index !== -1) {
+    updatedRecord = {
+      ...localItems[index],
+      ...updates,
+      updatedAt: now,
+    };
+    localItems[index] = updatedRecord;
+    writeLocalGallery(localItems);
+  }
 
   // 2. Update in Firestore if configured
   const adminDb = getAdminDb();
   if (adminDb) {
     try {
       const docRef = adminDb.collection("gallery").doc(id);
-      await docRef.set(
-        {
-          ...updates,
+      const docSnap = await docRef.get();
+      if (docSnap.exists) {
+        const firestoreData = docSnap.data() || {};
+        await docRef.set(
+          {
+            ...updates,
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
+        if (!updatedRecord) {
+          updatedRecord = {
+            id,
+            title: updates.title ?? firestoreData.title ?? "",
+            caption: updates.caption ?? firestoreData.caption ?? "",
+            altText: updates.altText ?? firestoreData.altText ?? "",
+            imageUrl: updates.imageUrl ?? firestoreData.imageUrl ?? "",
+            thumbnailUrl: updates.thumbnailUrl ?? firestoreData.thumbnailUrl ?? "",
+            cloudinaryPublicId: updates.cloudinaryPublicId ?? firestoreData.cloudinaryPublicId ?? "",
+            category: updates.category ?? firestoreData.category ?? "campus",
+            tags: updates.tags ?? firestoreData.tags ?? [],
+            dateCaptured: updates.dateCaptured ?? firestoreData.dateCaptured ?? "",
+            isPublished: updates.isPublished ?? firestoreData.isPublished ?? true,
+            featuredOnHome: updates.featuredOnHome ?? firestoreData.featuredOnHome ?? false,
+            order: updates.order ?? firestoreData.order ?? 0,
+            createdAt: firestoreData.createdAt?.toDate ? firestoreData.createdAt.toDate().toISOString() : now,
+            updatedAt: now,
+            createdBy: firestoreData.createdBy ?? null,
+          };
+          localItems.push(updatedRecord);
+          writeLocalGallery(localItems);
+        }
+      } else if (updatedRecord) {
+        // Document didn't exist in Firestore yet, write it now
+        await docRef.set({
+          ...updatedRecord,
+          createdAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
+        });
+      }
     } catch (err) {
       console.warn("[Firestore Gallery Update Warning]:", err);
     }
@@ -332,19 +278,26 @@ export async function updateGalleryItem(
  * Deletes a gallery record.
  */
 export async function deleteGalleryItem(id: string): Promise<boolean> {
-  // 1. Delete from local store
+  let existed = false;
+
+  // 1. Delete from local/tmp store
   const localItems = readLocalGallery();
   const filtered = localItems.filter((item) => item.id !== id);
-  const existed = filtered.length !== localItems.length;
-  if (existed) {
+  if (filtered.length !== localItems.length) {
     writeLocalGallery(filtered);
+    existed = true;
   }
 
   // 2. Delete from Firestore if configured
   const adminDb = getAdminDb();
   if (adminDb) {
     try {
-      await adminDb.collection("gallery").doc(id).delete();
+      const docRef = adminDb.collection("gallery").doc(id);
+      const snap = await docRef.get();
+      if (snap.exists) {
+        await docRef.delete();
+        existed = true;
+      }
     } catch (err) {
       console.warn("[Firestore Gallery Delete Warning]:", err);
     }

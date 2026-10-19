@@ -18,7 +18,11 @@ export function isAdminConfigured(): boolean {
  */
 function getFormattedPrivateKey(rawKey?: string): string | undefined {
   if (!rawKey) return undefined;
-  return rawKey.replace(/\\n/g, "\n");
+  let key = rawKey.trim();
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1);
+  }
+  return key.replace(/\\n/g, "\n");
 }
 
 let adminApp: App | null = null;

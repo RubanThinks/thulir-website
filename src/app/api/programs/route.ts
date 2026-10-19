@@ -19,7 +19,6 @@ export async function GET() {
     const snapshot = await adminDb
       .collection("services")
       .where("isPublished", "==", true)
-      .orderBy("order", "asc")
       .get();
 
     if (snapshot.empty) {
@@ -40,9 +39,10 @@ export async function GET() {
         clinicalApproaches: data.clinicalApproaches || [],
         targetAgeRange: data.targetAgeRange,
         heroImageUrl: data.heroImageUrl,
-        order: data.order,
+        order: Number(data.order || 0),
       };
     });
+    programs.sort((a, b) => a.order - b.order);
 
     return NextResponse.json({ programs });
   } catch (error: unknown) {

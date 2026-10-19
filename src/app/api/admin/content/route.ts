@@ -6,6 +6,8 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { siteConfig } from "@/config/site";
 import { FieldValue } from "firebase-admin/firestore";
 
+import { readJsonSafe, writeJsonSafe } from "@/lib/services/storageHelper";
+
 interface SiteSettingsData {
   organizationName: string;
   primaryPhone: string;
@@ -15,35 +17,25 @@ interface SiteSettingsData {
   updatedBy?: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), "src", "data");
-const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
+const defaultSettings: SiteSettingsData = {
+  organizationName: siteConfig.brand.primaryName,
+  primaryPhone: siteConfig.contact.phone,
+  whatsappNumber: siteConfig.contact.whatsappNumber,
+  contactEmail: siteConfig.contact.email,
+};
+
+let memorySettings: SiteSettingsData | null = null;
 
 function readLocalSettings(): SiteSettingsData {
-  try {
-    if (fs.existsSync(SETTINGS_FILE)) {
-      const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
-      return JSON.parse(raw);
-    }
-  } catch (err) {
-    console.error("[Local Settings Read Error]:", err);
-  }
-  return {
-    organizationName: siteConfig.brand.primaryName,
-    primaryPhone: siteConfig.contact.phone,
-    whatsappNumber: siteConfig.contact.whatsappNumber,
-    contactEmail: siteConfig.contact.email,
-  };
+  if (memorySettings) return memorySettings;
+  const data = readJsonSafe<SiteSettingsData>("settings.json", defaultSettings);
+  memorySettings = data || defaultSettings;
+  return memorySettings;
 }
 
 function writeLocalSettings(data: SiteSettingsData): void {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), "utf8");
-  } catch (err) {
-    console.error("[Local Settings Write Error]:", err);
-  }
+  memorySettings = data;
+  writeJsonSafe("settings.json", data);
 }
 
 export async function GET() {
