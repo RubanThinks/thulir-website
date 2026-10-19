@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   BookOpen,
@@ -13,6 +13,8 @@ import {
   AlertCircle,
   CheckCircle2,
   X,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 
 interface ProgramItem {
@@ -44,9 +46,15 @@ export default function AdminProgramsPage() {
   const [formFullDesc, setFormFullDesc] = useState("");
   const [formApproaches, setFormApproaches] = useState("");
   const [formAge, setFormAge] = useState("2 to 16 years");
-  const [formImage, setFormImage] = useState("/assets/images/therapies/occupational_sensory.jpg");
   const [formOrder, setFormOrder] = useState(1);
   const [formPublished, setFormPublished] = useState(true);
+
+  // File upload state (no URL input)
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -94,9 +102,10 @@ export default function AdminProgramsPage() {
     setFormFullDesc("");
     setFormApproaches("");
     setFormAge("2 to 16 years");
-    setFormImage("/assets/images/therapies/occupational_sensory.jpg");
     setFormOrder(programs.length + 1);
     setFormPublished(true);
+    setFileToUpload(null);
+    setPreviewUrl("/assets/images/sensory_occupational_room.jpg");
     setFormError(null);
     setModalOpen(true);
   };
@@ -109,11 +118,32 @@ export default function AdminProgramsPage() {
     setFormFullDesc(prog.fullDescription || "");
     setFormApproaches(prog.clinicalApproaches ? prog.clinicalApproaches.join("\n") : "");
     setFormAge(prog.targetAgeRange || "");
-    setFormImage(prog.heroImageUrl || "");
     setFormOrder(prog.order || 0);
     setFormPublished(prog.isPublished);
+    setFileToUpload(null);
+    setPreviewUrl(prog.heroImageUrl || "");
     setFormError(null);
     setModalOpen(true);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setFormError("Only image files (JPEG, PNG, WebP) are allowed.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setFormError("Image file size must be less than 10MB.");
+      return;
+    }
+
+    setFileToUpload(file);
+    const objUrl = URL.createObjectURL(file);
+    setPreviewUrl(objUrl);
+    setFormError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,47 +155,67 @@ export default function AdminProgramsPage() {
       return;
     }
 
+    if (!editingProgram && !fileToUpload && !previewUrl) {
+      setFormError("Please select a hero image for this program.");
+      return;
+    }
+
     setIsSubmitting(true);
+    setIsUploading(true);
+    setUploadProgress(25);
+
     try {
       const approachesArray = formApproaches
         .split("\n")
         .map((a) => a.trim())
         .filter(Boolean);
 
-      const payload = {
-        title: formTitle,
-        category: formCategory,
-        shortDescription: formShortDesc,
-        fullDescription: formFullDesc,
-        clinicalApproaches: approachesArray,
-        targetAgeRange: formAge,
-        heroImageUrl: formImage,
-        order: formOrder,
-        isPublished: formPublished,
-      };
+      const formData = new FormData();
+      formData.append("title", formTitle);
+      formData.append("category", formCategory);
+      formData.append("shortDescription", formShortDesc);
+      formData.append("fullDescription", formFullDesc);
+      formData.append("clinicalApproaches", JSON.stringify(approachesArray));
+      formData.append("targetAgeRange", formAge);
+      formData.append("order", String(formOrder));
+      formData.append("isPublished", String(formPublished));
+
+      if (fileToUpload) {
+        formData.append("file", fileToUpload);
+      } else if (previewUrl) {
+        formData.append("heroImageUrl", previewUrl);
+      }
+
+      setUploadProgress(65);
 
       if (editingProgram) {
         const res = await fetch(`/api/admin/programs/${editingProgram.id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: formData,
         });
-        if (!res.ok) throw new Error("Failed to update program.");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to update program.");
+        }
       } else {
         const res = await fetch("/api/admin/programs", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: formData,
         });
-        if (!res.ok) throw new Error("Failed to create program.");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to create program.");
+        }
       }
 
+      setUploadProgress(100);
       setModalOpen(false);
       await fetchPrograms();
     } catch (err: unknown) {
       setFormError((err as Error).message);
     } finally {
       setIsSubmitting(false);
+      setIsUploading(false);
     }
   };
 
@@ -214,7 +264,7 @@ export default function AdminProgramsPage() {
           <button
             onClick={() => fetchPrograms()}
             disabled={loading}
-            className="p-2 rounded-xl text-xs font-semibold bg-white border border-[#E2E8F0] text-[#2D3748] hover:bg-[#F1F4F9] transition"
+            className="p-2 rounded-xl text-xs font-semibold bg-white border border-[#E2E8F0] text-[#2D3748] hover:bg-[#F1F4F9] transition cursor-pointer"
             title="Refresh programs"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -258,70 +308,55 @@ export default function AdminProgramsPage() {
                 <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
                   <span
                     className={`px-2 py-0.5 rounded-md text-[10px] font-bold shadow-xs ${
-                      prog.isPublished
-                        ? "bg-emerald-600 text-white"
-                        : "bg-gray-800/80 text-white"
+                      prog.isPublished ? "bg-emerald-600 text-white" : "bg-gray-800/80 text-gray-200"
                     }`}
                   >
                     {prog.isPublished ? "Published" : "Draft"}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#101C3A] text-white shadow-xs">
-                    Order #{prog.order}
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#101C3A]/80 text-white backdrop-blur-xs">
+                    Order: {prog.order}
                   </span>
                 </div>
               </div>
 
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-[#8F2638] tracking-wider">
-                    {prog.category} &bull; {prog.targetAgeRange || "All pediatric ages"}
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#8F2638] bg-[#8F2638]/10 px-2 py-0.5 rounded mb-1.5">
+                    {prog.category}
                   </span>
-                  <h3 className="text-sm font-bold text-[#101C3A] mt-1 leading-snug">
+                  <h3 className="text-sm font-bold text-[#101C3A] leading-snug line-clamp-1">
                     {prog.title}
                   </h3>
-                  <p className="text-xs text-[#64748B] mt-1.5 line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-[#64748B] mt-1 line-clamp-2">
                     {prog.shortDescription}
                   </p>
-
-                  {prog.clinicalApproaches && prog.clinicalApproaches.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-[#E2E8F0] space-y-1">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
-                        Focus Approaches:
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {prog.clinicalApproaches.slice(0, 3).map((app, i) => (
-                          <span
-                            key={i}
-                            className="text-[10px] bg-[#F1F4F9] text-[#2D3748] px-2 py-0.5 rounded-md border border-[#E2E8F0]"
-                          >
-                            {app}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
-                <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
-                  <button
-                    onClick={() => handleTogglePublish(prog)}
-                    className="p-1.5 rounded-lg text-[#64748B] hover:text-[#101C3A] hover:bg-[#F1F4F9] transition"
-                    title={prog.isPublished ? "Unpublish program" : "Publish program"}
-                  >
-                    {prog.isPublished ? <Eye className="w-4 h-4 text-emerald-600" /> : <EyeOff className="w-4 h-4" />}
-                  </button>
+                <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
+                  <span className="text-[11px] text-[#64748B] font-medium">
+                    Age: {prog.targetAgeRange || "All ages"}
+                  </span>
 
                   <div className="flex items-center gap-1">
                     <button
+                      onClick={() => handleTogglePublish(prog)}
+                      className={`p-1.5 rounded-lg transition cursor-pointer ${
+                        prog.isPublished ? "text-emerald-700 hover:bg-emerald-50" : "text-gray-400 hover:bg-gray-100"
+                      }`}
+                      title={prog.isPublished ? "Unpublish" : "Publish"}
+                    >
+                      {prog.isPublished ? <Eye className="w-3.5 h-3.5 text-emerald-600" /> : <EyeOff className="w-3.5 h-3.5" />}
+                    </button>
+                    <button
                       onClick={() => handleOpenEdit(prog)}
-                      className="p-1.5 rounded-lg text-[#64748B] hover:text-[#101C3A] hover:bg-[#F1F4F9] transition"
+                      className="p-1.5 rounded-lg text-[#64748B] hover:text-[#101C3A] hover:bg-[#F1F4F9] transition cursor-pointer"
                       title="Edit program"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(prog)}
-                      className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition"
+                      className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition cursor-pointer"
                       title="Delete program"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -334,17 +369,17 @@ export default function AdminProgramsPage() {
         </div>
       )}
 
-      {/* Edit / Create Modal */}
+      {/* Create / Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 bg-[#101C3A]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E2E8F0] animate-in zoom-in-95 duration-150">
             <div className="p-5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#FBFBFA]">
               <h2 className="text-base font-bold text-[#101C3A] font-[var(--font-heading)]">
-                {editingProgram ? "Edit Program & Curriculum" : "Add New Program"}
+                {editingProgram ? "Edit Program Details" : "Create New Program"}
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-1.5 rounded-lg text-[#64748B] hover:text-[#101C3A] hover:bg-[#E2E8F0]"
+                className="p-1.5 rounded-lg text-[#64748B] hover:text-[#101C3A] hover:bg-[#E2E8F0] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -435,26 +470,120 @@ export default function AdminProgramsPage() {
                   rows={3}
                   value={formApproaches}
                   onChange={(e) => setFormApproaches(e.target.value)}
-                  placeholder="Sensory Integration (Ayres SI) swinging
-Fine motor precision and pencil grasp
-Motor planning (praxis) and spatial-body awareness"
+                  placeholder="Sensory Integration (Ayres SI) swinging&#10;Fine motor precision and pencil grasp&#10;Motor planning (praxis) and spatial-body awareness"
                   className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-[#101C3A] mb-1">
-                    Hero Image URL
-                  </label>
-                  <input
-                    type="text"
-                    value={formImage}
-                    onChange={(e) => setFormImage(e.target.value)}
-                    placeholder="/assets/images/sensory_occupational_room.jpg"
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
-                  />
-                </div>
+              {/* Program Hero Image File Upload (No URL input) */}
+              <div className="space-y-2">
+                <label className="block font-semibold text-[#101C3A]">
+                  Hero Image <span className="text-[#8F2638]">*</span>
+                </label>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {previewUrl ? (
+                  <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#F8FAFC] p-3 flex flex-col sm:flex-row items-center gap-4">
+                    <div className="relative w-full sm:w-36 h-28 shrink-0 rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-xs">
+                      <Image
+                        src={previewUrl}
+                        alt="Program hero image preview"
+                        fill
+                        unoptimized={previewUrl.startsWith("blob:")}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-1.5 text-center sm:text-left">
+                      <p className="text-xs font-bold text-[#101C3A] truncate">
+                        {fileToUpload ? fileToUpload.name : "Current Program Image"}
+                      </p>
+                      {fileToUpload ? (
+                        <p className="text-[11px] text-[#64748B]">
+                          {(fileToUpload.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-[#64748B]">
+                          Image saved for this program
+                        </p>
+                      )}
+                      <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#101C3A] text-white hover:bg-[#1A2E5A] transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Change Photo</span>
+                        </button>
+                        {fileToUpload && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFileToUpload(null);
+                              setPreviewUrl(editingProgram?.heroImageUrl || "");
+                            }}
+                            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition cursor-pointer"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files?.[0];
+                      if (file && file.type.startsWith("image/")) {
+                        setFileToUpload(file);
+                        setPreviewUrl(URL.createObjectURL(file));
+                      }
+                    }}
+                    className="border-2 border-dashed border-[#CBD5E1] hover:border-[#101C3A] bg-[#F8FAFC] hover:bg-white rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center text-[#101C3A] group-hover:scale-110 group-hover:text-[#8F2638] transition-transform mb-2.5">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-[#101C3A]">
+                      Click to choose an image file or drag and drop
+                    </p>
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
+                      JPG, PNG, or WebP up to 10MB &bull; Automatic high-res optimization
+                    </p>
+                  </div>
+                )}
+
+                {/* Upload progress indicator */}
+                {isUploading && (
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#64748B]">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <RefreshCw className="w-3 h-3 animate-spin text-[#8F2638]" />
+                        Uploading photo...
+                      </span>
+                      <span className="font-bold">{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#8F2638] rounded-full transition-all duration-200"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div>
                   <label className="block font-semibold text-[#101C3A] mb-1">
                     Display Order (1 = Top)
@@ -466,18 +595,17 @@ Motor planning (praxis) and spatial-body awareness"
                     className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#101C3A]"
                   />
                 </div>
-              </div>
-
-              <div className="pt-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formPublished}
-                    onChange={(e) => setFormPublished(e.target.checked)}
-                    className="rounded border-[#E2E8F0] text-[#101C3A]"
-                  />
-                  <span className="font-semibold text-[#2D3748]">Publish to Public Website</span>
-                </label>
+                <div className="flex items-center pt-5">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formPublished}
+                      onChange={(e) => setFormPublished(e.target.checked)}
+                      className="rounded border-[#E2E8F0] text-[#101C3A]"
+                    />
+                    <span className="font-semibold text-[#2D3748]">Publish to Public Website</span>
+                  </label>
+                </div>
               </div>
 
               <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
@@ -485,14 +613,14 @@ Motor planning (praxis) and spatial-body awareness"
                   type="button"
                   onClick={() => setModalOpen(false)}
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#2D3748] font-semibold hover:bg-[#F1F4F9]"
+                  className="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#2D3748] font-semibold hover:bg-[#F1F4F9] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl bg-[#101C3A] text-white font-bold hover:bg-[#1A2E5A] disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-[#101C3A] text-white font-bold hover:bg-[#1A2E5A] disabled:opacity-50 flex items-center gap-2 cursor-pointer shadow-xs"
                 >
                   {isSubmitting ? (
                     <>
