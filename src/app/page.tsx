@@ -58,64 +58,64 @@ export default function Home() {
             <Container>
               <div className="max-w-6xl xl:max-w-7xl mx-auto text-center flex flex-col items-center">
                 {/* A. Official Logo with Organic Splash Art Background - Extra-Large Heroic Scale */}
-                <div className="relative w-full flex flex-col items-center justify-center pt-2 sm:pt-4">
+                <div className="relative w-full flex flex-col items-center justify-center -mt-2 sm:-mt-4 md:-mt-5 pt-0">
                   {/* ========================================================
                       1. MOBILE-ONLY HERO LOGO & SPLATTER (Screen width < 640px)
                       Completely independent: tune mobile sizing without touching desktop
                   ======================================================== */}
-                  <div className="relative flex sm:hidden items-center justify-center w-full min-h-[340px]">
+                  <div className="relative flex sm:hidden items-center justify-center w-full min-h-[280px]">
                     {/* Mobile Background Splash Graphic */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible -translate-y-10">
-                      <div className="relative w-[200vw] max-w-[960px] h-[800px] scale-[1.7] transition-transform duration-500">
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible -translate-y-12">
+                      <div className="relative w-[150vw] max-w-[750px] h-[600px] scale-[1.35] transition-transform duration-500">
                         <Image
                           src="/assets/branding/logo_splash_bg.png"
                           alt=""
                           fill
                           priority
-                          className="object-contain filter drop-shadow-[0_20px_50px_rgba(255,255,255,0.18)] drop-shadow-[0_24px_50px_rgba(0,0,0,0.46)]"
+                          className="object-contain filter drop-shadow-[0_16px_40px_rgba(255,255,255,0.16)] drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
                         />
                       </div>
                     </div>
 
-                    {/* Mobile Foreground Logo - Reduced slightly in size (Mobile-only) */}
-                    <div className="relative z-10 -translate-x-3 -translate-y-6 w-[70vw] max-w-[255px] h-[152px] transition-transform duration-300 hover:scale-102">
+                    {/* Mobile Foreground Logo - Scaled down slightly & shifted upward */}
+                    <div className="relative z-10 -translate-x-2 -translate-y-8 w-[60vw] max-w-[215px] h-[128px] transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 640px) 70vw, 255px"
-                        className="object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]"
+                        sizes="(max-width: 640px) 60vw, 215px"
+                        className="object-contain filter drop-shadow-[0_10px_24px_rgba(0,0,0,0.36)]"
                       />
                     </div>
                   </div>
 
                   {/* ========================================================
                       2. DESKTOP-ONLY HERO LOGO & SPLATTER (Screen width >= 640px)
-                      Completely independent: 100% original desktop dimensions & layout
+                      Completely independent: refined desktop dimensions & layout
                   ======================================================== */}
-                  <div className="relative hidden sm:flex items-center justify-center w-full sm:min-h-[350px] md:min-h-[400px] lg:min-h-[440px]">
-                    {/* Desktop Background Splash Graphic - Enlarged significantly behind the logo */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 -translate-y-4 md:-translate-y-6 lg:-translate-y-8">
-                      <div className="relative w-[880px] h-[520px] md:w-[1050px] md:h-[620px] lg:w-[1240px] lg:h-[720px] xl:w-[1380px] xl:h-[800px] scale-120 md:scale-125 lg:scale-125 transition-transform duration-500">
+                  <div className="relative hidden sm:flex items-center justify-center w-full sm:min-h-[290px] md:min-h-[320px] lg:min-h-[350px]">
+                    {/* Desktop Background Splash Graphic - Shifted upward */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 -translate-y-8 md:-translate-y-12 lg:-translate-y-14">
+                      <div className="relative w-[750px] h-[440px] md:w-[880px] md:h-[520px] lg:w-[1040px] lg:h-[600px] xl:w-[1150px] xl:h-[660px] scale-105 md:scale-110 lg:scale-110 transition-transform duration-500">
                         <Image
                           src="/assets/branding/logo_splash_bg.png"
                           alt=""
                           fill
                           priority
-                          className="object-contain filter drop-shadow-[0_20px_50px_rgba(255,255,255,0.18)] drop-shadow-[0_28px_60px_rgba(0,0,0,0.5)]"
+                          className="object-contain filter drop-shadow-[0_18px_45px_rgba(255,255,255,0.16)] drop-shadow-[0_24px_50px_rgba(0,0,0,0.45)]"
                         />
                       </div>
                     </div>
 
-                    {/* Desktop Foreground Logo - Reduced slightly in size */}
-                    <div className="relative z-10 -translate-x-2 md:-translate-x-3 lg:-translate-x-4 translate-y-[10px] md:translate-y-[12px] lg:translate-y-[14px] w-[450px] md:w-[540px] lg:w-[610px] h-[160px] md:h-[190px] lg:h-[215px] transition-transform duration-300 hover:scale-102">
+                    {/* Desktop Foreground Logo - Shifted upward */}
+                    <div className="relative z-10 -translate-x-2 md:-translate-x-3 lg:-translate-x-3 -translate-y-[4px] md:-translate-y-[6px] lg:-translate-y-[8px] w-[370px] md:w-[440px] lg:w-[500px] h-[132px] md:h-[156px] lg:h-[176px] transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 768px) 450px, (max-width: 1024px) 540px, 610px"
+                        sizes="(max-width: 768px) 370px, (max-width: 1024px) 440px, 500px"
                         className="object-contain"
                       />
                     </div>
@@ -123,7 +123,7 @@ export default function Home() {
                 </div>
 
                 {/* B. Eyebrow Badge & Tamil Tagline - Distinct spacing after the background artwork */}
-                <div className="relative z-20 mt-6 sm:mt-8 md:mt-10 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
+                <div className="relative z-20 mt-2 sm:mt-4 md:mt-5 mb-5 sm:mb-6 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-xl">
                   <span className="w-2 h-2 rounded-full bg-[#F4C542] animate-pulse" />
                   <span>பயிற்சியும், பயிற்றுவித்தல் சார்ந்த இடமும் &bull; Coimbatore</span>
                 </div>

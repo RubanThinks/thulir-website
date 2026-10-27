@@ -17,19 +17,19 @@ function StaffCard({ member }: StaffCardProps) {
 
   return (
     <div className="staff-motion-card h-full flex flex-col justify-between rounded-2xl overflow-hidden bg-white border border-[#E2E8F0] shadow-[0_4px_20px_rgba(16,28,58,0.06)] hover:border-[#101C3A]/40 hover:shadow-[0_14px_32px_rgba(16,28,58,0.12)] transition-all duration-300">
-      {/* Photo Frame - Full Image Display Without Cropping */}
-      <div className="relative aspect-[3/4] w-full bg-[#0F172A] overflow-hidden flex items-center justify-center p-1">
+      {/* Photo Frame - Full Image Display With Clean Background */}
+      <div className="relative aspect-[3/4] w-full bg-slate-50 overflow-hidden flex items-center justify-center">
         {member.image && !imageError ? (
           <Image
             src={member.image}
             alt={member.name}
             fill
-            className="object-contain"
+            className="object-cover object-top"
             onError={() => setImageError(true)}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-white p-3 text-center">
+          <div className="w-full h-full flex flex-col items-center justify-center text-white bg-[#101C3A] p-3 text-center">
             <span className="text-xs font-bold text-[#F4C542] uppercase tracking-wider">
               Thulir Faculty
             </span>
@@ -50,49 +50,11 @@ function StaffCard({ member }: StaffCardProps) {
   );
 }
 
-/**
- * 4th Card in Set 5: Clinical Consultation Booking
- */
-function ConsultationCard() {
-  return (
-    <div className="staff-motion-card h-full flex flex-col justify-between rounded-2xl overflow-hidden bg-[#101C3A] border-2 border-[#D4AF37] p-4 sm:p-5 text-white text-left shadow-[0_8px_30px_rgba(16,28,58,0.2)]">
-      <div>
-        <span className="inline-block text-[9.5px] font-extrabold uppercase tracking-wider bg-[#F4C542] text-[#101C3A] px-2.5 py-0.5 rounded mb-3">
-          Clinical Consultation
-        </span>
-        <h3 className="text-sm sm:text-base font-extrabold text-white leading-snug">
-          Meet Our Specialists in Person
-        </h3>
-        <p className="text-[11px] sm:text-xs text-white/80 mt-1.5 leading-relaxed">
-          Schedule an in-depth clinical screening or school readiness consultation with Dr. S. Venkatesan and our team.
-        </p>
-      </div>
-
-      <div className="mt-4 pt-3 border-t border-white/15 space-y-2">
-        <Link
-          href="/contact"
-          className="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg text-xs font-bold bg-[#F4C542] text-[#101C3A] hover:bg-[#E5B532] transition-colors"
-        >
-          <CalendarCheck className="w-3.5 h-3.5" />
-          <span>Book an Evaluation</span>
-        </Link>
-        <a
-          href="tel:09629611224"
-          className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 rounded-lg text-[11px] font-semibold text-white/90 hover:text-white border border-white/20 transition-colors"
-        >
-          <PhoneCall className="w-3 h-3 text-[#F4C542]" />
-          <span>+91 96296 11224</span>
-        </a>
-      </div>
-    </div>
-  );
-}
-
 export function StackedStaffSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const deckRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Split all 19 staff members into 5 sets of 4 (Set 5 has 3 staff + ConsultationCard)
+  // Split all 20 staff members into 5 sets of 4 cards each
   const staffSets: StaffMember[][] = [];
   for (let i = 0; i < STAFF_MEMBERS.length; i += 4) {
     staffSets.push(STAFF_MEMBERS.slice(i, i + 4));
@@ -219,8 +181,6 @@ export function StackedStaffSection() {
           className="relative max-w-7xl mx-auto h-[620px] sm:h-[580px] lg:h-[520px]"
         >
           {staffSets.map((set, setIdx) => {
-            const isLast = setIdx === staffSets.length - 1;
-
             return (
               <div
                 key={`staff-set-${setIdx}`}
@@ -237,13 +197,41 @@ export function StackedStaffSection() {
                   {set.map((member) => (
                     <StaffCard key={member.id} member={member} />
                   ))}
-
-                  {/* 4th Slot in Final Set: Consultation Card */}
-                  {isLast && <ConsultationCard />}
                 </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Clinical Consultation Callout Banner */}
+        <div className="mt-8 max-w-4xl mx-auto bg-gradient-to-r from-[#101C3A] via-[#16274E] to-[#101C3A] border-2 border-[#D4AF37]/50 rounded-2xl p-5 sm:p-6 text-white shadow-[0_8px_30px_rgba(16,28,58,0.12)] flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="text-center sm:text-left">
+            <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider bg-[#F4C542] text-[#101C3A] px-2.5 py-0.5 rounded mb-1.5 shadow-xs">
+              Clinical Consultation &amp; Assessment
+            </span>
+            <h3 className="text-base sm:text-lg font-extrabold text-white">
+              Meet Our Specialists in Person
+            </h3>
+            <p className="text-xs sm:text-sm text-white/80 mt-1 max-w-xl">
+              Schedule an in-depth clinical screening or school readiness consultation with Dr. S. Venkatesan and our multidisciplinary team.
+            </p>
+          </div>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 w-full sm:w-auto">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 flex-1 sm:flex-initial py-2.5 px-4 rounded-xl text-xs font-bold bg-[#F4C542] text-[#101C3A] hover:bg-[#E5B532] transition-colors shadow-sm active:scale-95"
+            >
+              <CalendarCheck className="w-4 h-4 text-[#101C3A]" />
+              <span>Book an Evaluation</span>
+            </Link>
+            <a
+              href="tel:09629611224"
+              className="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial py-2.5 px-4 rounded-xl text-xs font-semibold text-white/90 hover:text-white border border-white/20 transition-colors"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-[#F4C542]" />
+              <span>+91 96296 11224</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>

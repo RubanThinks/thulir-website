@@ -358,22 +358,43 @@ export default function AboutPage() {
               subtitle="Managed with integrity and clinical direction under Thulir Educational Trust for Special Needs."
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
               {siteConfig.leadership.map((leader) => (
                 <div
                   key={leader.name}
-                  className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-xs text-center flex flex-col justify-between"
+                  className="h-full flex flex-col justify-between rounded-2xl overflow-hidden bg-white border border-[#E2E8F0] shadow-[0_4px_20px_rgba(16,28,58,0.06)] hover:border-[#101C3A]/40 hover:shadow-[0_14px_32px_rgba(16,28,58,0.12)] transition-all duration-300"
                 >
-                  <div>
-                    <div className="w-16 h-16 rounded-full bg-[#101C3A]/5 mx-auto flex items-center justify-center mb-4">
-                      <ShieldCheck className="w-8 h-8 text-[#101C3A]" />
-                    </div>
-                    <h4 className="text-base font-bold text-[#101C3A]">{leader.name}</h4>
-                    <p className="text-xs font-semibold text-[#8F2638] mt-1">{leader.role}</p>
+                  {/* Photo Frame - Full Image Display With Clean Background */}
+                  <div className="relative aspect-[3/4] w-full bg-slate-50 overflow-hidden flex items-center justify-center">
+                    {leader.image ? (
+                      <Image
+                        src={leader.image}
+                        alt={leader.name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-white bg-[#101C3A] p-3 text-center">
+                        <span className="text-xs font-bold text-[#F4C542] uppercase tracking-wider">
+                          Thulir Trustee
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-[11px] text-[#64748B] mt-4 pt-3 border-t border-[#E2E8F0]">
-                    Thulir Educational Trust
-                  </p>
+
+                  {/* Card Information: Clean & Direct */}
+                  <div className="p-3.5 sm:p-4 bg-white text-left flex flex-col justify-center">
+                    <h3 className="text-sm sm:text-base font-extrabold text-[#101C3A] leading-snug line-clamp-1">
+                      {leader.name}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#8F2638] mt-1 line-clamp-2 leading-relaxed">
+                      {leader.role}
+                    </p>
+                    <p className="text-[11px] text-[#64748B] mt-3 pt-2.5 border-t border-[#E2E8F0]">
+                      Thulir Educational Trust
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

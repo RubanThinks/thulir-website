@@ -11,7 +11,7 @@ export interface StaffMember {
 }
 
 export const STAFF_MEMBERS: StaffMember[] = [
-  // --- BATCH 1: Clinical Leadership & Physiotherapy ---
+  // --- BATCH 1: Clinical Leadership, Administration & Operations (White Shirts) ---
   {
     id: "staff-venkatesan",
     name: "Dr. S. Venkatesan",
@@ -34,6 +34,28 @@ export const STAFF_MEMBERS: StaffMember[] = [
     qualifications: "BPT, Paediatric Physical Rehabilitation Specialist",
   },
   {
+    id: "staff-saravanan",
+    name: "Mr. Saravanan",
+    role: "Administrator",
+    department: "Trust Administration & Campus Operations",
+    category: "support",
+    fileName: "Mr Saravanan.PNG",
+    image: "/assets/staffs/Mr%20Saravanan.PNG",
+    qualifications: "Campus Operations & Family Coordination Lead",
+  },
+  {
+    id: "staff-jashper",
+    name: "Mr. Jashper",
+    role: "Smart Assistant",
+    department: "Digital Learning & Campus Support",
+    category: "support",
+    fileName: "Jashper.PNG",
+    image: "/assets/staffs/Jashper.PNG",
+    qualifications: "Smart Learning & Assistive Student Operations",
+  },
+
+  // --- BATCH 2: Neuro-Physical Rehabilitation & Autism Faculty ---
+  {
     id: "staff-manju",
     name: "Dr. Manju",
     role: "Physiotherapist",
@@ -53,8 +75,6 @@ export const STAFF_MEMBERS: StaffMember[] = [
     image: "/assets/staffs/Peadiatric%20physiotherapist.PNG",
     qualifications: "Certified Pediatric Physical Therapist",
   },
-
-  // --- BATCH 2: Autism & Special Education Specialists ---
   {
     id: "staff-sudha",
     name: "Mrs. Sudha",
@@ -75,10 +95,12 @@ export const STAFF_MEMBERS: StaffMember[] = [
     image: "/assets/staffs/Mrs%20Shobana%20mercy.PNG",
     qualifications: "M.Ed. Special Education Specialist",
   },
+
+  // --- BATCH 3: Special Education & Cognitive Development (Orange Sarees) ---
   {
     id: "staff-princy-angelin",
     name: "Mrs. Princy Angelin",
-    role: "Special Education Teacher",
+    role: "Teacher",
     department: "Cognitive & Literacy Development",
     category: "education",
     fileName: "Mrs Princy Angelin.PNG",
@@ -95,8 +117,6 @@ export const STAFF_MEMBERS: StaffMember[] = [
     image: "/assets/staffs/Mrs%20Malathi.PNG",
     qualifications: "Certified Inclusive Classroom Instructor",
   },
-
-  // --- BATCH 3: Developmental Educators & Therapists ---
   {
     id: "staff-damsi-viviana",
     name: "Mrs. Damsi Viviana",
@@ -110,22 +130,15 @@ export const STAFF_MEMBERS: StaffMember[] = [
   {
     id: "staff-jayanthi",
     name: "Mrs. Jayanthi",
-    role: "Special Education Educator",
+    role: "Special Educator",
     department: "Foundational Communication & Social Skills",
     category: "education",
     fileName: "Mrs Jayanthi.PNG",
     image: "/assets/staffs/Mrs%20Jayanthi.PNG",
     qualifications: "Specialized Educator in Developmental Milestones",
   },
-  {
-    id: "staff-pathma-priya",
-    name: "Mrs. Pathama Priya",
-    role: "Care Taker",
-    department: "Student Care & Campus Support",
-    category: "support",
-    fileName: "Mrs Pathma priya.PNG",
-    image: "/assets/staffs/Mrs%20Pathma%20priya.PNG",
-  },
+
+  // --- BATCH 4: Psychological Services & Student Care Lead ---
   {
     id: "staff-anuppama",
     name: "Ms. Anupama",
@@ -136,42 +149,30 @@ export const STAFF_MEMBERS: StaffMember[] = [
     image: "/assets/staffs/Ms%20Anuppama.PNG",
     qualifications: "Special Educator",
   },
-
-  // --- BATCH 4: Therapy Integration, Admin & Campus Support ---
   {
     id: "staff-joice",
     name: "Ms. Joice A.",
-    role: "Early Childhood Educator",
-    department: "Early Childhood Stimulation",
-    category: "education",
+    role: "Psychologist",
+    department: "Child & Developmental Psychology",
+    category: "therapy",
     fileName: "Ms Joice A.PNG",
     image: "/assets/staffs/Ms%20Joice%20A.PNG",
-    qualifications: "Certified Early Interventionist",
+    qualifications: "Child Psychologist & Behavioral Guidance Specialist",
   },
   {
     id: "staff-srinitha",
     name: "Ms. Srinitha",
-    role: "Therapist & Developmental Trainer",
-    department: "Fine Motor & Communication Training",
+    role: "Psychologist",
+    department: "Psychological Services & Behavioral Therapy",
     category: "therapy",
     fileName: "Ms Srinitha.PNG",
     image: "/assets/staffs/Ms%20Srinitha.PNG",
-    qualifications: "Developmental Therapy Specialist",
-  },
-  {
-    id: "staff-saravanan",
-    name: "Mr. Saravanan",
-    role: "Administrator",
-    department: "Trust Administration & Campus Operations",
-    category: "support",
-    fileName: "Mr Saravanan.PNG",
-    image: "/assets/staffs/Mr%20Saravanan.PNG",
-    qualifications: "Campus Operations & Family Coordination Lead",
+    qualifications: "Psychological Services & Developmental Specialist",
   },
   {
     id: "staff-shanthi",
     name: "Mrs. Shanthi",
-    role: "Care Taker & Student Care Lead",
+    role: "Care Taker",
     department: "Student Well-Being & Personal Care",
     category: "support",
     fileName: "Mrs Shanthi.PNG",
@@ -179,7 +180,17 @@ export const STAFF_MEMBERS: StaffMember[] = [
     qualifications: "Trained Child Safety & Care Attendant",
   },
 
-  // --- BATCH 5: Dedicated Student Care & Assisted Living ---
+  // --- BATCH 5: Compassionate Student Care Attendants (Green Sarees) ---
+  {
+    id: "staff-pathma-priya",
+    name: "Mrs. Pathama Priya",
+    role: "Care Taker",
+    department: "Student Care & Campus Support",
+    category: "support",
+    fileName: "Mrs Pathma priya.PNG",
+    image: "/assets/staffs/Mrs%20Pathma%20priya.PNG",
+    qualifications: "Child Support & Daily Routine Assistant",
+  },
   {
     id: "staff-amutha",
     name: "Mrs. Amutha",
@@ -223,30 +234,30 @@ export interface StaffDivision {
 export const STAFF_DIVISIONS: StaffDivision[] = [
   {
     id: "division-1",
-    title: "Clinical Leadership & Physiotherapy",
-    subtitle: "Pioneering evidence-based paediatric occupational & physical rehabilitation",
-    badge: "Division 01 • Clinical Directors & Physical Rehabilitation",
+    title: "Clinical Leadership & Administration",
+    subtitle: "Pioneering clinical direction, institutional governance and assistive learning support",
+    badge: "Division 01 • Clinical Directors & Campus Leadership",
     members: STAFF_MEMBERS.slice(0, 4),
   },
   {
     id: "division-2",
-    title: "Autism Specialists & Special Educators",
-    subtitle: "Individualized learning pathways, sensory integration & behavioral guidance",
-    badge: "Division 02 • Autism Spectrum & IEP Faculty",
+    title: "Physical Rehabilitation & Autism Faculty",
+    subtitle: "Evidence-based pediatric physical therapy and specialized autism behavioral guidance",
+    badge: "Division 02 • Physical Rehabilitation & Autism Education",
     members: STAFF_MEMBERS.slice(4, 8),
   },
   {
     id: "division-3",
-    title: "Developmental Educators & Therapists",
-    subtitle: "Structured cognitive development, adaptive education & milestone achievement",
+    title: "Special Education & Cognitive Development",
+    subtitle: "Structured cognitive development, adaptive literacy & sensory integration",
     badge: "Division 03 • Developmental & Therapeutic Education",
     members: STAFF_MEMBERS.slice(8, 12),
   },
   {
     id: "division-4",
-    title: "Early Stimulation & Campus Administration",
-    subtitle: "Early childhood readiness, fine-motor stimulation & administrative leadership",
-    badge: "Division 04 • Early Intervention & Trust Administration",
+    title: "Psychological Guidance & Student Care Leadership",
+    subtitle: "Child psychology, behavioral therapy & student care coordination",
+    badge: "Division 04 • Psychology & Care Supervision",
     members: STAFF_MEMBERS.slice(12, 16),
   },
   {
@@ -254,7 +265,7 @@ export const STAFF_DIVISIONS: StaffDivision[] = [
     title: "Compassionate Student Care & Assistance",
     subtitle: "Warm, empathetic daily living support ensuring round-the-clock safety and nurture",
     badge: "Division 05 • Student Care & Daily Living Support",
-    members: STAFF_MEMBERS.slice(16, 19),
+    members: STAFF_MEMBERS.slice(16, 20),
   },
 ];
 

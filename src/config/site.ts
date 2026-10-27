@@ -61,18 +61,22 @@ export const siteConfig = {
     {
       name: "Dr. S. Venkatesan",
       role: "Founder & Business Owner, Managing Director",
+      image: "/assets/trustees/Dr%20S.Venkatesan.PNG",
     },
     {
       name: "Dr. E. Premkumar",
       role: "Treasurer",
+      image: "/assets/trustees/Dr%20E.Premkumar.PNG",
     },
     {
-      name: "Gokila S.",
-      role: "Secretary",
-    },
-    {
-      name: "Karunakaran K.",
+      name: "Er. K. Karunakaran",
       role: "Trustee",
+      image: "/assets/trustees/Karunakaran%20K.PNG",
+    },
+    {
+      name: "Mrs. Gokila Karunakaran",
+      role: "Secretary",
+      image: "/assets/trustees/Gokila%20S.PNG",
     },
   ],
 
