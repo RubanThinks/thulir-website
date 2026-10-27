@@ -51,8 +51,8 @@ export const siteConfig = {
 
   founder: {
     name: "Dr. S. Venkatesan",
-    credentials: "BOT, MOT (Paediatric Occupational Therapist)",
-    role: "Founder & Business Owner, Managing Director",
+    credentials: "MOT, CSIT, CAS (Paediatric Occupational Therapist)",
+    role: "Founder & Managing Director",
     bioSummary:
       "A compassionate paediatric occupational therapist and first-generation graduate from Kallakurichi district. Dr. Venkatesan pursued his Bachelor of Occupational Therapy (BOT) at KMCH College of Occupational Therapy under The Tamil Nadu Dr. M.G.R. Medical University, and his Master of Occupational Therapy (MOT) with Paediatric Specialization from Santosh Medical College, Ghaziabad under Atal Bihari Vajpayee Medical University. He founded Thulir with an unwavering commitment to making evidence-based, compassionate paediatric therapy and special education accessible to every family.",
   },
@@ -60,7 +60,7 @@ export const siteConfig = {
   leadership: [
     {
       name: "Dr. S. Venkatesan",
-      role: "Founder & Business Owner, Managing Director",
+      role: "Founder & Managing Director",
       image: "/assets/trustees/Dr%20S.Venkatesan.PNG",
     },
     {

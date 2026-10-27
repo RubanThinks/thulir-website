@@ -156,19 +156,19 @@ export default function AboutPage() {
               {/* Founder Profile & Quick Bio */}
               <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] via-[#142347] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between items-center text-center">
                 <div className="flex flex-col items-center w-full">
-                  {/* Large Circular Photo Frame */}
-                  <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-[#D4AF37] mb-6 shadow-2xl shrink-0 bg-[#101C3A]">
+                  {/* Circular Formal Photo Frame (Matching Home Page Dignified Formal View) */}
+                  <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4 border-[#D4AF37] ring-4 ring-white/10 shadow-2xl shrink-0 bg-white mb-6">
                     <Image
                       src="/assets/staffs/Dr%20S.Venkatesan.PNG"
                       alt={siteConfig.founder.name}
                       fill
-                      className="object-cover object-top"
+                      className="object-contain p-2.5 transition-transform duration-300 hover:scale-105"
                       priority
                     />
                   </div>
 
                   <span className="inline-block text-[11px] font-extrabold tracking-widest uppercase bg-[#D4AF37] text-[#101C3A] px-3.5 py-1 rounded-full mb-3 shadow-sm">
-                    Founder &amp; Business Owner
+                    Founder &amp; Managing Director
                   </span>
 
                   <h3 className="text-2xl sm:text-3xl font-extrabold text-white text-center">
@@ -177,10 +177,6 @@ export default function AboutPage() {
 
                   <p className="text-xs font-semibold text-[#F4C542] mt-2 tracking-wider uppercase text-center">
                     {siteConfig.founder.credentials}
-                  </p>
-
-                  <p className="text-sm text-white/80 mt-1 text-center font-medium">
-                    {siteConfig.founder.role}
                   </p>
                 </div>
 

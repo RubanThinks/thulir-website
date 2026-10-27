@@ -108,14 +108,14 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Desktop Foreground Logo - Shifted upward */}
-                    <div className="relative z-10 -translate-x-2 md:-translate-x-3 lg:-translate-x-3 -translate-y-[4px] md:-translate-y-[6px] lg:-translate-y-[8px] w-[370px] md:w-[440px] lg:w-[500px] h-[132px] md:h-[156px] lg:h-[176px] transition-transform duration-300 hover:scale-102">
+                    {/* Desktop Foreground Logo - Sized to fit elegantly inside background splash graphic */}
+                    <div className="relative z-10 -translate-x-1.5 md:-translate-x-2 -translate-y-4 md:-translate-y-6 lg:-translate-y-7 w-[290px] sm:w-[320px] md:w-[360px] lg:w-[400px] h-[102px] sm:h-[112px] md:h-[126px] lg:h-[140px] transition-transform duration-300 hover:scale-102">
                       <Image
                         src="/assets/branding/logo.png"
                         alt="Thulir Special School Official Logo"
                         fill
                         priority
-                        sizes="(max-width: 768px) 370px, (max-width: 1024px) 440px, 500px"
+                        sizes="(max-width: 768px) 320px, (max-width: 1024px) 360px, 400px"
                         className="object-contain"
                       />
                     </div>
@@ -224,31 +224,34 @@ export default function Home() {
           <Container>
             <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden grid grid-cols-1 lg:grid-cols-12">
               {/* Founder Context Column */}
-              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] to-[#1A2E5A] p-8 sm:p-12 text-white flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shrink-0 shadow-md">
-                      <Image
-                        src="/assets/staffs/Dr%20S.Venkatesan.PNG"
-                        alt={siteConfig.founder.name}
-                        fill
-                        className="object-cover object-top"
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#F4C542]">Our Roots &amp; Founder</span>
-                      <h3 className="text-xl font-extrabold text-white leading-tight">{siteConfig.founder.name}</h3>
-                      <p className="text-[11px] font-bold text-[#F4C542] mt-0.5 tracking-wider uppercase">
-                        Founder &amp; Business Owner
-                      </p>
-                    </div>
+              <div className="lg:col-span-5 bg-gradient-to-b from-[#101C3A] via-[#142347] to-[#1A2E5A] p-8 sm:p-10 text-white flex flex-col justify-between items-center text-center">
+                <div className="flex flex-col items-center w-full">
+                  {/* Circular Formal Photo Placeholder */}
+                  <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-[#D4AF37] ring-4 ring-white/10 shadow-2xl shrink-0 bg-white mb-5">
+                    <Image
+                      src="/assets/staffs/Dr%20S.Venkatesan.PNG"
+                      alt={siteConfig.founder.name}
+                      fill
+                      className="object-contain p-2 transition-transform duration-300 hover:scale-105"
+                      priority
+                    />
                   </div>
 
-                  <p className="text-xs text-white/80 font-medium">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#F4C542] bg-[#F4C542]/15 border border-[#F4C542]/30 px-3.5 py-1 rounded-full mb-2">
+                    Our Roots &amp; Founder
+                  </span>
+
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
+                    {siteConfig.founder.name}
+                  </h3>
+                  <p className="text-xs font-bold text-[#F4C542] mt-1 tracking-wider uppercase">
+                    Founder &amp; Managing Director
+                  </p>
+                  <p className="text-xs text-white/80 font-medium mt-1">
                     {siteConfig.founder.credentials}
                   </p>
 
-                  <div className="mt-5 pt-5 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal">
+                  <div className="mt-5 pt-5 border-t border-white/15 space-y-3 text-xs text-white/80 leading-relaxed font-normal text-left sm:text-center lg:text-left">
                     <p>
                       Dr. Venkatesan completed his BOT from KMCH College of Occupational Therapy (The Tamil Nadu Dr. M.G.R. Medical University)
                       and his MOT (Paediatrics) from Santosh Medical College, Ghaziabad (Atal Bihari Vajpayee Medical University).
@@ -260,7 +263,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-white/10 text-xs text-white/60">
+                <div className="mt-6 pt-5 border-t border-white/10 text-xs text-white/60 w-full text-center">
                   <p>Parent Organization: {siteConfig.brand.parentOrganization}</p>
                 </div>
               </div>

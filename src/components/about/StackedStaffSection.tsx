@@ -29,9 +29,18 @@ function StaffCard({ member }: StaffCardProps) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-white bg-[#101C3A] p-3 text-center">
-            <span className="text-xs font-bold text-[#F4C542] uppercase tracking-wider">
-              Thulir Faculty
+          <div className="w-full h-full flex flex-col items-center justify-center text-white bg-gradient-to-b from-[#101C3A] via-[#142347] to-[#1A2E5A] p-4 text-center">
+            <div className="w-16 h-16 rounded-full bg-white/10 border-2 border-[#D4AF37]/50 flex items-center justify-center text-[#F4C542] font-black text-xl mb-2 shadow-inner">
+              {member.name
+                .replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.|Master)\s+/i, "")
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((n) => n[0])
+                .join("") || "TS"}
+            </div>
+            <span className="text-[10px] font-bold text-[#F4C542] uppercase tracking-wider">
+              {member.role}
             </span>
           </div>
         )}
@@ -192,8 +201,18 @@ export function StackedStaffSection() {
                   zIndex: setIdx + 1,
                 }}
               >
-                {/* 4 Cards in this Set */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 h-full">
+                {/* Cards in this Set */}
+                <div
+                  className={`grid gap-3 sm:gap-4 lg:gap-5 h-full ${
+                    set.length === 1
+                      ? "grid-cols-1 max-w-[280px] sm:max-w-xs mx-auto w-full"
+                      : set.length === 2
+                      ? "grid-cols-2 max-w-xl mx-auto w-full"
+                      : set.length === 3
+                      ? "grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto w-full"
+                      : "grid-cols-2 lg:grid-cols-4"
+                  }`}
+                >
                   {set.map((member) => (
                     <StaffCard key={member.id} member={member} />
                   ))}
@@ -225,11 +244,11 @@ export function StackedStaffSection() {
               <span>Book an Evaluation</span>
             </Link>
             <a
-              href="tel:09629611224"
+              href="tel:+919659934210"
               className="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial py-2.5 px-4 rounded-xl text-xs font-semibold text-white/90 hover:text-white border border-white/20 transition-colors"
             >
               <PhoneCall className="w-3.5 h-3.5 text-[#F4C542]" />
-              <span>+91 96296 11224</span>
+              <span>+91 96599 34210</span>
             </a>
           </div>
         </div>
