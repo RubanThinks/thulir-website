@@ -13,7 +13,6 @@ import {
   Eye,
   ChevronRight,
   GraduationCap,
-  ShieldCheck,
 } from "lucide-react";
 import { StackedStaffSection } from "@/components/about/StackedStaffSection";
 
@@ -425,7 +424,7 @@ export default function AboutPage() {
                 Partner With Us in Your Child&apos;s Development
               </h2>
               <p className="text-base text-white/85 leading-relaxed max-w-xl mx-auto">
-                We welcome parents to visit our campuses in Rathinapuri and Kuniyamuthur, meet our team, and explore
+                We welcome parents to visit our campuses in Ganapathy and Kuniyamuthur, meet our team, and explore
                 programs suited to your child.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2">

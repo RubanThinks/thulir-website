@@ -320,7 +320,7 @@ export default async function AdminDashboardOverviewPage() {
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#E2E8F0] text-xs text-[#64748B]">
         <div className="flex items-center gap-2">
           <Database className="w-4 h-4 text-[#101C3A]" />
-          <span>Thulir Educational Trust for Special Needs &bull; Rathinapuri &amp; Kuniyamuthur</span>
+          <span>Thulir Educational Trust for Special Needs &bull; Ganapathy &amp; Kuniyamuthur</span>
         </div>
         <div className="flex items-center gap-4 text-[#101C3A] font-medium">
           <span>Official Contact: <strong>thulirspecialschool@gmail.com</strong></span>

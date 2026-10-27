@@ -80,7 +80,7 @@ export default function GalleryPage() {
                 Would You Like to Tour Our Campus?
               </h2>
               <p className="mt-4 text-base text-gray-600 leading-relaxed max-w-xl mx-auto">
-                We welcome parents and caregivers to visit our Rathinapuri or Kuniyamuthur campuses to observe our
+                We welcome parents and caregivers to visit our Main Campus or Kuniyamuthur campus to observe our
                 sensory rooms, speak with our therapists, and understand how we can support your child.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">

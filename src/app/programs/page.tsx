@@ -39,7 +39,7 @@ const FAQ_ITEMS = [
   {
     question: "Where are Thulir's campuses located and how can we visit?",
     answer:
-      "We operate two dedicated campuses in Coimbatore: our main centre in Rathinapuri (No. 42, Gandhiji Road, Thayirriteri Road) and our second campus in Kuniyamuthur (No. 54, Anamanaicker Street, 6th Cross). You can call 0422 - 2234210 or 96599 34210 to schedule an appointment.",
+      "We operate two dedicated campuses in Coimbatore: our main centre in Ganapathy / Nallampalayam (64/S, Aruna Nagar, Near Ponmani Kalyana Mandapam, Nallampalayam, Ganapathy Post) and our second campus in Kuniyamuthur (No. 54, Anamanaicker Street, 6th Cross). You can call 0422 - 2234210 or 96599 34210 to schedule an appointment.",
   },
   {
     question: "How can parents enquire about starting a program or therapy session?",
@@ -77,7 +77,7 @@ export default async function ProgramsPage() {
               <p className="mt-6 text-base sm:text-lg text-white/85 leading-relaxed font-normal">
                 Every child has their own unique sensory, motor, and cognitive profile. We provide evidence-informed
                 pediatric therapies, individualized special education, and lifelong independence training in a nurturing
-                environment across Rathinapuri and Kuniyamuthur.
+                environment across Ganapathy and Kuniyamuthur.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link

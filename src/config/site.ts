@@ -22,13 +22,13 @@ export const siteConfig = {
     branches: [
       {
         id: "rathinapuri",
-        name: "Rathinapuri Campus (Main Center)",
-        shortName: "Rathinapuri",
-        locality: "Rathinapuri",
-        address: "No. 42, Gandhiji Road, Thayirriteri Road, Rathinapuri, Coimbatore, Tamil Nadu 641027",
+        name: "Main Campus",
+        shortName: "Main Campus",
+        locality: "Nallampalayam, Ganapathy",
+        address: "64/S, Aruna Nagar, Near Ponmani Kalyana Mandapam, Nallampalayam, Ganapathy Post, Coimbatore, Tamil Nadu 641006",
         city: "Coimbatore",
         state: "Tamil Nadu",
-        pincode: "641027",
+        pincode: "641006",
         country: "India",
         description: "Equipped with dedicated sensory integration facilities, speech cabins, and foundational life skills rooms.",
         isMain: true,
@@ -51,7 +51,7 @@ export const siteConfig = {
 
   founder: {
     name: "Dr. S. Venkatesan",
-    credentials: "MOT, CSIT, CAS (Paediatric Occupational Therapist)",
+    credentials: "MOT, CSIT, CAS (Paediatric Occupational Therapist), Autism Specialist",
     role: "Founder & Managing Director",
     bioSummary:
       "A compassionate paediatric occupational therapist and first-generation graduate from Kallakurichi district. Dr. Venkatesan pursued his Bachelor of Occupational Therapy (BOT) at KMCH College of Occupational Therapy under The Tamil Nadu Dr. M.G.R. Medical University, and his Master of Occupational Therapy (MOT) with Paediatric Specialization from Santosh Medical College, Ghaziabad under Atal Bihari Vajpayee Medical University. He founded Thulir with an unwavering commitment to making evidence-based, compassionate paediatric therapy and special education accessible to every family.",

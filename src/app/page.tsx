@@ -175,10 +175,10 @@ export default function Home() {
                     &bull; 9+ Years of Experience
                   </span>
                   <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
-                    &bull; Rathinapuri Branch
+                    &bull; Main Campus
                   </span>
                   <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
-                    &bull; Kuniyamuthur Branch
+                    &bull; Kuniyamuthur Campus
                   </span>
                   <span className="bg-black/35 backdrop-blur-xs px-4 py-1.5 rounded-full border border-white/15">
                     &bull; Paediatric Occupational Therapy &bull; Speech Therapy &bull; Physiotherapy &bull; Special Education
@@ -665,7 +665,7 @@ export default function Home() {
               </div>
 
               <div className="pt-6 border-t border-white/10 text-xs text-white/60">
-                <span>Rathinapuri &amp; Kuniyamuthur Campuses • Coimbatore, Tamil Nadu</span>
+                <span>Ganapathy &amp; Kuniyamuthur Campuses • Coimbatore, Tamil Nadu</span>
               </div>
             </div>
           </Container>

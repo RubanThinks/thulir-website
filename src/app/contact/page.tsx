@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: "Contact & Admissions | Thulir Special School",
   description:
-    "Connect with Thulir Special School in Coimbatore. Explore campus locations in Rathinapuri and Kuniyamuthur, therapy admissions, and developmental consultations.",
+    "Connect with Thulir Special School in Coimbatore. Explore campus locations across our Main Campus and Kuniyamuthur Campus, therapy admissions, and developmental consultations.",
 };
 
 export default function ContactPage() {
@@ -67,7 +67,7 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {/* Campus 1: Rathinapuri Main Center */}
+                {/* Campus 1: Main Center */}
                 <div className="bg-white rounded-2xl border border-gray-200/90 p-6 sm:p-7 shadow-xs">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xs font-bold uppercase tracking-wider text-white bg-[#101C3A] px-2.5 py-1 rounded-md">
@@ -76,7 +76,7 @@ export default function ContactPage() {
                     <span className="text-xs text-gray-500 font-medium">Headquarters</span>
                   </div>
                   <h3 className="text-lg font-bold text-[#101C3A]">
-                    Rathinapuri Campus
+                    Main Campus
                   </h3>
                   <p className="mt-2 text-xs sm:text-sm text-gray-600 leading-relaxed">
                     Equipped with sensory integration facilities, speech cabins, and foundational life skills rooms.
@@ -87,7 +87,7 @@ export default function ContactPage() {
                     <div>
                       <strong className="block text-[#101C3A] font-semibold">Address:</strong>
                       <span>
-                        No. 42, Gandhiji Road, Thayirriteri Road, Rathinapuri, Coimbatore, Tamil Nadu 641027
+                        64/S, Aruna Nagar, Near Ponmani Kalyana Mandapam, Nallampalayam, Ganapathy Post, Coimbatore, Tamil Nadu 641006
                       </span>
                     </div>
                   </div>

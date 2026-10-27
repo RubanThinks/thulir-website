@@ -42,7 +42,7 @@ export function SiteHeader() {
           <div className="flex items-center gap-2 text-center sm:text-left">
             <span className="inline-block w-2 h-2 rounded-full bg-[#F4C542] shrink-0" />
             <span className="font-medium tracking-tight">
-              <strong>Thulir Educational Trust for Special Needs</strong> • Rathinapuri &amp; Kuniyamuthur, Coimbatore
+              <strong>Thulir Educational Trust for Special Needs</strong> • Ganapathy &amp; Kuniyamuthur, Coimbatore
             </span>
           </div>
           <div className="flex items-center gap-3 text-white/80 text-[11px] sm:text-xs">
@@ -192,7 +192,7 @@ export function SiteHeader() {
               <div className="bg-[#FBFBFA] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#2D3748] space-y-1">
                 <p className="font-bold text-[#101C3A] flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#8F2638]" />
-                  <span>Rathinapuri (Main Center) &amp; Kuniyamuthur</span>
+                  <span>Main Campus &amp; Kuniyamuthur</span>
                 </p>
                 <p className="text-[#64748B]">Coimbatore, Tamil Nadu, India</p>
               </div>

@@ -295,7 +295,7 @@ export default function AdminInquiriesPage() {
             className="px-3 py-2 rounded-xl text-xs bg-[#FBFBFA] border border-[#E2E8F0] text-[#2D3748] focus:outline-none"
           >
             <option value="all">All Branches</option>
-            <option value="rathinapuri">Rathinapuri Campus</option>
+            <option value="rathinapuri">Main Campus</option>
             <option value="kuniyamuthur">Kuniyamuthur Campus</option>
             <option value="undecided">Undecided</option>
           </select>

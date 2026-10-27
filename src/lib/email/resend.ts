@@ -37,7 +37,7 @@ function buildAdminNotificationHtml(params: SendInquiryEmailParams): string {
     params.preferredBranch === "kuniyamuthur"
       ? "Kuniyamuthur Campus"
       : params.preferredBranch === "rathinapuri"
-      ? "Rathinapuri Campus (Main)"
+      ? "Main Campus"
       : "Undecided / Open to Both Branches";
 
   return `<!DOCTYPE html>
@@ -154,8 +154,8 @@ function buildParentAcknowledgmentHtml(params: SendInquiryEmailParams): string {
 
       <p style="margin-bottom: 8px;"><strong>Our Coimbatore Campuses:</strong></p>
       <div class="branch-card">
-        <strong style="color: #101C3A;">Rathinapuri Campus (Main Center)</strong><br />
-        <span style="font-size: 13px; color: #64748B;">No. 42, Gandhiji Road, Thayirriteri Road, Rathinapuri, Coimbatore - 641027</span>
+        <strong style="color: #101C3A;">Main Campus</strong><br />
+        <span style="font-size: 13px; color: #64748B;">64/S, Aruna Nagar, Near Ponmani Kalyana Mandapam, Nallampalayam, Ganapathy Post, Coimbatore - 641006</span>
       </div>
       <div class="branch-card">
         <strong style="color: #101C3A;">Kuniyamuthur Campus</strong><br />

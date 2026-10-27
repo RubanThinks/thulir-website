@@ -88,7 +88,7 @@ export default function ImpactPage() {
                   {siteConfig.verifiedMetrics.studentsHandled}
                 </div>
                 <div className="mt-1 text-sm font-semibold text-white">Children Supported</div>
-                <div className="mt-1 text-xs text-white/70">Across Rathinapuri & Kuniyamuthur</div>
+                <div className="mt-1 text-xs text-white/70">Across Ganapathy & Kuniyamuthur</div>
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5">

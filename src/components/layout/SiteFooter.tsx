@@ -76,9 +76,9 @@ export function SiteFooter() {
               <div className="space-y-1">
                 <p className="font-semibold text-white flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#F4C542]" />
-                  <span>Rathinapuri Campus (Main Center)</span>
+                  <span>Main Campus</span>
                 </p>
-                <p className="text-white/70 text-[11px] pl-5">No. 42, Gandhiji Road, Rathinapuri, Coimbatore 641027</p>
+                <p className="text-white/70 text-[11px] pl-5">64/S, Aruna Nagar, Near Ponmani Kalyana Mandapam, Nallampalayam, Ganapathy Post, Coimbatore 641006</p>
               </div>
 
               <div className="space-y-1">

@@ -423,7 +423,7 @@ export function ContactForm() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm bg-white focus:border-[#101C3A] focus:ring-2 focus:ring-[#101C3A]/20 transition-all focus:outline-hidden"
               >
-                <option value="rathinapuri">Rathinapuri Campus (Main Center)</option>
+                <option value="rathinapuri">Main Campus</option>
                 <option value="kuniyamuthur">Kuniyamuthur Campus</option>
                 <option value="either">Either Campus / Unsure</option>
               </select>
